@@ -2,7 +2,7 @@ from rest_framework import serializers
 from pandas import DataFrame
 
 
-class PandasSerializer(serializers.Serializer):
+class PandasBaseSerializer(serializers.Serializer):
     """
     Transforms dataset into a dataframe and appies an index
     """
@@ -29,12 +29,12 @@ class PandasSerializer(serializers.Serializer):
 
     @property
     def data(self):
-        data = super(PandasSerializer, self).data
+        data = super(PandasBaseSerializer, self).data
         dataframe = self.get_dataframe(data)
         return self.filter_dataframe(dataframe)
 
 
-class PandasSimpleSerializer(PandasSerializer):
+class PandasSimpleSerializer(PandasBaseSerializer):
     """
     Simple serializer for non-model (simple) views
     """
@@ -47,7 +47,7 @@ class PandasSimpleSerializer(PandasSerializer):
         }
 
 
-class PandasModelSerializer(PandasSerializer, serializers.ModelSerializer):
+class PandasSerializer(PandasBaseSerializer, serializers.ModelSerializer):
     """
     Serializer for model views.
     """

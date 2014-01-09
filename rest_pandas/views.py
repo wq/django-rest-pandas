@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from rest_framework.settings import perform_import
 
-from .serializers import PandasSimpleSerializer, PandasModelSerializer
+from .serializers import PandasSimpleSerializer, PandasSerializer
 
 PANDAS_RENDERERS = getattr(settings, "PANDAS_RENDERERS", None)
 if PANDAS_RENDERERS is None:
@@ -42,7 +42,7 @@ class PandasView(ListAPIView):
     """
     Pandas-capable model list view
     """
-    model_serializer_class = PandasModelSerializer
+    model_serializer_class = PandasSerializer
     renderer_classes = PANDAS_RENDERERS
     paginate_by = None
 
@@ -51,6 +51,6 @@ class PandasViewSet(ListModelMixin, GenericViewSet):
     """
     Pandas-capable model ViewSet (list only)
     """
-    model_serializer_class = PandasModelSerializer
+    model_serializer_class = PandasSerializer
     renderer_classes = PANDAS_RENDERERS
     paginate_by = None
