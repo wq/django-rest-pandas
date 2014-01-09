@@ -44,6 +44,7 @@ class PandasView(ListAPIView):
     """
     model_serializer_class = PandasModelSerializer
     renderer_classes = PANDAS_RENDERERS
+    paginate_by = None
 
 
 class PandasViewSet(ListModelMixin, GenericViewSet):
@@ -52,3 +53,4 @@ class PandasViewSet(ListModelMixin, GenericViewSet):
     """
     model_serializer_class = PandasModelSerializer
     renderer_classes = PANDAS_RENDERERS
+    paginate_by = None
