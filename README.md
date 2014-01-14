@@ -5,6 +5,12 @@ Django REST Pandas
 
 This project provides a simple way to generate and serve [Pandas] dataframes via the [Django REST Framework].  The resulting API can serve up JSON and CSV for consumption by a client-side visualization tool like [d3.js].  The actual client implementation is left to the user - giving full flexibility for whatever d3 visualizations you want to come up with.  (That said, if you want some out of the box d3-powered charts, you may be interested in [wq.app]'s [chart.js].)
 
+## Related Work
+
+ * [Django Pandas] provides a custom model manager with Pandas support.  By contrast, Django REST Pandas works at the view level by adding Pandas support via a Django REST Framework serializer.
+ * [Bokeh] is a complete client-server visualization platform.  It does not leverage d3 or Django, but is notable as a ground-up approach to addressing similar use cases.
+ * [mpld3] provides a direct bridge from [matplotlib] to [d3.js], complete with seamless [ipython] integration.  It is "limited" to matplotlib charts but should be sufficient for many use cases.
+ 
 ## Usage
 
 ```python
@@ -58,5 +64,11 @@ The underlying implementation is a set of [serializers] that take the normal ser
 [d3.js]: http://d3js.org
 [wq.app]: http://wq.io/wq.app
 [chart.js]: http://wq.io/docs/chart-js
+[Django Pandas]: https://github.com/chrisdev/django-pandas/
+[bokeh]: http://bokeh.pydata.org/
+[mpld3]: https://github.com/jakevdp/mpld3
+[matplotlib]: http://matplotlib.org/
+[ipython]: http://ipython.org/
 [serializers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py
 [renderers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py
+[Django Pandas]:
