@@ -71,4 +71,3 @@ The underlying implementation is a set of [serializers] that take the normal ser
 [ipython]: http://ipython.org/
 [serializers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py
 [renderers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py
-[Django Pandas]:
