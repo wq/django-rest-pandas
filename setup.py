@@ -43,7 +43,7 @@ setup(
     long_description=parse_markdown_readme(),
     install_requires=[
         'djangorestframework>=2.3.10',
-        'pandas'
+        'pandas>=0.13.0',
     ],
     classifiers=[
         'Framework :: Django',

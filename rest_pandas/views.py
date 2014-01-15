@@ -13,6 +13,7 @@ PANDAS_RENDERERS = getattr(settings, "PANDAS_RENDERERS", None)
 if PANDAS_RENDERERS is None:
     PANDAS_RENDERERS = (
         "rest_pandas.renderers.PandasCSVRenderer",
+        "rest_pandas.renderers.PandasTextRenderer",
         "rest_pandas.renderers.PandasJSONRenderer",
         "rest_pandas.renderers.PandasExcelRenderer",
         "rest_pandas.renderers.PandasOldExcelRenderer",

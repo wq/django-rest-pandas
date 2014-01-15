@@ -65,6 +65,15 @@ class PandasCSVRenderer(PandasBaseRenderer):
     format = "csv"
 
 
+class PandasTextRenderer(PandasBaseRenderer):
+    """
+    Renders data frame as CSV, but uses text/plain as media type
+    """
+    media_type = "text/plain"
+    format = "txt"
+    function = "csv"
+
+
 class PandasJSONRenderer(PandasBaseRenderer):
     """
     Renders data frame as JSON
@@ -74,7 +83,8 @@ class PandasJSONRenderer(PandasBaseRenderer):
 
     def get_pandas_kwargs(self, data):
         return {
-            'orient': 'records',
+            'orient': 'index',
+            'date_format': 'iso',
         }
 
 

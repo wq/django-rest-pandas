@@ -30,8 +30,11 @@ class PandasBaseSerializer(serializers.Serializer):
     @property
     def data(self):
         data = super(PandasBaseSerializer, self).data
-        dataframe = self.get_dataframe(data)
-        return self.filter_dataframe(dataframe)
+        if data:
+            dataframe = self.get_dataframe(data)
+            return self.filter_dataframe(dataframe)
+        else:
+            return DataFrame([])
 
 
 class PandasSimpleSerializer(PandasBaseSerializer):
