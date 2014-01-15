@@ -19,7 +19,7 @@ from rest_pandas import PandasView
 from .models import TimeSeries
 class TimeSeriesView(PandasView):
     model = TimeSeries
-    def filter_dataframe(self, dataframe):
+    def transform_dataframe(self, dataframe):
         return dataframe
 ```
 

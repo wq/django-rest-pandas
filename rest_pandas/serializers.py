@@ -21,10 +21,10 @@ class PandasBaseSerializer(serializers.Serializer):
             dataframe.index.name = 'row'
         return dataframe
 
-    def filter_dataframe(self, dataframe):
+    def transform_dataframe(self, dataframe):
         view = self.context.get('view', None)
-        if view and hasattr(view, 'filter_dataframe'):
-            return self.context['view'].filter_dataframe(dataframe)
+        if view and hasattr(view, 'transform_dataframe'):
+            return self.context['view'].transform_dataframe(dataframe)
         return dataframe
 
     @property
@@ -32,7 +32,7 @@ class PandasBaseSerializer(serializers.Serializer):
         data = super(PandasBaseSerializer, self).data
         if data:
             dataframe = self.get_dataframe(data)
-            return self.filter_dataframe(dataframe)
+            return self.transform_dataframe(dataframe)
         else:
             return DataFrame([])
 
