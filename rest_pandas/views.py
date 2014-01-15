@@ -17,6 +17,8 @@ if PANDAS_RENDERERS is None:
         "rest_pandas.renderers.PandasJSONRenderer",
         "rest_pandas.renderers.PandasExcelRenderer",
         "rest_pandas.renderers.PandasOldExcelRenderer",
+        "rest_pandas.renderers.PandasPNGRenderer",
+        "rest_pandas.renderers.PandasSVGRenderer",
     )
 
 PANDAS_RENDERERS = perform_import(PANDAS_RENDERERS, "PANDAS_RENDERERS")

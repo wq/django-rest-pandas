@@ -12,12 +12,12 @@ class PandasBaseRenderer(BaseRenderer):
     Uses a StringIO to capture the output of dataframe.to_[format]()
     """
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        name = 'to_%s' % getattr(self, 'function', self.format)
         if 'response' in renderer_context:
             status_code = renderer_context['response'].status_code
             if not status.is_success(status_code):
                 return "Error: %s" % data.get('detail', status_code)
 
+        name = getattr(self, 'function', "to_%s" % self.format)
         function = getattr(data, name, None)
         if not function:
             raise Exception("Data frame is missing %s property!" % name)
@@ -71,7 +71,7 @@ class PandasTextRenderer(PandasBaseRenderer):
     """
     media_type = "text/plain"
     format = "txt"
-    function = "csv"
+    function = "to_csv"
 
 
 class PandasJSONRenderer(PandasBaseRenderer):
@@ -94,7 +94,7 @@ class PandasExcelRenderer(PandasFileRenderer):
     """
     media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     format = "xlsx"
-    function = "excel"
+    function = "to_excel"
 
 
 class PandasOldExcelRenderer(PandasFileRenderer):
@@ -103,4 +103,37 @@ class PandasOldExcelRenderer(PandasFileRenderer):
     """
     media_type = "application/vnd.ms-excel"
     format = "xls"
-    function = "excel"
+    function = "to_excel"
+
+
+class PandasImageRenderer(PandasBaseRenderer):
+    """
+    Renders dataframe using built-in plot() function
+    """
+    function = "plot"
+
+    def init_output(self):
+        import matplotlib.pyplot as plt
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111)
+
+    def get_pandas_args(self, data):
+        return []
+
+    def get_pandas_kwargs(self, data):
+        return {'ax': self.ax}
+
+    def get_output(self):
+        data = StringIO()
+        self.fig.savefig(data, format=self.format)
+        return data.getvalue()
+
+
+class PandasPNGRenderer(PandasImageRenderer):
+    media_type = "image/png"
+    format = "png"
+
+
+class PandasSVGRenderer(PandasImageRenderer):
+    media_type = "image/svg"
+    format = "svg"
