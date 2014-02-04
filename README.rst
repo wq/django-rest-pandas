@@ -1,9 +1,9 @@
 Django REST Pandas
 ==================
 
-**Django REST Framework + Pandas = A Model-driven Visualization API**
+*Django REST Framework + Pandas = A Model-driven Visualization API*
 
-This project provides a simple way to generate and serve
+**Django REST Pandas** (DRP) provides a simple way to generate and serve
 `Pandas <http://pandas.pydata.org>`__ DataFrames via the `Django REST
 Framework <http://django-rest-framework.org>`__. The resulting API can
 serve up CSV (and a number of other formats) for

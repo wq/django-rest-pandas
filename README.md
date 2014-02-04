@@ -3,7 +3,7 @@ Django REST Pandas
 
 #### [Django REST Framework] + [Pandas] = A Model-driven Visualization API
 
-This project provides a simple way to generate and serve [Pandas] DataFrames via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#formats)) for consumption by a client-side visualization tool like [d3.js].  The actual client implementation is left to the user - giving full flexibility for whatever visualizations you want to come up with.  (That said, if you want some out of the box d3-powered charts for use with DRP, you may be interested in [wq.app]'s [chart.js] and/or [wq.db]'s [chart] module.)
+**Django REST Pandas** (DRP) provides a simple way to generate and serve [Pandas] DataFrames via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#formats)) for consumption by a client-side visualization tool like [d3.js].  The actual client implementation is left to the user - giving full flexibility for whatever visualizations you want to come up with.  (That said, if you want some out of the box d3-powered charts for use with DRP, you may be interested in [wq.app]'s [chart.js] and/or [wq.db]'s [chart] module.)
 
 [![Build Status](https://travis-ci.org/wq/django-rest-pandas.png?branch=master)](https://travis-ci.org/wq/django-rest-pandas) 
 
