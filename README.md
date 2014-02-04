@@ -19,6 +19,14 @@ The goal of Django REST Pandas is to provide a generic REST API for serving up d
 
 ## Usage
 
+### Getting Started
+
+```bash
+pip install rest-pandas
+```
+
+### Usage Example
+
 ```python
 # views.py
 from rest_pandas import PandasView

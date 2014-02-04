@@ -55,6 +55,16 @@ use within IPython.)
 Usage
 -----
 
+Getting Started
+~~~~~~~~~~~~~~~
+
+.. code:: bash
+
+    pip install rest-pandas
+
+Usage Example
+~~~~~~~~~~~~~
+
 .. code:: python
 
     # views.py
