@@ -3,15 +3,19 @@ Django REST Pandas
 
 #### [Django REST Framework] + [Pandas] = A Model-driven Visualization API
 
-This project provides a simple way to generate and serve [Pandas] dataframes via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#formats)) for consumption by a client-side visualization tool like [d3.js].  The actual client implementation is left to the user - giving full flexibility for whatever visualizations you want to come up with.  (That said, if you want some out of the box d3-powered charts for use with DRP, you may be interested in [wq.app]'s [chart.js].)
+This project provides a simple way to generate and serve [Pandas] DataFrames via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#formats)) for consumption by a client-side visualization tool like [d3.js].  The actual client implementation is left to the user - giving full flexibility for whatever visualizations you want to come up with.  (That said, if you want some out of the box d3-powered charts for use with DRP, you may be interested in [wq.app]'s [chart.js] and/or [wq.db]'s [chart] module.)
 
 [![Build Status](https://travis-ci.org/wq/django-rest-pandas.png?branch=master)](https://travis-ci.org/wq/django-rest-pandas) 
 
 ## Related Work
+The field of Python-powered data analysis and visualization is growing, and there are a number of similar solutions that may fit your needs better.
 
- * [Django Pandas] provides a custom model manager with Pandas support.  By contrast, Django REST Pandas works at the view level by adding Pandas support via a Django REST Framework serializer.
+ * [Django Pandas] provides a custom model manager with Pandas support.  By contrast, Django REST Pandas works at the view level, by adding Pandas support via a Django REST Framework serializer.
+ * [DRF-CSV] provides CSV renderers for use with Django REST Framework.  It may be useful if you just want a CSV API and don't have a need for the Pandas DataFrame functionality.
  * [Bokeh] is a complete client-server visualization platform.  It does not leverage d3 or Django, but is notable as a ground-up approach to addressing similar use cases.
- * [mpld3] provides a direct bridge from [matplotlib] to [d3.js], complete with seamless [ipython] integration.  It is "limited" to matplotlib charts but should be sufficient for many use cases.
+ * [mpld3] provides a direct bridge from [matplotlib] to [d3.js], complete with seamless [IPython] integration.  It is "limited" to matplotlib charts but should be sufficient for many use cases.
+
+The goal of Django REST Pandas is to provide a generic REST API for serving up dataframes.  In this sense, it is similar to the Plot Server in Bokeh, but more generic in that it does not assume any particular client technology (which can be good or bad depending on your use case).  Further, DRP is optimized for integration with public-facing Django-powered websites (unlike mpld3 which is primarily intended for use within IPython.)
 
 ## Usage
 
@@ -44,7 +48,7 @@ urlpatterns = patterns('',
 urlpatterns = format_suffix_patterns(urlpatterns)
 ```
 
-The default implementation will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's ViewSets and Routers, or a `PandasSimpleView` if you would just like to serve up some data without a Django model as the source.
+The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's ViewSets and Routers, or a `PandasSimpleView` if you would just like to serve up some data without a Django model as the source.
 
 ## Implementation
 The underlying implementation is a set of [serializers] that take the normal serializer result and put it into a dataframe.  Then, the included [renderers] generate the output using the built in Pandas functionality.  
@@ -95,11 +99,14 @@ You can override the default renderers by setting `PANDAS_RENDERERS` in your `se
 [d3.js]: http://d3js.org
 [wq.app]: http://wq.io/wq.app
 [chart.js]: http://wq.io/docs/chart-js
+[wq.db]: http://wq.io/wq.db
+[chart]: http://wq.io/docs/chart
 [Django Pandas]: https://github.com/chrisdev/django-pandas/
 [bokeh]: http://bokeh.pydata.org/
 [mpld3]: https://github.com/jakevdp/mpld3
+[DRF-CSV]: https://github.com/mjumbewu/django-rest-framework-csv
 [matplotlib]: http://matplotlib.org/
-[ipython]: http://ipython.org/
+[IPython]: http://ipython.org/
 [serializers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py
 [renderers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py
 [wq/pandas.js]: http://wq.io/docs/pandas-js
