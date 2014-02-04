@@ -1,0 +1,10 @@
+language: python
+python:
+ - "2.7"
+env:
+ - DJANGO="django==1.6" DRF="djangorestframework==2.3.12"
+install:
+ - pip install $DJANGO
+ - pip install $DRF
+script:
+ - python setup.py test
