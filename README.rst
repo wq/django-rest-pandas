@@ -6,7 +6,7 @@ Django REST Pandas
 This project provides a simple way to generate and serve
 `Pandas <http://pandas.pydata.org>`__ DataFrames via the `Django REST
 Framework <http://django-rest-framework.org>`__. The resulting API can
-serve up CSV (and a number of `other formats <#formats>`__) for
+serve up CSV (and a number of other formats) for
 consumption by a client-side visualization tool like
 `d3.js <http://d3js.org>`__. The actual client implementation is left to
 the user - giving full flexibility for whatever visualizations you want
