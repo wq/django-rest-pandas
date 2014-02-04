@@ -42,7 +42,7 @@ setup(
     description=LONG_DESCRIPTION.strip(),
     long_description=parse_markdown_readme(),
     install_requires=[
-        'djangorestframework>=2.3.10',
+        'djangorestframework>=2.3.12',
         'pandas>=0.13.0',
     ],
     classifiers=[
@@ -52,7 +52,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 2.7',
-        'Topic :: Scientific/Engineering :: Information Analysis'
+        'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Scientific/Engineering :: Visualization',
     ],
     test_suite='tests.runtests.main',
