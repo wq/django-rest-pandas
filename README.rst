@@ -1,8 +1,7 @@
 Django REST Pandas
 ==================
 
-`Django REST Framework <http://django-rest-framework.org>`__ + `Pandas <http://pandas.pydata.org>`__ = A Model-driven Visualization API
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Django REST Framework + Pandas = A Model-driven Visualization API**
 
 This project provides a simple way to generate and serve
 `Pandas <http://pandas.pydata.org>`__ DataFrames via the `Django REST
