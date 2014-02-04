@@ -68,6 +68,7 @@ PNG    | `image/png` | `plot()` | Currently not very customizable, but a simple 
 SVG    | `image/svg` | `plot()` | Eventually these could become a fallback for clients that can't handle d3.js
 
 Perhaps counterintuitively, the CSV renderer is the default in Django REST Pandas, as it is the most stable and useful for API building.  While the Pandas JSON serializer is improving, the primary reason for making CSV the default is the compactness it provides over JSON when serializing time series data.  This is particularly valuable for Pandas dataframes, in which:
+
  - each record has the same keys,
  - there are (usually) no nested objects
 

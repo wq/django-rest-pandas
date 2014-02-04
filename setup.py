@@ -1,5 +1,6 @@
-import os
+from os.path import join, dirname, exists
 import sys
+import subprocess
 from setuptools import setup, find_packages
 
 LONG_DESCRIPTION = """
@@ -12,21 +13,20 @@ def parse_markdown_readme():
     Convert README.md to RST via pandoc, and load into memory
     (fallback to LONG_DESCRIPTION on failure)
     """
-    # Attempt to run pandoc on markdown file
-    import subprocess
-    try:
-        subprocess.call(
-            ['pandoc', '-t', 'rst', '-o', 'README.rst', 'README.md']
-        )
-    except OSError:
-        return LONG_DESCRIPTION
+    # Check for existing file (Pandoc's RST tables don't work with rst2html...)
+    path = join(dirname(__file__), 'README.rst')
+    if not exists(path):
+        # Attempt to run pandoc on markdown file
+        try:
+            subprocess.call(
+                ['pandoc', '-t', 'rst', '-o', 'README.rst', 'README.md']
+            )
+        except OSError:
+            return LONG_DESCRIPTION
 
     # Attempt to load output
     try:
-        readme = open(os.path.join(
-            os.path.dirname(__file__),
-            'README.rst'
-        ))
+        readme = open(path)
     except IOError:
         return LONG_DESCRIPTION
     return readme.read()
