@@ -2,7 +2,7 @@ language: python
 python:
  - "2.7"
 env:
- - DJANGO="django==1.6" REST="djangorestframework==2.3.12" PANDAS="0.13.0"
+ - DJANGO="django==1.6" REST="djangorestframework==2.3.12" PANDAS="pandas==0.13.0"
 install:
  - pip install $DJANGO
  - pip install $REST
