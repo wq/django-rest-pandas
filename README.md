@@ -49,13 +49,16 @@ class TimeSeriesView(PandasView):
     # appropriate ModelSerializer options.  Then, set the serializer_class
     # property on the view to your PandasSerializer subclass.
     
-    # Finally, the PandasSerializer will load the ModelSerializer result into a
+    # Next, the PandasSerializer will load the ModelSerializer result into a
     # DataFrame and pass it to the following function on the view.
 
     def transform_dataframe(self, dataframe):
         # Here you can transform the dataframe based on self.request
         # (useful for pivoting or computing statistics)
         return dataframe
+        
+    # Finally, the included Renderers will process the dataframe into one of
+    # the output formats below.
 ```
 
 ```python
