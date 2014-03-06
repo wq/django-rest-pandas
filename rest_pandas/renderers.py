@@ -64,8 +64,11 @@ class PandasCSVRenderer(PandasBaseRenderer):
     media_type = "text/csv"
     format = "csv"
 
+    def get_pandas_kwargs(self, data):
+        return {'encoding': self.charset}
 
-class PandasTextRenderer(PandasBaseRenderer):
+
+class PandasTextRenderer(PandasCSVRenderer):
     """
     Renders data frame as CSV, but uses text/plain as media type
     """
