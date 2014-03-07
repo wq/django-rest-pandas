@@ -7,6 +7,7 @@ class PandasBaseSerializer(serializers.Serializer):
     Transforms dataset into a dataframe and appies an index
     """
     read_only = True
+    index_none_value = None
 
     def get_index(self, dataframe):
         return None
@@ -15,7 +16,14 @@ class PandasBaseSerializer(serializers.Serializer):
         dataframe = DataFrame(data)
         index = self.get_index(dataframe)
         if index:
-            dataframe = dataframe.set_index(index)
+            if self.index_none_value is not None:
+                for key in index:
+                    dataframe.replace(
+                        {key: None},
+                        {key: self.index_none_value},
+                        inplace=True,
+                    )
+            dataframe.set_index(index, inplace=True)
         else:
             # Name auto-index column to ensure valid CSV output
             dataframe.index.name = 'row'
