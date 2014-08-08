@@ -1,5 +1,3 @@
-from os.path import join, dirname, exists
-import sys
 import subprocess
 from setuptools import setup, find_packages
 
@@ -13,23 +11,26 @@ def parse_markdown_readme():
     Convert README.md to RST via pandoc, and load into memory
     (fallback to LONG_DESCRIPTION on failure)
     """
-    # Check for existing file (Pandoc's RST tables don't work with rst2html...)
-    path = join(dirname(__file__), 'README.rst')
-    if not exists(path):
-        # Attempt to run pandoc on markdown file
-        try:
-            subprocess.call(
-                ['pandoc', '-t', 'rst', '-o', 'README.rst', 'README.md']
-            )
-        except OSError:
-            return LONG_DESCRIPTION
+    try:
+        subprocess.call(
+            ['pandoc', '-t', 'rst', '-o', 'README.rst', 'README.md']
+        )
+    except OSError:
+        return LONG_DESCRIPTION
+
+    else:
+        # Pandoc's RST tables don't work with rst2html...
+        subprocess.call(
+            ['patch', 'README.rst', 'README.rst.patch']
+        )
 
     # Attempt to load output
     try:
-        readme = open(path)
+        readme = open('README.rst')
     except IOError:
         return LONG_DESCRIPTION
-    return readme.read()
+    else:
+        return readme.read()
 
 setup(
     name='rest-pandas',
@@ -47,7 +48,7 @@ setup(
     ],
     classifiers=[
         'Framework :: Django',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
