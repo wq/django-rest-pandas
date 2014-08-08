@@ -11,6 +11,8 @@ DRP does not include any JavaScript code, leaving the implementation of interact
 
 [![Build Status](https://travis-ci.org/wq/django-rest-pandas.png?branch=master)](https://travis-ci.org/wq/django-rest-pandas) 
 
+Tested on Python 2.7 and 3.4.
+
 ## Live Demo
 
 The [climata-viewer] project uses Django REST Pandas and [wq/chart.js] to provide interactive visualizations and spreadsheet downloads.
