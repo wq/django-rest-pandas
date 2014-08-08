@@ -8,16 +8,33 @@ Django REST Pandas
 Framework <http://django-rest-framework.org>`__. The resulting API can
 serve up CSV (and a number of other formats) for
 consumption by a client-side visualization tool like
-`d3.js <http://d3js.org>`__. The actual client implementation is left to
-the user - giving full flexibility for whatever visualizations you want
-to come up with. (That said, if you want some out of the box d3-powered
-charts for use with DRP, you may be interested in
-`wq.app <http://wq.io/wq.app>`__'s
-`chart.js <http://wq.io/docs/chart-js>`__ and/or
+`d3.js <http://d3js.org>`__.
+
+The design philosophy of DRP enforces a strict separation between data
+and presentation. This keeps the implementation simple, but also has the
+nice side effect of making it trivial to provide the source data for
+your visualizations. This capability can often be leveraged by sending
+users to the same URL that your visualization code uses internally to
+load the data.
+
+DRP does not include any JavaScript code, leaving the implementation of
+interactive visualizations as an exercise for the implementer. That
+said, DRP is commonly used in conjunction with the
+`wq.app <http://wq.io/wq.app>`__ library, which provides
+`wq/chart.js <http://wq.io/docs/chart-js>`__ and
+`wq/pandas.js <http://wq.io/docs/pandas-js>`__, a collection of chart
+functions and data loaders that work well with CSV served by DRP and
 `wq.db <http://wq.io/wq.db>`__'s `chart <http://wq.io/docs/chart>`__
-module.)
+module.
 
 |Build Status|
+
+Live Demo
+---------
+
+The `climata-viewer <http://climata.houstoneng.net>`__ project uses
+Django REST Pandas and `wq/chart.js <http://wq.io/docs/chart-js>`__ to
+provide interactive visualizations and spreadsheet downloads.
 
 Related Work
 ------------
@@ -27,29 +44,64 @@ and there are a number of similar solutions that may fit your needs
 better.
 
 -  `Django Pandas <https://github.com/chrisdev/django-pandas/>`__
-   provides a custom model manager with Pandas support. By contrast,
-   Django REST Pandas works at the view level, by adding Pandas support
-   via a Django REST Framework serializer.
+   provides a custom ORM model manager with Pandas support. By contrast,
+   Django REST Pandas works at the *view* level, by integrating Pandas
+   via custom Django REST Framework serializers and renderers.
 -  `DRF-CSV <https://github.com/mjumbewu/django-rest-framework-csv>`__
-   provides CSV renderers for use with Django REST Framework. It may be
-   useful if you just want a CSV API and don't have a need for the
-   Pandas DataFrame functionality.
+   provides straightforward CSV renderers for use with Django REST
+   Framework. It may be useful if you just want a CSV API and don't have
+   a need for the Pandas DataFrame functionality.
+-  `mpld3 <http://mpld3.github.io/>`__ provides a direct bridge from
+   `matplotlib <http://matplotlib.org/>`__ to
+   `d3.js <http://d3js.org>`__, complete with seamless
+   `IPython <http://ipython.org/>`__ integration. It is restricted to
+   the (large) matplotlib chart vocabularly but should be sufficient for
+   many use cases.
 -  `Bokeh <http://bokeh.pydata.org/>`__ is a complete client-server
    visualization platform. It does not leverage d3 or Django, but is
-   notable as a ground-up approach to addressing similar use cases.
--  `mpld3 <https://github.com/jakevdp/mpld3>`__ provides a direct bridge
-   from `matplotlib <http://matplotlib.org/>`__ to
-   `d3.js <http://d3js.org>`__, complete with seamless
-   `IPython <http://ipython.org/>`__ integration. It is "limited" to
-   matplotlib charts but should be sufficient for many use cases.
+   notable as a comprehensive, forward-looking approach to addressing
+   similar use cases.
 
 The goal of Django REST Pandas is to provide a generic REST API for
-serving up dataframes. In this sense, it is similar to the Plot Server
-in Bokeh, but more generic in that it does not assume any particular
-client technology (which can be good or bad depending on your use case).
-Further, DRP is optimized for integration with public-facing
-Django-powered websites (unlike mpld3 which is primarily intended for
-use within IPython.)
+serving up Pandas dataframes. In this sense, it is similar to the Plot
+Server in Bokeh, but more generic in that it does not assume any
+particular visualization format or technology. Further, DRP is optimized
+for integration with public-facing Django-powered websites (unlike mpld3
+which is primarily intended for use within IPython).
+
+In summary, DRP is designed for use cases where: \* You want to support
+live spreadsheet downloads as well as interactive visualizations, and/or
+\* You want full control over the client visualization stack in order to
+integrate it with the rest of your website and/or build process. This
+usually means writing JavaScript code by hand.
+`mpld3 <http://mpld3.github.io/>`__ may be a better choice for data
+exploration if you are more comfortable with (I)Python and need
+something that can generate interactive visualizations out of the box.
+
+Supported Formats
+-----------------
+
+The following output formats are provided by default. These are provided
+as `renderer
+classes <http://www.django-rest-framework.org/api-guide/renderers>`__ in
+order to leverage the content type negotiation built into Django REST
+Framework. This means clients can specify a format via
+``Accepts: text/csv`` or by appending ``.csv`` to the URL (if the URL
+configuration below is used).
+
+.. csv-table::
+  :header: "Format", "Content Type", "Pandas Dataframe Function", "Notes"
+  :widths: 50, 150, 70, 500
+
+  CSV,``text/csv``,``to_csv()``,
+  TXT,``text/plain``,``to_csv()``,"Useful for testing, as most browsers will download a CSV file instead of displaying it"
+  JSON,``application/json``,``to_json()``,
+  XLSX,``application/vnd.openxml...sheet``,``to_excel()``,
+  XLS,``application/vnd.ms-excel``,``to_excel()``,
+  PNG,``image/png``,``plot()``,"Currently not very customizable, but a simple way to view the data as an image."
+  SVG,``image/svg``,``plot()``,"Eventually these could become a fallback for clients that can't handle d3.js"
+
+See the implementation notes below for more details.
 
 Usage
 -----
@@ -63,6 +115,9 @@ Getting Started
 
 Usage Example
 ~~~~~~~~~~~~~
+
+The example below assumes you already have a Django project set up with
+a single ``TimeSeries`` model.
 
 .. code:: python
 
@@ -116,8 +171,8 @@ the provided model in a simple tabular form. You can also use a
 Routers, or a ``PandasSimpleView`` if you would just like to serve up
 some data without a Django model as the source.
 
-Implementation
---------------
+Implementation Notes
+~~~~~~~~~~~~~~~~~~~~
 
 The underlying implementation is a set of
 `serializers <https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py>`__
@@ -125,27 +180,6 @@ that take the normal serializer result and put it into a dataframe.
 Then, the included
 `renderers <https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py>`__
 generate the output using the built in Pandas functionality.
-
-Formats
-~~~~~~~
-
-The following output formats are provided by default. These are provided
-as renderer classes in order to leverage the content negotiation built
-into Django REST Framework. This means clients can specify a format via
-``Accepts: text/csv`` or by appending ``.csv`` to the URL (if the above
-``urls.py`` is followed).
-
-.. csv-table::
-  :header: "Format", "Content Type", "Pandas Dataframe Function", "Notes"
-  :widths: 50, 150, 70, 500
-
-  CSV,``text/csv``,``to_csv()``,
-  TXT,``text/plain``,``to_csv()``,"Useful for testing, as most browsers will download a CSV file instead of displaying it"
-  JSON,``application/json``,``to_json()``,
-  XLSX,``application/vnd.openxml...sheet``,``to_excel()``,
-  XLS,``application/vnd.ms-excel``,``to_excel()``,
-  PNG,``image/png``,``plot()``,"Currently not very customizable, but a simple way to view the data as an image."
-  SVG,``image/svg``,``plot()``,"Eventually these could become a fallback for clients that can't handle d3.js"
 
 Perhaps counterintuitively, the CSV renderer is the default in Django
 REST Pandas, as it is the most stable and useful for API building. While
