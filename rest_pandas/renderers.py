@@ -1,7 +1,14 @@
 from rest_framework.renderers import BaseRenderer
 from rest_framework import status
 from tempfile import mkstemp
-from StringIO import StringIO
+
+try:
+    # Python 2 (uses str)
+    from StringIO import StringIO
+except ImportError:
+    # Python 3 (Python 2 equivalent uses unicode)
+    from io import StringIO
+
 import os
 
 
