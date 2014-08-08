@@ -18,25 +18,26 @@ class PandasTestCase(APITestCase):
 
     def test_view(self):
         response = self.client.get("/timeseries.csv")
-        data = load_string(response.content)
+        data = load_string(unicode(response.content))
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].value, '0.5')
 
     def test_view_json(self):
         response = self.client.get("/timeseries.json")
         self.assertEqual(response.accepted_media_type, "application/json")
+        data = load_string(unicode(response.content))
         data = json.loads(response.content)
         self.assertEqual(len(data.keys()), 5)
         self.assertEqual(data["1"]["value"], 0.5)
 
     def test_viewset(self):
         response = self.client.get("/router/timeseries/.csv")
-        data = load_string(response.content)
+        data = load_string(unicode(response.content))
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].value, '0.5')
 
     def test_no_model(self):
         response = self.client.get("/nomodel.csv")
-        data = load_string(response.content)
+        data = load_string(unicode(response.content))
         self.assertEqual(len(data), 4)
         self.assertEqual(data[0].x, '5')
