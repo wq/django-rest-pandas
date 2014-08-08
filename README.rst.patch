@@ -4,10 +4,10 @@
 ---
 > *Django REST Framework + Pandas = A Model-driven Visualization API*
 10c9
-< serve up CSV (and a number of `other formats <#formats>`__) for
+< serve up CSV (and a number of `other formats <#supported-formats>`__)
 ---
-> serve up CSV (and a number of other formats) for
-93,109c92,102
+> serve up CSV (and a number of other formats)
+96,112c95,105
 < +----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
 < | Format   | Content Type                          | Pandas DataFrame Function   | Notes                                                                                    |
 < +==========+=======================================+=============================+==========================================================================================+

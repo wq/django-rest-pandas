@@ -6,8 +6,8 @@ Django REST Pandas
 **Django REST Pandas** (DRP) provides a simple way to generate and serve
 `Pandas <http://pandas.pydata.org>`__ DataFrames via the `Django REST
 Framework <http://django-rest-framework.org>`__. The resulting API can
-serve up CSV (and a number of other formats) for
-consumption by a client-side visualization tool like
+serve up CSV (and a number of other formats)
+for consumption by a client-side visualization tool like
 `d3.js <http://d3js.org>`__.
 
 The design philosophy of DRP enforces a strict separation between data
@@ -69,14 +69,17 @@ particular visualization format or technology. Further, DRP is optimized
 for integration with public-facing Django-powered websites (unlike mpld3
 which is primarily intended for use within IPython).
 
-In summary, DRP is designed for use cases where: \* You want to support
-live spreadsheet downloads as well as interactive visualizations, and/or
-\* You want full control over the client visualization stack in order to
-integrate it with the rest of your website and/or build process. This
-usually means writing JavaScript code by hand.
-`mpld3 <http://mpld3.github.io/>`__ may be a better choice for data
-exploration if you are more comfortable with (I)Python and need
-something that can generate interactive visualizations out of the box.
+In summary, DRP is designed for use cases where:
+
+-  You want to support live spreadsheet downloads as well as interactive
+   visualizations, and/or
+-  You want full control over the client visualization stack in order to
+   integrate it with the rest of your website and/or build process. This
+   usually means writing JavaScript code by hand.
+   `mpld3 <http://mpld3.github.io/>`__ may be a better choice for data
+   exploration if you are more comfortable with (I)Python and need
+   something that can generate interactive visualizations out of the
+   box.
 
 Supported Formats
 -----------------

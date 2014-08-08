@@ -3,7 +3,7 @@ Django REST Pandas
 
 #### [Django REST Framework] + [Pandas] = A Model-driven Visualization API
 
-**Django REST Pandas** (DRP) provides a simple way to generate and serve [Pandas] DataFrames via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#formats)) for consumption by a client-side visualization tool like [d3.js].  
+**Django REST Pandas** (DRP) provides a simple way to generate and serve [Pandas] DataFrames via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#supported-formats)) for consumption by a client-side visualization tool like [d3.js].  
 
 The design philosophy of DRP enforces a strict separation between data and presentation.  This keeps the implementation simple, but also has the nice side effect of making it trivial to provide the source data for your visualizations.  This capability can often be leveraged by sending users to the same URL that your visualization code uses internally to load the data.
 
@@ -26,6 +26,7 @@ The field of Python-powered data analysis and visualization is growing, and ther
 The goal of Django REST Pandas is to provide a generic REST API for serving up Pandas dataframes.  In this sense, it is similar to the Plot Server in Bokeh, but more generic in that it does not assume any particular visualization format or technology.  Further, DRP is optimized for integration with public-facing Django-powered websites (unlike mpld3 which is primarily intended for use within IPython).
 
 In summary, DRP is designed for use cases where:
+
  * You want to support live spreadsheet downloads as well as interactive visualizations, and/or
  * You want full control over the client visualization stack in order to integrate it with the rest of your website and/or build process.  This usually means writing JavaScript code by hand.  [mpld3] may be a better choice for data exploration if you are more comfortable with (I)Python and need something that can generate interactive visualizations out of the box.
 
