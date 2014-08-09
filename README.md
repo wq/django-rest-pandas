@@ -137,7 +137,7 @@ function render(error, data) {
 
 ```
 
-You can override the default renderers by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your `PandasView` subclass.
+You can override the default renderers by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your `PandasView` subclass.  `PANDAS_RENDERERS` is intentionally set separately from Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, as it is likely that you will be mixing DRP views with regular DRF views.
 
 [Django REST Framework]: http://django-rest-framework.org
 [Pandas]: http://pandas.pydata.org
