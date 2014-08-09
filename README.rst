@@ -172,9 +172,12 @@ a single ``TimeSeries`` model.
 
 The default ``PandasView`` will serve up all of the available data from
 the provided model in a simple tabular form. You can also use a
-``PandasViewSet`` if you are using Django REST Framework's ViewSets and
-Routers, or a ``PandasSimpleView`` if you would just like to serve up
-some data without a Django model as the source.
+``PandasViewSet`` if you are using Django REST Framework's
+`ViewSets <http://www.django-rest-framework.org/api-guide/viewsets>`__
+and
+`Routers <http://www.django-rest-framework.org/api-guide/routers>`__, or
+a ``PandasSimpleView`` if you would just like to serve up some data
+without a Django model as the source.
 
 Implementation Notes
 ~~~~~~~~~~~~~~~~~~~~

@@ -106,7 +106,7 @@ urlpatterns = patterns('',
 urlpatterns = format_suffix_patterns(urlpatterns)
 ```
 
-The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's ViewSets and Routers, or a `PandasSimpleView` if you would just like to serve up some data without a Django model as the source.
+The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's [ViewSets] and [Routers], or a `PandasSimpleView` if you would just like to serve up some data without a Django model as the source.
 
 ### Implementation Notes
 The underlying implementation is a set of [serializers] that take the normal serializer result and put it into a dataframe.  Then, the included [renderers] generate the output using the built in Pandas functionality.
@@ -154,6 +154,8 @@ You can override the default renderers by setting `PANDAS_RENDERERS` in your `se
 [matplotlib]: http://matplotlib.org/
 [IPython]: http://ipython.org/
 [renderer classes]: http://www.django-rest-framework.org/api-guide/renderers
+[ViewSets]: http://www.django-rest-framework.org/api-guide/viewsets
+[Routers]: http://www.django-rest-framework.org/api-guide/routers
 [serializers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py
 [renderers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py
 [wq/pandas.js]: http://wq.io/docs/pandas-js
