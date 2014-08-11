@@ -29,7 +29,7 @@ module.
 
 |Build Status|
 
-Tested on Python 2.7 and 3.4.
+Tested on Python 2.7 and 3.4 and PyPy.
 
 Live Demo
 ---------
