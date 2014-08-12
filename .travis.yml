@@ -4,6 +4,7 @@ python:
  - "3.4"
 env:
  - DJANGO="django==1.6" REST="djangorestframework==2.3.14" PANDAS="pandas==0.14.1"
+ - DJANGO="https://www.djangoproject.com/download/1.7c2/tarball/" REST="djangorestframework==2.3.14" PANDAS="pandas==0.14.1"
 install:
  - pip install $DJANGO
  - pip install $REST
