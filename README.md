@@ -11,7 +11,7 @@ DRP does not include any JavaScript code, leaving the implementation of interact
 
 [![Build Status](https://travis-ci.org/wq/django-rest-pandas.png?branch=master)](https://travis-ci.org/wq/django-rest-pandas) 
 
-Tested on Python 2.7 and 3.4.
+Tested on Python 2.7 and 3.4, with Django 1.6 and 1.7.
 
 ## Live Demo
 
