@@ -10,6 +10,7 @@ The design philosophy of DRP enforces a strict separation between data and prese
 DRP does not include any JavaScript code, leaving the implementation of interactive visualizations as an exercise for the implementer.  That said, DRP is commonly used in conjunction with the [wq.app] library, which provides [wq/chart.js] and [wq/pandas.js], a collection of chart functions and data loaders that work well with CSV served by DRP and [wq.db]'s [chart] module.
 
 [![Build Status](https://travis-ci.org/wq/django-rest-pandas.png?branch=master)](https://travis-ci.org/wq/django-rest-pandas) 
+[![PyPI Package](https://pypip.in/version/rest-pandas/badge.png)](https://pypi.python.org/pypi/rest-pandas)
 
 Tested on Python 2.7 and 3.4, with Django 1.6 and 1.7.
 
