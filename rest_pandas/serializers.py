@@ -18,11 +18,7 @@ class PandasBaseSerializer(serializers.Serializer):
         if index:
             if self.index_none_value is not None:
                 for key in index:
-                    dataframe.replace(
-                        {key: None},
-                        {key: self.index_none_value},
-                        inplace=True,
-                    )
+                    dataframe[key].fillna(self.index_none_value, inplace=True)
             dataframe.set_index(index, inplace=True)
         else:
             # Name auto-index column to ensure valid CSV output
