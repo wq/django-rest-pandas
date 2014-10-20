@@ -25,6 +25,7 @@ class ExcelTestCase(APITestCase):
         response = self.client.get("/timeseries.xls")
         xlfile = open('tests/output.xls', 'wb')
         xlfile.write(response.content)
+        xlfile.close()
 
         data = TestExcelIO(filename="tests/output.xls")
         self.assertEqual(len(data), 5)
@@ -35,6 +36,7 @@ class ExcelTestCase(APITestCase):
         response = self.client.get("/timeseries.xlsx")
         xlfile = open('tests/output.xlsx', 'wb')
         xlfile.write(response.content)
+        xlfile.close()
 
         data = TestExcelIO(filename="tests/output.xlsx")
         self.assertEqual(len(data), 5)
