@@ -27,7 +27,7 @@ functions and data loaders that work well with CSV served by DRP and
 `wq.db <http://wq.io/wq.db>`__'s `chart <http://wq.io/docs/chart>`__
 module.
 
-|Build Status|
+|Build Status| |PyPI Package|
 
 Tested on Python 2.7 and 3.4, with Django 1.6 and 1.7.
 
@@ -234,3 +234,5 @@ DRF views.
 
 .. |Build Status| image:: https://travis-ci.org/wq/django-rest-pandas.png?branch=master
    :target: https://travis-ci.org/wq/django-rest-pandas
+.. |PyPI Package| image:: https://pypip.in/version/rest-pandas/badge.png
+   :target: https://pypi.python.org/pypi/rest-pandas
