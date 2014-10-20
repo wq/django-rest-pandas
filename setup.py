@@ -60,5 +60,5 @@ setup(
         'Topic :: Scientific/Engineering :: Visualization',
     ],
     test_suite='tests',
-    tests_require=['wq.io>=0.6.0'],
+    tests_require=['wq.io>=0.6.0', 'xlwt-future', 'openpyxl<2.0.0'],
 )
