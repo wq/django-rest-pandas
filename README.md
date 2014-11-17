@@ -54,7 +54,7 @@ See the implementation notes below for more details.
 ### Getting Started
 
 ```bash
-pip install rest-pandas
+pip3 install rest-pandas
 ```
 
 ### Usage Example
