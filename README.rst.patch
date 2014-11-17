@@ -1,15 +1,15 @@
 4,5c4
-< `Django REST Framework <http://django-rest-framework.org>`__ + `Pandas <http://pandas.pydata.org>`__ = A Model-driven Visualization API
+< `Django REST Framework <http://django-rest-framework.org>`__ + `pandas <http://pandas.pydata.org>`__ = A Model-driven Visualization API
 < ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ---
-> *Django REST Framework + Pandas = A Model-driven Visualization API*
+> *Django REST Framework + pandas = A Model-driven Visualization API*
 10c9
 < serve up CSV (and a number of `other formats <#supported-formats>`__)
 ---
 > serve up CSV (and a number of other formats)
 98,114c97,107
 < +----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-< | Format   | Content Type                          | Pandas DataFrame Function   | Notes                                                                                    |
+< | Format   | Content Type                          | pandas DataFrame Function   | Notes                                                                                    |
 < +==========+=======================================+=============================+==========================================================================================+
 < | CSV      | ``text/csv``                          | ``to_csv()``                |
 < +----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
@@ -27,7 +27,7 @@
 < +----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
 ---
 > .. csv-table::
->   :header: "Format", "Content Type", "Pandas Dataframe Function", "Notes"
+>   :header: "Format", "Content Type", "pandas Dataframe Function", "Notes"
 >   :widths: 50, 150, 70, 500
 > 
 >   CSV,``text/csv``,``to_csv()``,

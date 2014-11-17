@@ -1,9 +1,9 @@
 Django REST Pandas
 ==================
 
-#### [Django REST Framework] + [Pandas] = A Model-driven Visualization API
+#### [Django REST Framework] + [pandas] = A Model-driven Visualization API
 
-**Django REST Pandas** (DRP) provides a simple way to generate and serve [Pandas] DataFrames via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#supported-formats)) for consumption by a client-side visualization tool like [d3.js].  
+**Django REST Pandas** (DRP) provides a simple way to generate and serve [pandas] DataFrames via the [Django REST Framework].  The resulting API can serve up CSV (and a number of [other formats](#supported-formats)) for consumption by a client-side visualization tool like [d3.js].  
 
 The design philosophy of DRP enforces a strict separation between data and presentation.  This keeps the implementation simple, but also has the nice side effect of making it trivial to provide the source data for your visualizations.  This capability can often be leveraged by sending users to the same URL that your visualization code uses internally to load the data.
 
@@ -21,12 +21,12 @@ The [climata-viewer] project uses Django REST Pandas and [wq/chart.js] to provid
 ## Related Work
 The field of Python-powered data analysis and visualization is growing, and there are a number of similar solutions that may fit your needs better.
 
- * [Django Pandas] provides a custom ORM model manager with Pandas support.  By contrast, Django REST Pandas works at the *view* level, by integrating Pandas via custom Django REST Framework serializers and renderers.
- * [DRF-CSV] provides straightforward CSV renderers for use with Django REST Framework.  It may be useful if you just want a CSV API and don't have a need for the Pandas DataFrame functionality.
+ * [Django Pandas] provides a custom ORM model manager with pandas support.  By contrast, Django REST Pandas works at the *view* level, by integrating pandas via custom Django REST Framework serializers and renderers.
+ * [DRF-CSV] provides straightforward CSV renderers for use with Django REST Framework.  It may be useful if you just want a CSV API and don't have a need for the pandas DataFrame functionality.
  * [mpld3] provides a direct bridge from [matplotlib] to [d3.js], complete with seamless [IPython] integration.  It is restricted to the (large) matplotlib chart vocabularly but should be sufficient for many use cases.
  * [Bokeh] is a complete client-server visualization platform.  It does not leverage d3 or Django, but is notable as a comprehensive, forward-looking approach to addressing similar use cases.
 
-The goal of Django REST Pandas is to provide a generic REST API for serving up Pandas dataframes.  In this sense, it is similar to the Plot Server in Bokeh, but more generic in that it does not assume any particular visualization format or technology.  Further, DRP is optimized for integration with public-facing Django-powered websites (unlike mpld3 which is primarily intended for use within IPython).
+The goal of Django REST Pandas is to provide a generic REST API for serving up pandas dataframes.  In this sense, it is similar to the Plot Server in Bokeh, but more generic in that it does not assume any particular visualization format or technology.  Further, DRP is optimized for integration with public-facing Django-powered websites (unlike mpld3 which is primarily intended for use within IPython).
 
 In summary, DRP is designed for use cases where:
 
@@ -37,7 +37,7 @@ In summary, DRP is designed for use cases where:
 
 The following output formats are provided by default.  These are provided as [renderer classes] in order to leverage the content type negotiation built into Django REST Framework.  This means clients can specify a format via `Accepts: text/csv` or by appending `.csv` to the URL (if the URL configuration below is used).
 
-Format | Content Type | Pandas DataFrame Function | Notes
+Format | Content Type | pandas DataFrame Function | Notes
 -------|--------------|---------------------------|--------
 CSV    | `text/csv` | `to_csv()` |
 TXT    | `text/plain` | `to_csv()` | Useful for testing, as most browsers will download a CSV file instead of displaying it
@@ -110,14 +110,14 @@ urlpatterns = format_suffix_patterns(urlpatterns)
 The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's [ViewSets] and [Routers], or a `PandasSimpleView` if you would just like to serve up some data without a Django model as the source.
 
 ### Implementation Notes
-The underlying implementation is a set of [serializers] that take the normal serializer result and put it into a dataframe.  Then, the included [renderers] generate the output using the built in Pandas functionality.
+The underlying implementation is a set of [serializers] that take the normal serializer result and put it into a dataframe.  Then, the included [renderers] generate the output using the built in pandas functionality.
 
-Perhaps counterintuitively, the CSV renderer is the default in Django REST Pandas, as it is the most stable and useful for API building.  While the Pandas JSON serializer is improving, the primary reason for making CSV the default is the compactness it provides over JSON when serializing time series data.  This is particularly valuable for Pandas dataframes, in which:
+Perhaps counterintuitively, the CSV renderer is the default in Django REST Pandas, as it is the most stable and useful for API building.  While the pandas JSON serializer is improving, the primary reason for making CSV the default is the compactness it provides over JSON when serializing time series data.  This is particularly valuable for pandas dataframes, in which:
 
  - each record has the same keys, and
  - there are (usually) no nested objects
 
-While a normal CSV file only has a single row of column headers, Pandas can produce files with nested columns.  This is a useful way to provide metadata about time series that is difficult to represent in a plain CSV file.  However, it also makes the resulting CSV more difficult to parse.  For this reason, you may be interested in [wq/pandas.js], a d3 extension for loading the complex CSV generated by Pandas Dataframes.
+While a normal CSV file only has a single row of column headers, pandas can produce files with nested columns.  This is a useful way to provide metadata about time series that is difficult to represent in a plain CSV file.  However, it also makes the resulting CSV more difficult to parse.  For this reason, you may be interested in [wq/pandas.js], a d3 extension for loading the complex CSV generated by pandas Dataframes.
 
 ```javascript
 // mychart.js
@@ -141,7 +141,7 @@ function render(error, data) {
 You can override the default renderers by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your `PandasView` subclass.  `PANDAS_RENDERERS` is intentionally set separately from Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, as it is likely that you will be mixing DRP views with regular DRF views.
 
 [Django REST Framework]: http://django-rest-framework.org
-[Pandas]: http://pandas.pydata.org
+[pandas]: http://pandas.pydata.org
 [d3.js]: http://d3js.org
 [wq.app]: http://wq.io/wq.app
 [wq/chart.js]: http://wq.io/docs/chart-js

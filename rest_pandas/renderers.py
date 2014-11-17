@@ -14,7 +14,7 @@ import os
 
 class PandasBaseRenderer(BaseRenderer):
     """
-    Renders DataFrames using their built in Pandas implementation.
+    Renders DataFrames using their built in pandas implementation.
     Only works with serializers that return DataFrames as their data object.
     Uses a StringIO to capture the output of dataframe.to_[format]()
     """
