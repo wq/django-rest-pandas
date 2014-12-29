@@ -232,7 +232,7 @@ separately from Django REST Framework's own ``DEFAULT_RENDERER_CLASSES``
 setting, as it is likely that you will be mixing DRP views with regular
 DRF views.
 
-.. |Build Status| image:: https://travis-ci.org/wq/django-rest-pandas.png?branch=master
+.. |Build Status| image:: https://travis-ci.org/wq/django-rest-pandas.svg?branch=master
    :target: https://travis-ci.org/wq/django-rest-pandas
-.. |PyPI Package| image:: https://pypip.in/version/rest-pandas/badge.png
+.. |PyPI Package| image:: https://pypip.in/version/rest-pandas/badge.svg?style=flat
    :target: https://pypi.python.org/pypi/rest-pandas
