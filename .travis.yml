@@ -3,8 +3,13 @@ python:
  - "2.7"
  - "3.4"
 env:
- - DJANGO="django==1.6" REST="djangorestframework==2.4.4" PANDAS="pandas==0.15.1"
- - DJANGO="django==1.7" REST="djangorestframework==2.4.4" PANDAS="pandas==0.15.1"
+  matrix:
+    - DJANGO="django==1.6.10" REST="djangorestframework==2.4.4"
+    - DJANGO="django==1.6.10" REST="djangorestframework==3.0.3"
+    - DJANGO="django==1.7.3"  REST="djangorestframework==2.4.4"
+    - DJANGO="django==1.7.3"  REST="djangorestframework==3.0.3"
+  global:
+    - PANDAS="pandas==0.15.2"
 install:
  - pip install $DJANGO
  - pip install $REST
