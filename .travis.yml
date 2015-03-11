@@ -11,6 +11,7 @@ env:
   global:
     - PANDAS="pandas==0.15.2"
 install:
+ - pip install requests
  - pip install $DJANGO
  - pip install $REST
  - pip install $PANDAS
