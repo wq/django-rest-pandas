@@ -2,14 +2,27 @@ from rest_framework import serializers
 from pandas import DataFrame
 
 
-class PandasBaseSerializer(serializers.Serializer):
+if hasattr(serializers, 'ListSerializer'):
+    # Django REST Framework 3
+    BaseSerializer = serializers.ListSerializer
+    USE_LIST_SERIALIZERS = True
+else:
+    # Django REST Framework 2
+    BaseSerializer = serializers.Serializer
+    USE_LIST_SERIALIZERS = False
+
+
+class PandasSerializer(BaseSerializer):
     """
-    Transforms dataset into a dataframe and appies an index
+    Transforms dataset into a dataframe and applies an index
     """
     read_only = True
     index_none_value = None
 
     def get_index(self, dataframe):
+        model_serializer = getattr(self, 'child', self)
+        if getattr(model_serializer.Meta, 'model', None):
+            return ['id']
         return None
 
     def get_dataframe(self, data):
@@ -33,7 +46,7 @@ class PandasBaseSerializer(serializers.Serializer):
 
     @property
     def data(self):
-        data = super(PandasBaseSerializer, self).data
+        data = super(PandasSerializer, self).data
         if data:
             dataframe = self.get_dataframe(data)
             return self.transform_dataframe(dataframe)
@@ -41,22 +54,15 @@ class PandasBaseSerializer(serializers.Serializer):
             return DataFrame([])
 
 
-class PandasSimpleSerializer(PandasBaseSerializer):
+class SimpleSerializer(serializers.Serializer):
     """
     Simple serializer for non-model (simple) views
     """
-    def get_default_fields(self):
-        if not self.object:
-            return {}
-        return {
-            name: serializers.Field()
-            for name in self.object[0].keys()
-        }
 
+    # DRF 3
+    def to_representation(self, obj):
+        return obj
 
-class PandasSerializer(PandasBaseSerializer, serializers.ModelSerializer):
-    """
-    Serializer for model views.
-    """
-    def get_index(self, dataframe):
-        return ['id']
+    # DRF 2
+    def to_native(self, obj):
+        return obj

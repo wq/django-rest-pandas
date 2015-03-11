@@ -1,6 +1,7 @@
 from rest_framework.renderers import BaseRenderer
 from rest_framework import status
 from tempfile import mkstemp
+from pandas import DataFrame
 
 try:
     # Python 2 (uses str)
@@ -24,6 +25,10 @@ class PandasBaseRenderer(BaseRenderer):
             if not status.is_success(status_code):
                 return "Error: %s" % data.get('detail', status_code)
 
+        if not isinstance(data, DataFrame):
+            raise Exception(
+                "Response data is a %s, not a DataFrame!" % type(data)
+            )
         name = getattr(self, 'function', "to_%s" % self.format)
         function = getattr(data, name, None)
         if not function:

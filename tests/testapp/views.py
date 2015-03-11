@@ -1,5 +1,6 @@
 from rest_pandas import PandasSimpleView, PandasView, PandasViewSet
 from .models import TimeSeries
+from .serializers import TimeSeriesSerializer
 
 
 class NoModelView(PandasSimpleView):
@@ -13,8 +14,14 @@ class NoModelView(PandasSimpleView):
 
 
 class TimeSeriesView(PandasView):
-    model = TimeSeries
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
+
+    def transform_dataframe(self, df):
+        df['date'] = df['date'].astype('datetime64[D]')
+        return df
 
 
 class TimeSeriesViewSet(PandasViewSet):
-    model = TimeSeries
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
