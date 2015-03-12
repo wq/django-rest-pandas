@@ -66,31 +66,38 @@ The example below assumes you already have a Django project set up with a single
 from rest_pandas import PandasView
 from .models import TimeSeries
 class TimeSeriesView(PandasView):
+    # Django REST Framework 2.4
     model = TimeSeries
     
+    # Django REST Framework 3+
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
+
     # In response to get(), the underlying Django REST Framework ListAPIView
-    # will load the default queryset (self.model.objects.all()) and then pass
-    # it to the following function.
+    # will load the queryset and then pass it to the following function.
     
     def filter_queryset(self, qs): 
         # At this point, you can filter queryset based on self.request or other
         # settings (useful for limiting memory usage)
         return qs
         
-    # Then, the included PandasSerializer will serialize the queryset into a
-    # simple list of dicts (using the DRF ModelSerializer).  To customize
-    # which fields to include, subclass PandasSerializer and set the
-    # appropriate ModelSerializer options.  Then, set the serializer_class
-    # property on the view to your PandasSerializer subclass.
+    # Then, the default serializer (typically a DRF ModelSerializer) should
+    # serialize each row in the queryset into a simple dict format.  To
+    # customize which fields to include, create a subclass of ModelSerializer
+    # and assign it to serializer_class on your view.
     
-    # Next, the PandasSerializer will load the ModelSerializer result into a
-    # DataFrame and pass it to the following function on the view.
-
+    # Next, the included PandasSerializer will load the ModelSerializer result
+    # into a DataFrame and pass it to the following function on the view.
+    
     def transform_dataframe(self, dataframe):
         # Here you can transform the dataframe based on self.request
         # (useful for pivoting or computing statistics)
         return dataframe
-        
+    
+    # For more control over dataframe creation, subclass PandasSerializer and
+    # set pandas_serializer_class on the view.  (Or set list_serializer_class
+    # on your ModelSerializer subclass' Meta class if you're using DRF 3).
+    
     # Finally, the included Renderers will process the dataframe into one of
     # the output formats below.
 ```

@@ -1,12 +1,13 @@
 Django REST Pandas
 ==================
 
-*Django REST Framework + pandas = A Model-driven Visualization API*
+`Django REST Framework <http://django-rest-framework.org>`__ + `pandas <http://pandas.pydata.org>`__ = A Model-driven Visualization API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Django REST Pandas** (DRP) provides a simple way to generate and serve
 `pandas <http://pandas.pydata.org>`__ DataFrames via the `Django REST
 Framework <http://django-rest-framework.org>`__. The resulting API can
-serve up CSV (and a number of other formats)
+serve up CSV (and a number of `other formats <#supported-formats>`__)
 for consumption by a client-side visualization tool like
 `d3.js <http://d3js.org>`__.
 
@@ -94,17 +95,23 @@ Framework. This means clients can specify a format via
 ``Accepts: text/csv`` or by appending ``.csv`` to the URL (if the URL
 configuration below is used).
 
-.. csv-table::
-  :header: "Format", "Content Type", "pandas Dataframe Function", "Notes"
-  :widths: 50, 150, 70, 500
-
-  CSV,``text/csv``,``to_csv()``,
-  TXT,``text/plain``,``to_csv()``,"Useful for testing, as most browsers will download a CSV file instead of displaying it"
-  JSON,``application/json``,``to_json()``,
-  XLSX,``application/vnd.openxml...sheet``,``to_excel()``,
-  XLS,``application/vnd.ms-excel``,``to_excel()``,
-  PNG,``image/png``,``plot()``,"Currently not very customizable, but a simple way to view the data as an image."
-  SVG,``image/svg``,``plot()``,"Eventually these could become a fallback for clients that can't handle d3.js"
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+| Format   | Content Type                          | pandas DataFrame Function   | Notes                                                                                    |
++==========+=======================================+=============================+==========================================================================================+
+| CSV      | ``text/csv``                          | ``to_csv()``                |
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+| TXT      | ``text/plain``                        | ``to_csv()``                | Useful for testing, as most browsers will download a CSV file instead of displaying it   |
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+| JSON     | ``application/json``                  | ``to_json()``               |
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+| XLSX     | ``application/vnd.openxml...sheet``   | ``to_excel()``              |
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+| XLS      | ``application/vnd.ms-excel``          | ``to_excel()``              |
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+| PNG      | ``image/png``                         | ``plot()``                  | Currently not very customizable, but a simple way to view the data as an image.          |
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+| SVG      | ``image/svg``                         | ``plot()``                  | Eventually these could become a fallback for clients that can't handle d3.js             |
++----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
 
 See the implementation notes below for more details.
 
@@ -130,31 +137,38 @@ a single ``TimeSeries`` model.
     from rest_pandas import PandasView
     from .models import TimeSeries
     class TimeSeriesView(PandasView):
+        # Django REST Framework 2.4
         model = TimeSeries
         
+        # Django REST Framework 3+
+        queryset = TimeSeries.objects.all()
+        serializer_class = TimeSeriesSerializer
+
         # In response to get(), the underlying Django REST Framework ListAPIView
-        # will load the default queryset (self.model.objects.all()) and then pass
-        # it to the following function.
+        # will load the queryset and then pass it to the following function.
         
         def filter_queryset(self, qs): 
             # At this point, you can filter queryset based on self.request or other
             # settings (useful for limiting memory usage)
             return qs
             
-        # Then, the included PandasSerializer will serialize the queryset into a
-        # simple list of dicts (using the DRF ModelSerializer).  To customize
-        # which fields to include, subclass PandasSerializer and set the
-        # appropriate ModelSerializer options.  Then, set the serializer_class
-        # property on the view to your PandasSerializer subclass.
+        # Then, the default serializer (typically a DRF ModelSerializer) should
+        # serialize each row in the queryset into a simple dict format.  To
+        # customize which fields to include, create a subclass of ModelSerializer
+        # and assign it to serializer_class on your view.
         
-        # Next, the PandasSerializer will load the ModelSerializer result into a
-        # DataFrame and pass it to the following function on the view.
-
+        # Next, the included PandasSerializer will load the ModelSerializer result
+        # into a DataFrame and pass it to the following function on the view.
+        
         def transform_dataframe(self, dataframe):
             # Here you can transform the dataframe based on self.request
             # (useful for pivoting or computing statistics)
             return dataframe
-            
+        
+        # For more control over dataframe creation, subclass PandasSerializer and
+        # set pandas_serializer_class on the view.  (Or set list_serializer_class
+        # on your ModelSerializer subclass' Meta class if you're using DRF 3).
+        
         # Finally, the included Renderers will process the dataframe into one of
         # the output formats below.
 
