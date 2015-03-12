@@ -12,7 +12,7 @@ DRP does not include any JavaScript code, leaving the implementation of interact
 [![Build Status](https://travis-ci.org/wq/django-rest-pandas.svg?branch=master)](https://travis-ci.org/wq/django-rest-pandas)
 [![PyPI Package](https://pypip.in/version/rest-pandas/badge.svg?style=flat)](https://pypi.python.org/pypi/rest-pandas)
 
-Tested on Python 2.7 and 3.4, with Django 1.6 and 1.7.
+Tested on Python 2.7 & 3.4, with Django 1.6 & 1.7, and Django REST Framework 2.4 & 3.1.
 
 ## Live Demo
 
