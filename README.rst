@@ -1,13 +1,12 @@
 Django REST Pandas
 ==================
 
-`Django REST Framework <http://django-rest-framework.org>`__ + `pandas <http://pandas.pydata.org>`__ = A Model-driven Visualization API
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*Django REST Framework + pandas = A Model-driven Visualization API*
 
 **Django REST Pandas** (DRP) provides a simple way to generate and serve
 `pandas <http://pandas.pydata.org>`__ DataFrames via the `Django REST
 Framework <http://django-rest-framework.org>`__. The resulting API can
-serve up CSV (and a number of `other formats <#supported-formats>`__)
+serve up CSV (and a number of other formats)
 for consumption by a client-side visualization tool like
 `d3.js <http://d3js.org>`__.
 
@@ -95,23 +94,17 @@ Framework. This means clients can specify a format via
 ``Accepts: text/csv`` or by appending ``.csv`` to the URL (if the URL
 configuration below is used).
 
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-| Format   | Content Type                          | pandas DataFrame Function   | Notes                                                                                    |
-+==========+=======================================+=============================+==========================================================================================+
-| CSV      | ``text/csv``                          | ``to_csv()``                |
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-| TXT      | ``text/plain``                        | ``to_csv()``                | Useful for testing, as most browsers will download a CSV file instead of displaying it   |
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-| JSON     | ``application/json``                  | ``to_json()``               |
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-| XLSX     | ``application/vnd.openxml...sheet``   | ``to_excel()``              |
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-| XLS      | ``application/vnd.ms-excel``          | ``to_excel()``              |
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-| PNG      | ``image/png``                         | ``plot()``                  | Currently not very customizable, but a simple way to view the data as an image.          |
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
-| SVG      | ``image/svg``                         | ``plot()``                  | Eventually these could become a fallback for clients that can't handle d3.js             |
-+----------+---------------------------------------+-----------------------------+------------------------------------------------------------------------------------------+
+.. csv-table::
+  :header: "Format", "Content Type", "pandas Dataframe Function", "Notes"
+  :widths: 50, 150, 70, 500
+
+  CSV,``text/csv``,``to_csv()``,
+  TXT,``text/plain``,``to_csv()``,"Useful for testing, as most browsers will download a CSV file instead of displaying it"
+  JSON,``application/json``,``to_json()``,
+  XLSX,``application/vnd.openxml...sheet``,``to_excel()``,
+  XLS,``application/vnd.ms-excel``,``to_excel()``,
+  PNG,``image/png``,``plot()``,"Currently not very customizable, but a simple way to view the data as an image."
+  SVG,``image/svg``,``plot()``,"Eventually these could become a fallback for clients that can't handle d3.js"
 
 See the implementation notes below for more details.
 
