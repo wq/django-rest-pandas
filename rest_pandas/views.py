@@ -28,8 +28,10 @@ PANDAS_RENDERERS = perform_import(PANDAS_RENDERERS, "PANDAS_RENDERERS")
 
 class PandasMixin(object):
     renderer_classes = PANDAS_RENDERERS
-    paginate_by = None
     pandas_serializer_class = PandasSerializer
+
+    paginate_by = None # DRF 2
+    pagination_class = None # DRF 3
 
     def with_list_serializer(self, cls):
         if not USE_LIST_SERIALIZERS:
