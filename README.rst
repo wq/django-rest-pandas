@@ -29,7 +29,7 @@ module.
 
 |Build Status| |PyPI Package|
 
-Tested on Python 2.7 & 3.4, with Django 1.6 & 1.7, and Django REST
+Tested on Python 2.7 & 3.4, with Django 1.7 & 1.8, and Django REST
 Framework 2.4 & 3.1.
 
 Live Demo
