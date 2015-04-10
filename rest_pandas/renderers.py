@@ -98,7 +98,7 @@ class PandasJSONRenderer(PandasBaseRenderer):
 
     def get_pandas_kwargs(self, data):
         return {
-            'orient': 'index',
+            'orient': 'records',
             'date_format': 'iso',
         }
 

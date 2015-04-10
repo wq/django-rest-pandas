@@ -26,8 +26,8 @@ class PandasTestCase(APITestCase):
         response = self.client.get("/timeseries.json")
         self.assertEqual(response.accepted_media_type, "application/json")
         data = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(len(data.keys()), 5)
-        self.assertEqual(data["1"]["value"], 0.5)
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0]["value"], 0.5)
 
     def test_viewset(self):
         response = self.client.get("/router/timeseries/.csv")
