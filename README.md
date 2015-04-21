@@ -65,13 +65,16 @@ The example below assumes you already have a Django project set up with a single
 # views.py
 from rest_pandas import PandasView
 from .models import TimeSeries
+from .serializers import TimeSeriesSerializer
+
 class TimeSeriesView(PandasView):
     # Django REST Framework 2.4
     model = TimeSeries
     
     # Django REST Framework 3+
     queryset = TimeSeries.objects.all()
-    serializer_class = TimeSeriesSerializer
+    serializer_class = TimeSeriesSerializer  # extends ModelSerializer
+    # pandas_serializer_class = PandasSerializer  # extends ListSerializer
 
     # In response to get(), the underlying Django REST Framework ListAPIView
     # will load the queryset and then pass it to the following function.
