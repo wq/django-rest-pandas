@@ -35,7 +35,7 @@ class PandasBaseRenderer(BaseRenderer):
             raise Exception("Data frame is missing %s property!" % name)
         self.init_output()
         args = self.get_pandas_args(data)
-        kwargs = self.get_pandas_kwargs(data)
+        kwargs = self.get_pandas_kwargs(data, renderer_context)
         function(*args, **kwargs)
         return self.get_output()
 
@@ -48,7 +48,7 @@ class PandasBaseRenderer(BaseRenderer):
     def get_pandas_args(self, data):
         return [self.output]
 
-    def get_pandas_kwargs(self, data):
+    def get_pandas_kwargs(self, data, renderer_context):
         return {}
 
 
@@ -96,10 +96,17 @@ class PandasJSONRenderer(PandasBaseRenderer):
     media_type = "application/json"
     format = "json"
 
-    def get_pandas_kwargs(self, data):
+    def get_pandas_kwargs(self, data, renderer_context):
+        request = renderer_context['request']
+        orient = request.GET.get('orient','')
+        date_format = request.GET.get('date_format','')
+        if orient not in {'split','records','index','columns','values'}:
+            orient = 'records'
+        if date_format not in {'epoch','iso'}:
+            date_format = 'iso'
         return {
-            'orient': 'records',
-            'date_format': 'iso',
+            'orient': orient,
+            'date_format': date_format,
         }
 
 
