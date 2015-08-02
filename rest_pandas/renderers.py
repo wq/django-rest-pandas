@@ -76,7 +76,7 @@ class PandasCSVRenderer(PandasBaseRenderer):
     media_type = "text/csv"
     format = "csv"
 
-    def get_pandas_kwargs(self, data):
+    def get_pandas_kwargs(self, data, renderer_context):
         return {'encoding': self.charset}
 
 
@@ -142,7 +142,7 @@ class PandasImageRenderer(PandasBaseRenderer):
     def get_pandas_args(self, data):
         return []
 
-    def get_pandas_kwargs(self, data):
+    def get_pandas_kwargs(self, data, renderer_context):
         return {'ax': self.ax}
 
     def get_output(self):
