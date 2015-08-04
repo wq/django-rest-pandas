@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
 from wq.io import load_string
 import json
+import datetime
 
 
 class PandasTestCase(APITestCase):
@@ -28,6 +29,16 @@ class PandasTestCase(APITestCase):
         data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0]["value"], 0.5)
+        self.assertEqual(data[0]["date"], "2014-01-01T00:00:00.000Z")
+
+    def test_view_json_kwargs(self):
+        response = self.client.get("/timeseries.json?date_format=epoch")
+        self.assertEqual(response.accepted_media_type, "application/json")
+        data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0]["value"], 0.5)
+        date = datetime.datetime.utcfromtimestamp(data[0]["date"] / 1000)
+        self.assertEqual(date, datetime.datetime(2014, 1, 1))
 
     def test_viewset(self):
         response = self.client.get("/router/timeseries/.csv")
