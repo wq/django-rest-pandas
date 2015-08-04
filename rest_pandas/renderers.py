@@ -98,11 +98,11 @@ class PandasJSONRenderer(PandasBaseRenderer):
 
     def get_pandas_kwargs(self, data, renderer_context):
         request = renderer_context['request']
-        orient = request.GET.get('orient','')
-        date_format = request.GET.get('date_format','')
-        if orient not in {'split','records','index','columns','values'}:
+        orient = request.GET.get('orient', '')
+        date_format = request.GET.get('date_format', '')
+        if orient not in {'split', 'records', 'index', 'columns', 'values'}:
             orient = 'records'
-        if date_format not in {'epoch','iso'}:
+        if date_format not in {'epoch', 'iso'}:
             date_format = 'iso'
         return {
             'orient': orient,
@@ -114,7 +114,7 @@ class PandasExcelRenderer(PandasFileRenderer):
     """
     Renders data frame as Excel (.xlsx)
     """
-    media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"  # noqa
     format = "xlsx"
     function = "to_excel"
 
