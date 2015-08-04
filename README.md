@@ -9,10 +9,18 @@ The design philosophy of DRP enforces a strict separation between data and prese
 
 DRP does not include any JavaScript code, leaving the implementation of interactive visualizations as an exercise for the implementer.  That said, DRP is commonly used in conjunction with the [wq.app] library, which provides [wq/chart.js] and [wq/pandas.js], a collection of chart functions and data loaders that work well with CSV served by DRP and [wq.db]'s [chart] module.
 
-[![Build Status](https://travis-ci.org/wq/django-rest-pandas.svg?branch=master)](https://travis-ci.org/wq/django-rest-pandas)
-[![PyPI Package](https://pypip.in/version/rest-pandas/badge.svg?style=flat)](https://pypi.python.org/pypi/rest-pandas)
+[![Latest PyPI Release](https://img.shields.io/pypi/v/rest-pandas.svg)](https://pypi.python.org/pypi/rest-pandas)
+[![Release Notes](https://img.shields.io/github/release/wq/django-rest-pandas.svg
+    )](https://github.com/wq/django-rest-pandas/releases)
+[![License](https://img.shields.io/pypi/l/rest-pandas.svg)](https://github.com/wq/django-rest-pandas/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/wq/django-rest-pandas.svg)](https://github.com/wq/django-rest-pandas/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/wq/django-rest-pandas.svg)](https://github.com/wq/django-rest-pandas/network)
+[![GitHub Issues](https://img.shields.io/github/issues/wq/django-rest-pandas.svg)](https://github.com/wq/django-rest-pandas/issues)
 
-Tested on Python 2.7 & 3.4, with Django 1.7 & 1.8, and Django REST Framework 2.4 & 3.1.
+[![Travis Build Status](https://img.shields.io/travis/wq/django-rest-pandas.svg)](https://travis-ci.org/wq/django-rest-pandas)
+[![Python Support](https://img.shields.io/pypi/pyversions/rest-pandas.svg)](https://pypi.python.org/pypi/rest-pandas)
+[![Django Support](https://img.shields.io/badge/Django-1.7%2C%201.8-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
+[![Django REST Framework Support](https://img.shields.io/badge/DRF-2.4%2C%203.1-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
 
 ## Live Demo
 

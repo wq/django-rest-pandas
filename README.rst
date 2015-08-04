@@ -27,10 +27,11 @@ functions and data loaders that work well with CSV served by DRP and
 `wq.db <http://wq.io/wq.db>`__'s `chart <http://wq.io/docs/chart>`__
 module.
 
-|Build Status| |PyPI Package|
+|Latest PyPI Release| |Release Notes| |License| |GitHub Stars| |GitHub
+Forks| |GitHub Issues|
 
-Tested on Python 2.7 & 3.4, with Django 1.7 & 1.8, and Django REST
-Framework 2.4 & 3.1.
+|Travis Build Status| |Python Support| |Django Support| |Django REST
+Framework Support|
 
 Live Demo
 ---------
@@ -243,7 +244,23 @@ separately from Django REST Framework's own ``DEFAULT_RENDERER_CLASSES``
 setting, as it is likely that you will be mixing DRP views with regular
 DRF views.
 
-.. |Build Status| image:: https://travis-ci.org/wq/django-rest-pandas.svg?branch=master
+.. |Latest PyPI Release| image:: https://img.shields.io/pypi/v/rest-pandas.svg
+   :target: https://pypi.python.org/pypi/rest-pandas
+.. |Release Notes| image:: https://img.shields.io/github/release/wq/django-rest-pandas.svg
+   :target: https://github.com/wq/django-rest-pandas/releases
+.. |License| image:: https://img.shields.io/pypi/l/rest-pandas.svg
+   :target: https://github.com/wq/django-rest-pandas/blob/master/LICENSE
+.. |GitHub Stars| image:: https://img.shields.io/github/stars/wq/django-rest-pandas.svg
+   :target: https://github.com/wq/django-rest-pandas/stargazers
+.. |GitHub Forks| image:: https://img.shields.io/github/forks/wq/django-rest-pandas.svg
+   :target: https://github.com/wq/django-rest-pandas/network
+.. |GitHub Issues| image:: https://img.shields.io/github/issues/wq/django-rest-pandas.svg
+   :target: https://github.com/wq/django-rest-pandas/issues
+.. |Travis Build Status| image:: https://img.shields.io/travis/wq/django-rest-pandas.svg
    :target: https://travis-ci.org/wq/django-rest-pandas
-.. |PyPI Package| image:: https://pypip.in/version/rest-pandas/badge.svg?style=flat
+.. |Python Support| image:: https://img.shields.io/pypi/pyversions/rest-pandas.svg
+   :target: https://pypi.python.org/pypi/rest-pandas
+.. |Django Support| image:: https://img.shields.io/badge/Django-1.7%2C%201.8-blue.svg
+   :target: https://pypi.python.org/pypi/rest-pandas
+.. |Django REST Framework Support| image:: https://img.shields.io/badge/DRF-2.4%2C%203.1-blue.svg
    :target: https://pypi.python.org/pypi/rest-pandas
