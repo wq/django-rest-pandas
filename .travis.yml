@@ -4,15 +4,17 @@ python:
  - "3.4"
 env:
   matrix:
-    - DJANGO="django==1.7.7"  REST="djangorestframework==2.4.4"
-    - DJANGO="django==1.7.7"  REST="djangorestframework==3.1.1"
-    - DJANGO="django==1.8" REST="djangorestframework==2.4.4"
-    - DJANGO="django==1.8" REST="djangorestframework==3.1.1"
+    - DJANGO="django==1.7.9" REST="djangorestframework==2.4.6"
+    - DJANGO="django==1.7.9" REST="djangorestframework==3.1.1"
+    - DJANGO="django==1.8.3" REST="djangorestframework==2.4.6"
+    - DJANGO="django==1.8.3" REST="djangorestframework==3.1.3"
+    - DJANGO="django==1.8.3" REST="djangorestframework==3.1.3" LINT=1
   global:
     - PANDAS="pandas==0.16.0"
 install:
  - pip install $DJANGO
  - pip install $REST
  - pip install $PANDAS
+ - pip install flake8
 script:
- - python setup.py test
+ - ./runtests.sh

@@ -1,7 +1,6 @@
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
 from wq.io import ExcelFileIO
-import json
 
 
 class TestExcelIO(ExcelFileIO):

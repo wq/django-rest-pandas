@@ -8,10 +8,10 @@ router = DefaultRouter()
 router.register('timeseries', TimeSeriesViewSet)
 
 urlpatterns = patterns('',
-    url(r'^nomodel$', NoModelView.as_view()),
+    url(r'^nomodel$', NoModelView.as_view()),  # noqa
     url(r'^timeseries$', TimeSeriesView.as_view()),
 )
 urlpatterns = format_suffix_patterns(urlpatterns)
 urlpatterns += patterns('',
-    url(r'^router/', include(router.urls)),
+    url(r'^router/', include(router.urls)),  # noqa
 )
