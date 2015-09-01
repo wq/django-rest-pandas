@@ -1,5 +1,5 @@
 from .views import *  # noqa
 from .serializers import *  # noqa
 from .renderers import *   # noqa
-
-    TEST_INVALID
+def test_invalid():
+  TEST_INVALID    =      0;
