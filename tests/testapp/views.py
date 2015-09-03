@@ -1,6 +1,13 @@
-from rest_pandas import PandasSimpleView, PandasView, PandasViewSet
-from .models import TimeSeries
-from .serializers import TimeSeriesSerializer
+from rest_pandas import (
+    PandasSimpleView, PandasView, PandasViewSet,
+    PandasUnstackedSerializer, PandasScatterSerializer,
+)
+from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
+from .serializers import (
+    TimeSeriesSerializer,
+    MultiTimeSeriesSerializer, MultiScatterSerializer,
+    ComplexTimeSeriesSerializer, ComplexScatterSerializer,
+)
 
 
 class NoModelView(PandasSimpleView):
@@ -25,3 +32,27 @@ class TimeSeriesView(PandasView):
 class TimeSeriesViewSet(PandasViewSet):
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesSerializer
+
+
+class MultiTimeSeriesView(PandasView):
+    queryset = MultiTimeSeries.objects.all()
+    serializer_class = MultiTimeSeriesSerializer
+    pandas_serializer_class = PandasUnstackedSerializer
+
+
+class MultiScatterView(PandasView):
+    queryset = MultiTimeSeries.objects.all()
+    serializer_class = MultiScatterSerializer
+    pandas_serializer_class = PandasScatterSerializer
+
+
+class ComplexTimeSeriesView(PandasView):
+    queryset = ComplexTimeSeries.objects.all()
+    serializer_class = ComplexTimeSeriesSerializer
+    pandas_serializer_class = PandasUnstackedSerializer
+
+
+class ComplexScatterView(PandasView):
+    queryset = ComplexTimeSeries.objects.all()
+    serializer_class = ComplexScatterSerializer
+    pandas_serializer_class = PandasScatterSerializer

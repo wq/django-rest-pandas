@@ -9,16 +9,18 @@ def parse_csv(string):
     """
     reader = csv.reader(StringIO(string))
     val_cols = None
+    val_start = None
     id_cols = None
     for row in reader:
-        if row[0] == '':
-            val_cols = row[row.count(''):]
+        if row[0] == '' and not val_cols:
+            val_start = row.count('')
+            val_cols = row[val_start:]
             col_meta = [{} for v in val_cols]
         elif row[-1] != '' and val_cols and not id_cols:
             key = row[0]
-            for i, meta in enumerate(row[1:]):
+            for i, meta in enumerate(row[val_start:]):
                 col_meta[i].update(**{key: meta})
-        elif row[-1] == '':
+        elif row[-1] == '' and not id_cols:
             id_cols = row[:row.index('')]
             meta_index = {}
             meta_i = 0
@@ -51,8 +53,9 @@ def parse_csv(string):
                     val = float(val)
                 except ValueError:
                     pass
-                data[val_cols[i]] = val
-                records[mi] = data
+                if val != '':
+                    data[val_cols[i]] = val
+                    records[mi] = data
             for mi, data in records.items():
                 datasets[mi]['data'].append(data)
     return datasets
