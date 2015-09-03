@@ -69,7 +69,9 @@ class PandasUnstackedSerializer(PandasSerializer):
         else:
             serializer = type(self)
         if serializer.__name__ == 'SerializerWithListSerializer':
-            return serializer.__bases__[0]
+            for base in serializer.__bases__:
+                if not issubclass(base, PandasSerializer):
+                    return base
         return serializer
 
     def get_header_fields(self):

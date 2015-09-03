@@ -41,7 +41,10 @@ class PandasTestCase(APITestCase):
         self.assertEqual(date, datetime.datetime(2014, 1, 1))
 
     def test_viewset(self):
-        response = self.client.get("/router/timeseries/.csv")
+        response = self.client.get("/router/timeseries.csv")
+        if response.status_code == 404:
+            # DRF before 3.2 required an extra / before format suffix
+            response = self.client.get('/router/timeseries/.csv')
         data = self.load_string(response)
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].value, '0.5')
