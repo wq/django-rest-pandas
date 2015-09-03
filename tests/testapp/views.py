@@ -4,8 +4,7 @@ from rest_pandas import (
 )
 from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
 from .serializers import (
-    TimeSeriesSerializer,
-    MultiTimeSeriesSerializer, MultiScatterSerializer,
+    TimeSeriesSerializer,  MultiTimeSeriesSerializer,
     ComplexTimeSeriesSerializer, ComplexScatterSerializer,
 )
 
@@ -42,7 +41,7 @@ class MultiTimeSeriesView(PandasView):
 
 class MultiScatterView(PandasView):
     queryset = MultiTimeSeries.objects.all()
-    serializer_class = MultiScatterSerializer
+    serializer_class = MultiTimeSeriesSerializer
     pandas_serializer_class = PandasScatterSerializer
 
 

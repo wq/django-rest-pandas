@@ -21,10 +21,7 @@ class PandasSerializer(BaseSerializer):
     index_none_value = None
 
     def get_index(self, dataframe):
-        model_serializer = getattr(self, 'child', self)
-        if getattr(model_serializer.Meta, 'model', None):
-            return ['id']
-        return None
+        return self.get_index_fields()
 
     def get_dataframe(self, data):
         dataframe = DataFrame(data)
@@ -54,14 +51,6 @@ class PandasSerializer(BaseSerializer):
         else:
             return DataFrame([])
 
-
-class PandasUnstackedSerializer(PandasSerializer):
-    """
-    Pivots dataframe so commonly-repeating values are across the top in a
-    multi-row header.  Intended for use with e.g. time series data, where the
-    header includes metadata applicable to each time series.
-    (Use with wq/chart.js' timeSeries() function)
-    """
     @property
     def model_serializer(self):
         if USE_LIST_SERIALIZERS:
@@ -74,34 +63,41 @@ class PandasUnstackedSerializer(PandasSerializer):
                     return base
         return serializer
 
-    def get_header_fields(self):
-        """
-        Series metadata fields for header (first few rows)
-        """
-        header_fields = getattr(
-            self.model_serializer.Meta, 'pandas_header_fields', None
-        )
-        if header_fields is None:
-            raise ImproperlyConfigured(
-                "pandas_header_fields should be specified on %s.Meta" %
-                self.model_serializer.__name__
-            )
-        return header_fields
+    @property
+    def model_serializer_meta(self):
+        return getattr(self.model_serializer, 'Meta', object())
 
     def get_index_fields(self):
         """
-        Row metadata fields for index (first few columns)
+        List of fields to use for index
         """
-        index_fields = getattr(
-            self.model_serializer.Meta, 'pandas_index_fields', None
-        )
-        if index_fields is None:
-            raise ImproperlyConfigured(
-                "pandas_index_fields should be specified on %s.Meta" %
-                self.model_serializer.__name__
-            )
-        return index_fields
+        default_fields = []
+        if getattr(self.model_serializer_meta, 'model', None):
+            default_fields = ['id']
+        return self.get_meta_option('index', default_fields)
 
+    def get_meta_option(self, name, default=None):
+        meta_name = 'pandas_' + name
+        value = getattr(self.model_serializer_meta, meta_name, None)
+
+        if value is None:
+            if default is not None:
+                return default
+            else:
+                raise ImproperlyConfigured(
+                    "%s should be specified on %s.Meta" %
+                    (meta_name, self.model_serializer.__name__)
+                )
+        return value
+
+
+class PandasUnstackedSerializer(PandasSerializer):
+    """
+    Pivots dataframe so commonly-repeating values are across the top in a
+    multi-row header.  Intended for use with e.g. time series data, where the
+    header includes metadata applicable to each time series.
+    (Use with wq/chart.js' timeSeries() function)
+    """
     def get_index(self, dataframe):
         """
         Include header fields in initial index for later unstacking
@@ -125,6 +121,12 @@ class PandasUnstackedSerializer(PandasSerializer):
         )
         return dataframe
 
+    def get_header_fields(self):
+        """
+        Series metadata fields for header (first few rows)
+        """
+        return self.get_meta_option('unstacked_header')
+
 
 class PandasScatterSerializer(PandasUnstackedSerializer):
     """
@@ -132,20 +134,6 @@ class PandasScatterSerializer(PandasUnstackedSerializer):
     against each other as x vs y on a scatter plot.
     (Use with wq/chart.js' scatter() function)
     """
-    def get_scatter_fields(self):
-        """
-        Fields that will be collapsed into a single 'value' header.
-        """
-        scatter_fields = getattr(
-            self.model_serializer.Meta, 'pandas_scatter_fields', None
-        )
-        if scatter_fields is None:
-            raise ImproperlyConfigured(
-                "pandas_scatter_fields should be specified on %s.Meta" %
-                self.model_serializer.__name__
-            )
-        return scatter_fields
-
     def get_index(self, dataframe):
         """
         Include scatter & header fields in initial index for later unstacking
@@ -153,7 +141,7 @@ class PandasScatterSerializer(PandasUnstackedSerializer):
         return (
             self.get_index_fields()
             + self.get_header_fields()
-            + self.get_scatter_fields()
+            + self.get_coord_fields()
         )
 
     def transform_dataframe(self, dataframe):
@@ -161,9 +149,9 @@ class PandasScatterSerializer(PandasUnstackedSerializer):
         Unstack the dataframe so header consists of a composite 'value' header
         plus any other header fields.
         """
-        scatter_fields = self.get_scatter_fields()
+        coord_fields = self.get_coord_fields()
         header_fields = self.get_header_fields()
-        for i in range(len(header_fields) + len(scatter_fields)):
+        for i in range(len(header_fields) + len(coord_fields)):
             dataframe = dataframe.unstack()
 
         # Compute new column headers
@@ -173,10 +161,10 @@ class PandasScatterSerializer(PandasUnstackedSerializer):
 
         for col in dataframe.columns:
             value_name = col[0]
-            scatter_names = list(col[1:len(scatter_fields) + 1])
-            header_names = list(col[len(scatter_fields) + 1:])
-            scatter_name = '-'.join(scatter_names + [value_name])
-            columns[0].append(scatter_name)
+            coord_names = list(col[1:len(coord_fields) + 1])
+            header_names = list(col[len(coord_fields) + 1:])
+            coord_name = '-'.join(coord_names + [value_name])
+            columns[0].append(coord_name)
             for i, header_name in enumerate(header_names):
                 columns[1 + i].append(header_name)
 
@@ -189,6 +177,19 @@ class PandasScatterSerializer(PandasUnstackedSerializer):
         # Remove any rows that don't have data for all columns (e.g. x & y)
         dataframe = dataframe.dropna(axis=0, how='any')
         return dataframe
+
+    def get_coord_fields(self):
+        """
+        Fields that will be collapsed into a single header with the name of
+        each coordinate.
+        """
+        return self.get_meta_option('scatter_coord')
+
+    def get_header_fields(self):
+        """
+        Other header fields, if any
+        """
+        return self.get_meta_option('scatter_header', [])
 
 
 class SimpleSerializer(serializers.Serializer):

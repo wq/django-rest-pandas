@@ -19,18 +19,11 @@ class TimeSeriesSerializer(ModelSerializer):
 class MultiTimeSeriesSerializer(ModelSerializer):
     class Meta:
         model = MultiTimeSeries
-        pandas_header_fields = ['series']
-        pandas_index_fields = ['date']
         exclude = ['id']
 
-
-class MultiScatterSerializer(ModelSerializer):
-    class Meta:
-        model = MultiTimeSeries
-        pandas_scatter_fields = ['series']
-        pandas_header_fields = []
-        pandas_index_fields = ['date']
-        exclude = ['id']
+        pandas_index = ['date']
+        pandas_unstacked_header = ['series']
+        pandas_scatter_coord = ['series']
 
 
 class ComplexTimeSeriesSerializer(ModelSerializer):
@@ -38,20 +31,18 @@ class ComplexTimeSeriesSerializer(ModelSerializer):
 
     class Meta:
         model = ComplexTimeSeries
-        pandas_header_fields = ['site', 'parameter', 'units']
-        pandas_index_fields = ['date', 'type']
         exclude = ['id']
 
+        pandas_index = ['date', 'type']
+        pandas_unstacked_header = ['site', 'parameter', 'units']
 
-class ComplexScatterSerializer(ModelSerializer):
-    date = DateField()
 
-    class Meta:
-        model = ComplexTimeSeries
-        pandas_scatter_fields = ['units', 'parameter']
-        pandas_header_fields = ['site']
-        pandas_index_fields = ['date', 'type']
+class ComplexScatterSerializer(ComplexTimeSeriesSerializer):
+    class Meta(ComplexTimeSeriesSerializer.Meta):
         exclude = ['id', 'flag']
+
+        pandas_scatter_coord = ['units', 'parameter']
+        pandas_scatter_header = ['site']
 
 
 if USE_LIST_SERIALIZERS:
@@ -59,11 +50,11 @@ if USE_LIST_SERIALIZERS:
         class Meta:
             model = MultiTimeSeries
             list_serializer_class = PandasUnstackedSerializer
-            # pandas_header_fields = Missing
-            pandas_index_fields = ['series']
+            # pandas_unstacked_header = Missing
+            pandas_index = ['series']
 else:
     class NotUnstackableSerializer(ModelSerializer, PandasUnstackedSerializer):
         class Meta:
             model = MultiTimeSeries
-            # pandas_header_fields = Missing
-            pandas_index_fields = ['series']
+            # pandas_unstacked_header = Missing
+            pandas_index = ['series']

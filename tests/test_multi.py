@@ -78,7 +78,7 @@ class MultiTestCase(APITestCase):
             NotUnstackableSerializer(qs, many=True).data
         self.assertEqual(
             e.exception.args[0],
-            "pandas_header_fields should be specified on "
+            "pandas_unstacked_header should be specified on "
             "NotUnstackableSerializer.Meta"
         )
 
