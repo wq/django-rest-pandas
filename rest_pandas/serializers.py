@@ -98,6 +98,8 @@ class PandasUnstackedSerializer(PandasSerializer):
     header includes metadata applicable to each time series.
     (Use with wq/chart.js' timeSeries() function)
     """
+    index_none_value = '-'
+
     def get_index(self, dataframe):
         """
         Include header fields in initial index for later unstacking
@@ -128,12 +130,14 @@ class PandasUnstackedSerializer(PandasSerializer):
         return self.get_meta_option('unstacked_header')
 
 
-class PandasScatterSerializer(PandasUnstackedSerializer):
+class PandasScatterSerializer(PandasSerializer):
     """
     Pivots dataframe into a format suitable for plotting two series
     against each other as x vs y on a scatter plot.
     (Use with wq/chart.js' scatter() function)
     """
+    index_none_value = '-'
+
     def get_index(self, dataframe):
         """
         Include scatter & header fields in initial index for later unstacking
@@ -163,7 +167,11 @@ class PandasScatterSerializer(PandasUnstackedSerializer):
             value_name = col[0]
             coord_names = list(col[1:len(coord_fields) + 1])
             header_names = list(col[len(coord_fields) + 1:])
-            coord_name = '-'.join(coord_names + [value_name])
+            coord_name = ''
+            for name in coord_names:
+                if name != self.index_none_value:
+                    coord_name += name + '-'
+            coord_name += value_name
             columns[0].append(coord_name)
             for i, header_name in enumerate(header_names):
                 columns[1 + i].append(header_name)
