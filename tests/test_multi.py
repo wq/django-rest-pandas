@@ -2,7 +2,13 @@ from rest_framework.test import APITestCase
 from tests.testapp.models import MultiTimeSeries
 from tests.testapp.serializers import NotUnstackableSerializer
 from rest_pandas.test import parse_csv
+from wq.io import load_string
 from django.core.exceptions import ImproperlyConfigured
+import unittest
+try:
+    from matplotlib.cbook import boxplot_stats
+except ImportError:
+    boxplot_stats = None
 
 
 class MultiTestCase(APITestCase):
@@ -41,7 +47,7 @@ class MultiTestCase(APITestCase):
             """.replace(' ', ''),
             response.content.decode('utf-8'),
         )
-        datasets = self.parse_csv(response)
+        datasets = self.parse_unstacked_csv(response)
         self.assertEqual(len(datasets), 2)
         for dataset in datasets:
             self.assertEqual(len(dataset['data']), 5)
@@ -72,6 +78,89 @@ class MultiTestCase(APITestCase):
             response.content.decode('utf-8')
         )
 
+    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
+    def test_multi_boxplot(self):
+        # Default: group=series-year
+        response = self.client.get("/multiboxplot.csv")
+
+        datasets = self.parse_unstacked_csv(response)
+        self.assertEqual(len(datasets), 2)
+        if datasets[0]['series'] == 'test1':
+            s1data, s2data = datasets
+        else:
+            s2data, s1data = datasets
+
+        self.assertEqual(len(s1data['data']), 1)
+        stats = s1data['data'][0]
+        self.assertEqual(stats['year'], '2015')
+        self.assertEqual(stats['value-whislo'], 0.1)
+        self.assertEqual(stats['value-mean'], 0.36)
+        self.assertEqual(stats['value-whishi'], 0.6)
+
+        stats = s2data['data'][0]
+        self.assertEqual(stats['year'], '2015')
+        self.assertEqual(stats['value-whislo'], 0.0)
+        self.assertEqual(round(stats['value-mean'], 8), 0.54)
+        self.assertEqual(stats['value-whishi'], 0.9)
+
+    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
+    def test_multi_boxplot_series(self):
+        response = self.client.get("/multiboxplot.csv?group=series")
+        datasets = self.parse_plain_csv(response)
+        self.assertEqual(len(datasets), 2)
+        if datasets[0]['series'] == 'test1':
+            s1data, s2data = datasets
+        else:
+            s2data, s1data = datasets
+
+        stats = s1data
+        self.assertNotIn('year', stats)
+        self.assertEqual(stats['value-whislo'], 0.1)
+        self.assertEqual(stats['value-mean'], 0.36)
+        self.assertEqual(stats['value-whishi'], 0.6)
+
+        stats = s2data
+        self.assertNotIn('year', stats)
+        self.assertEqual(stats['value-whislo'], 0.0)
+        self.assertEqual(round(stats['value-mean'], 8), 0.54)
+        self.assertEqual(stats['value-whishi'], 0.9)
+
+    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
+    def test_multi_boxplot_series_month(self):
+        response = self.client.get("/multiboxplot.csv?group=series-month")
+
+        datasets = self.parse_unstacked_csv(response)
+        self.assertEqual(len(datasets), 2)
+        if datasets[0]['series'] == 'test1':
+            s1data, s2data = datasets
+        else:
+            s2data, s1data = datasets
+
+        self.assertEqual(len(s1data['data']), 1)
+        stats = s1data['data'][0]
+        self.assertEqual(stats['month'], '1')
+        self.assertEqual(stats['value-whislo'], 0.1)
+        self.assertEqual(stats['value-mean'], 0.36)
+        self.assertEqual(stats['value-whishi'], 0.6)
+
+        stats = s2data['data'][0]
+        self.assertEqual(stats['month'], '1')
+        self.assertEqual(stats['value-whislo'], 0.0)
+        self.assertEqual(round(stats['value-mean'], 8), 0.54)
+        self.assertEqual(stats['value-whishi'], 0.9)
+
+    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
+    def test_multi_boxplot_year(self):
+        response = self.client.get("/multiboxplot.csv?group=year")
+
+        datasets = self.parse_plain_csv(response)
+        self.assertEqual(len(datasets), 1)
+        stats = datasets[0]
+        self.assertEqual(stats['year'], 2015)
+        self.assertEqual(stats['value-whislo'], 0.0)
+        self.assertEqual(stats['value-mean'], 0.45)
+        self.assertEqual(stats['value-whishi'], 0.9)
+
     def test_not_unstackable(self):
         qs = MultiTimeSeries.objects.all()
         with self.assertRaises(ImproperlyConfigured) as e:
@@ -82,5 +171,15 @@ class MultiTestCase(APITestCase):
             "NotUnstackableSerializer.Meta"
         )
 
-    def parse_csv(self, response):
+    def parse_unstacked_csv(self, response):
         return parse_csv(response.content.decode('utf-8'))
+
+    def parse_plain_csv(self, response):
+        data = load_string(response.content.decode('utf-8')).data
+        for row in data:
+            for key in row:
+                try:
+                    row[key] = float(row[key])
+                except ValueError:
+                    pass
+        return data

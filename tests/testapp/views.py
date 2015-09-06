@@ -1,11 +1,12 @@
 from rest_pandas import (
     PandasSimpleView, PandasView, PandasViewSet,
-    PandasUnstackedSerializer, PandasScatterSerializer,
+    PandasUnstackedSerializer, PandasScatterSerializer, PandasBoxplotSerializer
 )
 from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
 from .serializers import (
-    TimeSeriesSerializer,  MultiTimeSeriesSerializer,
+    TimeSeriesSerializer, MultiTimeSeriesSerializer,
     ComplexTimeSeriesSerializer, ComplexScatterSerializer,
+    ComplexBoxplotSerializer,
 )
 
 
@@ -45,6 +46,12 @@ class MultiScatterView(PandasView):
     pandas_serializer_class = PandasScatterSerializer
 
 
+class MultiBoxplotView(PandasView):
+    queryset = MultiTimeSeries.objects.all()
+    serializer_class = MultiTimeSeriesSerializer
+    pandas_serializer_class = PandasBoxplotSerializer
+
+
 class ComplexTimeSeriesView(PandasView):
     queryset = ComplexTimeSeries.objects.all()
     serializer_class = ComplexTimeSeriesSerializer
@@ -55,3 +62,9 @@ class ComplexScatterView(PandasView):
     queryset = ComplexTimeSeries.objects.all()
     serializer_class = ComplexScatterSerializer
     pandas_serializer_class = PandasScatterSerializer
+
+
+class ComplexBoxplotView(PandasView):
+    queryset = ComplexTimeSeries.objects.all()
+    serializer_class = ComplexBoxplotSerializer
+    pandas_serializer_class = PandasBoxplotSerializer

@@ -4,8 +4,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import (
     NoModelView, TimeSeriesView, TimeSeriesViewSet,
-    MultiTimeSeriesView, MultiScatterView,
-    ComplexTimeSeriesView, ComplexScatterView,
+    MultiTimeSeriesView, MultiScatterView, MultiBoxplotView,
+    ComplexTimeSeriesView, ComplexScatterView, ComplexBoxplotView,
 )
 
 router = DefaultRouter()
@@ -16,8 +16,10 @@ urlpatterns = patterns('',
     url(r'^timeseries$', TimeSeriesView.as_view()),
     url(r'^multitimeseries$', MultiTimeSeriesView.as_view()),
     url(r'^multiscatter$', MultiScatterView.as_view()),
+    url(r'^multiboxplot$', MultiBoxplotView.as_view()),
     url(r'^complextimeseries$', ComplexTimeSeriesView.as_view()),
     url(r'^complexscatter$', ComplexScatterView.as_view()),
+    url(r'^complexboxplot$', ComplexBoxplotView.as_view()),
 )
 urlpatterns = format_suffix_patterns(urlpatterns)
 urlpatterns += patterns('',

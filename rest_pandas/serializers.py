@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from pandas import DataFrame
 from django.core.exceptions import ImproperlyConfigured
+import datetime
 
 
 if hasattr(serializers, 'ListSerializer'):
@@ -198,6 +199,162 @@ class PandasScatterSerializer(PandasSerializer):
         Other header fields, if any
         """
         return self.get_meta_option('scatter_header', [])
+
+
+class PandasBoxplotSerializer(PandasSerializer):
+    """
+    Compute boxplot statistics on dataframe columns, creating a new unstacked
+    dataframe where each row describes a boxplot.
+    (Use with wq/chart.js' boxplot() function)
+    """
+    def get_index(self, dataframe):
+        group_field = self.get_group_field()
+        date_field = self.get_date_field()
+        header_fields = self.get_header_fields()
+
+        if date_field:
+            group_fields = [date_field, group_field]
+        else:
+            group_fields = [group_field]
+        return group_fields + header_fields
+
+    def transform_dataframe(self, dataframe):
+        """
+        Use matplotlib to compute boxplot statistics on e.g. timeseries data.
+        """
+        grouping = self.get_grouping(dataframe)
+        group_field = self.get_group_field()
+        header_fields = self.get_header_fields()
+
+        if "series" in grouping:
+            # Unstack so each series is a column
+            for i in range(len(header_fields) + 1):
+                dataframe = dataframe.unstack()
+
+        groups = {
+            col: dataframe[col]
+            for col in dataframe.columns
+        }
+
+        if "year" in grouping:
+            interval = "year"
+        elif "month" in grouping:
+            interval = "month"
+        else:
+            interval = None
+
+        # Compute stats for each column, potentially grouped by year
+        all_stats = []
+        for header, series in groups.items():
+            if interval:
+                series_stats = self.boxplots_for_interval(series, interval)
+            else:
+                interval = None
+                series_stats = [self.compute_boxplot(series)]
+
+            series_infos = []
+            for series_stat in series_stats:
+                series_info = {}
+                if isinstance(header, tuple):
+                    value_name = header[0]
+                    col_values = header[1:]
+                else:
+                    value_name = header
+                    col_values = []
+                col_names = zip(dataframe.columns.names[1:], col_values)
+                for col_name, value in col_names:
+                    series_info[col_name] = value
+                for stat_name, val in series_stat.items():
+                    if stat_name == interval:
+                        series_info[stat_name] = val
+                    else:
+                        series_info[value_name + '-' + stat_name] = val
+                series_infos.append(series_info)
+            all_stats += series_infos
+
+        dataframe = DataFrame(all_stats)
+        if 'series' in grouping:
+            index = header_fields + [group_field]
+            unstack = len(header_fields)
+            if interval:
+                index = [interval] + index
+                unstack += 1
+        else:
+            index = [interval]
+            unstack = 0
+
+        dataframe.set_index(index, inplace=True)
+        for i in range(unstack):
+            dataframe = dataframe.unstack()
+
+        # Remove blank columns
+        dataframe = dataframe.dropna(axis=1, how='all')
+        return dataframe
+
+    def get_grouping(self, dataframe):
+        request = self.context.get('request', None)
+        datasets = len(dataframe.columns)
+        if request:
+            group = request.GET.get('group', None)
+            if group:
+                return group
+        # Heuristic for default grouping:
+        if datasets > 20 and self.get_date_field():
+            # Group all data by year
+            return "year"
+        elif datasets > 10 or not self.get_date_field():
+            # Compare series but don't break down by year
+            return "series"
+        else:
+            # 10 or fewer datasets, break down by both series and year
+            return "series-year"
+
+    def boxplots_for_interval(self, series, interval):
+        def get_interval_name(date):
+            if isinstance(date, tuple):
+                date = date[0]
+            if hasattr(date, 'count') and date.count('-') == 2:
+                date = datetime.datetime.strptime(date, "%Y-%m-%d")
+            return getattr(date, interval)
+
+        interval_stats = []
+        groups = series.groupby(get_interval_name).groups
+        for interval_name, group in groups.items():
+            stats = self.compute_boxplot(series[group])
+            stats[interval] = interval_name
+            interval_stats.append(stats)
+        return interval_stats
+
+    def compute_boxplot(self, series):
+        """
+        Compute boxplot for given pandas Series.
+        """
+        from matplotlib.cbook import boxplot_stats
+        series = series[series.notnull()]
+        if len(series.values) == 0:
+            return {}
+        stats = boxplot_stats(list(series.values))[0]
+        stats['count'] = len(series.values)
+        stats['fliers'] = "|".join(map(str, stats['fliers']))
+        return stats
+
+    def get_group_field(self):
+        """
+        Categorical field to group datasets by.
+        """
+        return self.get_meta_option('boxplot_group')
+
+    def get_date_field(self):
+        """
+        Date field to group datasets by year or month.
+        """
+        return self.get_meta_option('boxplot_date', False)
+
+    def get_header_fields(self):
+        """
+        Additional series metadata for boxplot column headers
+        """
+        return self.get_meta_option('boxplot_header', [])
 
 
 class SimpleSerializer(serializers.Serializer):

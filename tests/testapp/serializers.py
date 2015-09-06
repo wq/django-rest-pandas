@@ -24,6 +24,8 @@ class MultiTimeSeriesSerializer(ModelSerializer):
         pandas_index = ['date']
         pandas_unstacked_header = ['series']
         pandas_scatter_coord = ['series']
+        pandas_boxplot_group = 'series'
+        pandas_boxplot_date = 'date'
 
 
 class ComplexTimeSeriesSerializer(ModelSerializer):
@@ -43,6 +45,14 @@ class ComplexScatterSerializer(ComplexTimeSeriesSerializer):
 
         pandas_scatter_coord = ['units', 'parameter']
         pandas_scatter_header = ['site']
+
+
+class ComplexBoxplotSerializer(ComplexTimeSeriesSerializer):
+    class Meta(ComplexTimeSeriesSerializer.Meta):
+        exclude = ['id', 'flag', 'type']
+        pandas_boxplot_group = 'site'
+        pandas_boxplot_date = 'date'
+        pandas_boxplot_header = ['units', 'parameter']
 
 
 if USE_LIST_SERIALIZERS:
