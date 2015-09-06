@@ -12,11 +12,11 @@ except ImportError:
 class ComplexTestCase(APITestCase):
     def setUp(self):
         data = (
-            ('site1', 'height', 'ft', '2015-01-01', 'routine', 0.5, None),
-            ('site1', 'height', 'ft', '2015-01-02', 'routine', 0.4, None),
-            ('site1', 'height', 'ft', '2015-01-03', 'routine', 0.6, None),
-            ('site1', 'height', 'ft', '2015-01-04', 'special', 0.2, None),
-            ('site1', 'height', 'ft', '2015-01-05', 'routine', 0.1, None),
+            ('site1', 'height', None, '2015-01-01', 'routine', 0.5, None),
+            ('site1', 'height', None, '2015-01-02', 'routine', 0.4, None),
+            ('site1', 'height', None, '2015-01-03', 'routine', 0.6, None),
+            ('site1', 'height', None, '2015-01-04', 'special', 0.2, None),
+            ('site1', 'height', None, '2015-01-05', 'routine', 0.1, None),
 
             ('site1', 'flow', 'cfs', '2015-01-01', 'special', 0.7, None),
             ('site1', 'flow', 'cfs', '2015-01-02', 'routine', 0.8, None),
@@ -45,17 +45,17 @@ class ComplexTestCase(APITestCase):
         response = self.client.get("/complextimeseries.csv")
         self.assertEqual(
             """,,flag,value,value,value
-            units,,cfs,cfs,cfs,ft
-            parameter,,flow,flow,flow,height
-            site,,site1,site1,site2,site1
+            units,,cfs,-,cfs,cfs
+            parameter,,flow,height,flow,flow
+            site,,site1,site1,site1,site2
             date,type,,,,
-            2015-01-01,routine,,,0.0,0.5
-            2015-01-01,special,,0.7,,
-            2015-01-02,routine,,0.8,0.7,0.4
-            2015-01-03,routine,Q,0.0,0.2,0.6
-            2015-01-04,routine,,0.9,0.3,
-            2015-01-04,special,,,,0.2
-            2015-01-05,routine,,0.3,0.8,0.1
+            2015-01-01,routine,,0.5,,0.0
+            2015-01-01,special,,,0.7,
+            2015-01-02,routine,,0.4,0.8,0.7
+            2015-01-03,routine,Q,0.6,0.0,0.2
+            2015-01-04,routine,,,0.9,0.3
+            2015-01-04,special,,0.2,,
+            2015-01-05,routine,,0.1,0.3,0.8
             """.replace(' ', ''),
             response.content.decode('utf-8'),
         )
@@ -92,7 +92,7 @@ class ComplexTestCase(APITestCase):
     def test_complex_scatter(self):
         response = self.client.get("/complexscatter.csv")
         self.assertEqual(
-            """,,flow-cfs-value,flow-cfs-value,height-ft-value
+            """,,flow-cfs-value,flow-cfs-value,height-value
             site,,site1,site2,site1
             date,type,,,
             2015-01-02,routine,0.8,0.7,0.4
@@ -105,11 +105,11 @@ class ComplexTestCase(APITestCase):
         self.assertEqual([
             {'site': 'site1', 'data': [
                 {'date': '2015-01-02', 'type': 'routine',
-                 'flow-cfs-value': 0.8, 'height-ft-value': 0.4},
+                 'flow-cfs-value': 0.8, 'height-value': 0.4},
                 {'date': '2015-01-03', 'type': 'routine',
-                 'flow-cfs-value': 0.0, 'height-ft-value': 0.6},
+                 'flow-cfs-value': 0.0, 'height-value': 0.6},
                 {'date': '2015-01-05', 'type': 'routine',
-                 'flow-cfs-value': 0.3, 'height-ft-value': 0.1},
+                 'flow-cfs-value': 0.3, 'height-value': 0.1},
                 ]},
             {'site': 'site2', 'data': [
                 {'date': '2015-01-02', 'type': 'routine',
@@ -141,7 +141,7 @@ class ComplexTestCase(APITestCase):
                 s2flow = dataset
 
         self.assertEqual(len(s1height['data']), 1)
-        self.assertEqual(s1height['units'], 'ft')
+        self.assertEqual(s1height['units'], '-')
         stats = s1height['data'][0]
         self.assertEqual(stats['year'], '2015')
         self.assertEqual(stats['value-whislo'], 0.1)

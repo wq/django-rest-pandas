@@ -21,7 +21,7 @@ class ComplexTimeSeries(models.Model):
     # Header
     site = models.CharField(max_length=5)
     parameter = models.CharField(max_length=5)
-    units = models.CharField(max_length=5)
+    units = models.CharField(max_length=5, null=True, blank=True)
 
     # Index
     date = models.DateField()

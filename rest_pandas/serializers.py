@@ -207,6 +207,8 @@ class PandasBoxplotSerializer(PandasSerializer):
     dataframe where each row describes a boxplot.
     (Use with wq/chart.js' boxplot() function)
     """
+    index_none_value = '-'
+
     def get_index(self, dataframe):
         group_field = self.get_group_field()
         date_field = self.get_date_field()
