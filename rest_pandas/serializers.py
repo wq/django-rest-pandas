@@ -286,6 +286,7 @@ class PandasBoxplotSerializer(PandasSerializer):
             unstack = 0
 
         dataframe.set_index(index, inplace=True)
+        dataframe.columns.name = ''
         for i in range(unstack):
             dataframe = dataframe.unstack()
 
