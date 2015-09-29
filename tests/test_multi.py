@@ -2,7 +2,6 @@ from rest_framework.test import APITestCase
 from tests.testapp.models import MultiTimeSeries
 from tests.testapp.serializers import NotUnstackableSerializer
 from rest_pandas.test import parse_csv
-from wq.io import load_string
 from django.core.exceptions import ImproperlyConfigured
 import unittest
 try:
@@ -47,7 +46,7 @@ class MultiTestCase(APITestCase):
             """.replace(' ', ''),
             response.content.decode('utf-8'),
         )
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
         self.assertEqual(len(datasets), 2)
         for dataset in datasets:
             self.assertEqual(len(dataset['data']), 5)
@@ -83,7 +82,7 @@ class MultiTestCase(APITestCase):
         # Default: group=series-year
         response = self.client.get("/multiboxplot.csv")
 
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
         self.assertEqual(len(datasets), 2)
         if datasets[0]['series'] == 'test1':
             s1data, s2data = datasets
@@ -106,7 +105,7 @@ class MultiTestCase(APITestCase):
     @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_multi_boxplot_series(self):
         response = self.client.get("/multiboxplot.csv?group=series")
-        datasets = self.parse_plain_csv(response)
+        datasets = self.parse_csv(response)[0]['data']
         self.assertEqual(len(datasets), 2)
         if datasets[0]['series'] == 'test1':
             s1data, s2data = datasets
@@ -129,7 +128,7 @@ class MultiTestCase(APITestCase):
     def test_multi_boxplot_series_month(self):
         response = self.client.get("/multiboxplot.csv?group=series-month")
 
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
         self.assertEqual(len(datasets), 2)
         if datasets[0]['series'] == 'test1':
             s1data, s2data = datasets
@@ -153,7 +152,7 @@ class MultiTestCase(APITestCase):
     def test_multi_boxplot_year(self):
         response = self.client.get("/multiboxplot.csv?group=year")
 
-        datasets = self.parse_plain_csv(response)
+        datasets = self.parse_csv(response)[0]['data']
         self.assertEqual(len(datasets), 1)
         stats = datasets[0]
         self.assertEqual(stats['year'], 2015)
@@ -171,15 +170,5 @@ class MultiTestCase(APITestCase):
             "NotUnstackableSerializer.Meta"
         )
 
-    def parse_unstacked_csv(self, response):
+    def parse_csv(self, response):
         return parse_csv(response.content.decode('utf-8'))
-
-    def parse_plain_csv(self, response):
-        data = load_string(response.content.decode('utf-8')).data
-        for row in data:
-            for key in row:
-                try:
-                    row[key] = float(row[key])
-                except ValueError:
-                    pass
-        return data

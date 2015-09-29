@@ -1,7 +1,6 @@
 from rest_framework.test import APITestCase
 from tests.testapp.models import ComplexTimeSeries
 from rest_pandas.test import parse_csv
-from wq.io import load_string
 import unittest
 try:
     from matplotlib.cbook import boxplot_stats
@@ -59,7 +58,7 @@ class ComplexTestCase(APITestCase):
             """.replace(' ', ''),
             response.content.decode('utf-8'),
         )
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
         self.assertEqual(len(datasets), 3)
         for dataset in datasets:
             self.assertEqual(len(dataset['data']), 5)
@@ -101,7 +100,7 @@ class ComplexTestCase(APITestCase):
             """.replace(' ', ''),
             response.content.decode('utf-8')
         )
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
         self.assertEqual([
             {'site': 'site1', 'data': [
                 {'date': '2015-01-02', 'type': 'routine',
@@ -125,7 +124,7 @@ class ComplexTestCase(APITestCase):
     def test_complex_boxplot(self):
         # Default group=series-year
         response = self.client.get("/complexboxplot.csv")
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
 
         self.assertEqual(len(datasets), 3)
         s1flow = None
@@ -165,7 +164,7 @@ class ComplexTestCase(APITestCase):
     @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_complex_boxplot_series(self):
         response = self.client.get("/complexboxplot.csv?group=series")
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
         s1flow = None
         s1height = None
         s2flow = None
@@ -201,7 +200,7 @@ class ComplexTestCase(APITestCase):
     @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_complex_boxplot_month_group(self):
         response = self.client.get("/complexboxplot.csv?group=series-month")
-        datasets = self.parse_unstacked_csv(response)
+        datasets = self.parse_csv(response)
         s1flow = None
         s1height = None
         s2flow = None
@@ -237,23 +236,13 @@ class ComplexTestCase(APITestCase):
     @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_complex_boxplot_year(self):
         response = self.client.get("/complexboxplot.csv?group=year")
-        datasets = self.parse_plain_csv(response)
+        datasets = self.parse_csv(response)
         self.assertEqual(len(datasets), 1)
-        stats = datasets[0]
+        stats = datasets[0]['data'][0]
         self.assertEqual(stats['year'], 2015)
         self.assertEqual(stats['value-whislo'], 0.0)
         self.assertEqual(round(stats['value-mean'], 5), 0.43333)
         self.assertEqual(stats['value-whishi'], 0.9)
 
-    def parse_unstacked_csv(self, response):
+    def parse_csv(self, response):
         return parse_csv(response.content.decode('utf-8'))
-
-    def parse_plain_csv(self, response):
-        data = load_string(response.content.decode('utf-8')).data
-        for row in data:
-            for key in row:
-                try:
-                    row[key] = float(row[key])
-                except ValueError:
-                    pass
-        return data
