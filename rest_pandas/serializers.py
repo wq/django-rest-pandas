@@ -301,16 +301,7 @@ class PandasBoxplotSerializer(PandasSerializer):
             group = request.GET.get('group', None)
             if group:
                 return group
-        # Heuristic for default grouping:
-        if datasets > 20 and self.get_date_field():
-            # Group all data by year
-            return "year"
-        elif datasets > 10 or not self.get_date_field():
-            # Compare series but don't break down by year
-            return "series"
-        else:
-            # 10 or fewer datasets, break down by both series and year
-            return "series-year"
+        return default_grouping(datasets, self.get_date_field())
 
     def boxplots_for_interval(self, series, interval):
         def get_interval_name(date):
@@ -372,3 +363,18 @@ class SimpleSerializer(serializers.Serializer):
     # DRF 2
     def to_native(self, obj):
         return obj
+
+
+def default_grouping(datasets, date_field=None):
+    """
+    Heuristic for default boxplot grouping
+    """
+    if datasets > 20 and date_field:
+        # Group all data by year
+        return "year"
+    elif datasets > 10 or not date_field:
+        # Compare series but don't break down by year
+        return "series"
+    else:
+        # 10 or fewer datasets, break down by both series and year
+        return "series-year"
