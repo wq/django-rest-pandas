@@ -43,7 +43,13 @@ In summary, DRP is designed for use cases where:
 
 ## Supported Formats
 
-The following output formats are provided by default.  These are provided as [renderer classes] in order to leverage the content type negotiation built into Django REST Framework.  This means clients can specify a format via `Accepts: text/csv` or by appending `.csv` to the URL (if the URL configuration below is used).
+The following output formats are provided by default.  These are provided as [renderer classes] in order to leverage the content type negotiation built into Django REST Framework.  This means clients can specify a format via:
+
+ * an HTTP "Accepts" header (`Accepts: text/csv`),
+ * a format parameter (`/path?format=csv`), or
+ * a format extension (`/path.csv`)
+
+The HTTP header and format parameter are enabled by default on every pandas view.  Using the extension requires a custom URL configuration (see below).
 
 Format | Content Type | pandas DataFrame Function | Notes
 -------|--------------|---------------------------|--------
@@ -75,74 +81,116 @@ from rest_pandas import PandasView
 from .models import TimeSeries
 from .serializers import TimeSeriesSerializer
 
+# Short version (leverages default DRP settings):
 class TimeSeriesView(PandasView):
-    # Django REST Framework 2.4
-    model = TimeSeries
-    
-    # Django REST Framework 3+
     queryset = TimeSeries.objects.all()
-    serializer_class = TimeSeriesSerializer  # extends ModelSerializer
-    # pandas_serializer_class = PandasSerializer  # extends ListSerializer
+    serializer_class = TimeSeriesSerializer
+    # That's it!  The view will be able to export the model dataset to any of
+    # the included formats listed above.  No further customization is needed to
+    # leverage the defaults.
 
-    # In response to get(), the underlying Django REST Framework ListAPIView
+# Long Version and step-by-step explanation
+class TimeSeriesView(PandasView):
+    # Assign a default model queryset to the view
+    queryset = TimeSeries.objects.all()
+
+    # Step 1. In response to get(), the underlying Django REST Framework view
     # will load the queryset and then pass it to the following function.
-    
     def filter_queryset(self, qs): 
         # At this point, you can filter queryset based on self.request or other
-        # settings (useful for limiting memory usage)
+        # settings (useful for limiting memory usage).  This function can be
+        # omitted if you are using a filter backend or do not need filtering.
         return qs
         
-    # Then, the default serializer (typically a DRF ModelSerializer) should
-    # serialize each row in the queryset into a simple dict format.  To
-    # customize which fields to include, create a subclass of ModelSerializer
-    # and assign it to serializer_class on your view.
+    # Step 2. A Django REST Framework serializer class should serialize each
+    # row in the queryset into a simple dict format.  A simple ModelSerializer
+    # should be sufficient for most cases.
+    serializer_class = TimeSeriesSerializer  # extends ModelSerializer
+
+    # Step 3.  The included PandasSerializer will load all of the row dicts
+    # into array and convert the array into a pandas DataFrame.  The DataFrame
+    # is essentially an intermediate format between Step 2 (dict) and Step 4
+    # (output format).  The default DataFrame simply maps each model field to a
+    # column heading, and will be sufficient in many cases.  If you do not need
+    # to transform the dataframe, you can skip to step 4.
     
-    # Next, the included PandasSerializer will load the ModelSerializer result
-    # into a DataFrame and pass it to the following function on the view.
-    
+    # If you would like to transform the dataframe (e.g. to pivot or add
+    # columns), you can do so in one of two ways:
+
+    # A. Create a subclass of PandasSerializer, define a function called
+    # transform_dataframe(self, dataframe) on the subclass, and assign it to
+    # pandas_serializer_class on the view.  You can also use one of the three
+    # provided pivoting serializers (see Advanced Usage below).
+    #
+    # class MyCustomPandasSerializer(PandasSerializer):
+    #     def transform_dataframe(self, dataframe):
+    #         dataframe.some_pivot_function(in_place=True)
+    #         return dataframe
+    #
+    pandas_serializer_class = MyCustomPandasSerializer
+
+    # B. Alternatively, you can create a custom transform_dataframe function
+    # directly on the view.  Again, if no custom transformations are needed,
+    # this function does not need to be defined.
     def transform_dataframe(self, dataframe):
-        # Here you can transform the dataframe based on self.request
-        # (useful for pivoting or computing statistics)
+        dataframe.some_pivot_function(in_place=True)
         return dataframe
     
-    # For more control over dataframe creation, subclass PandasSerializer and
-    # set pandas_serializer_class on the view.  (Or set list_serializer_class
-    # on your ModelSerializer subclass' Meta class if you're using DRF 3).
-    
-    # Finally, the included Renderers will process the dataframe into one of
-    # the output formats below.
+    # Step 4. Finally, the provided renderer classes will convert the DataFrame
+    # to any of the supported output formats (see above).  By default, all of
+    # the formats above are enabled.  To restrict output to only the formats
+    # you are interested in, you can define renderer_classes on the view:
+    renderer_classes = [PandasCSVRenderer, PandasExcelRenderer]
+    # You can also set the default renderers for all of your pandas views by
+    # defining the PANDAS_RENDERERS in your settings.py.
 ```
 
 ```python
 # urls.py
 from django.conf.urls import patterns, include, url
-from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import TimeSeriesView
 urlpatterns = patterns('',
     url(r'^data', TimeSeriesView.as_view()),
 )
+
+# This is only required to support extension-style formats (e.g. /data.csv)
+from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = format_suffix_patterns(urlpatterns)
 ```
 
 The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's [ViewSets] and [Routers], or a `PandasSimpleView` if you would just like to serve up some data without a Django model as the source.
 
-### Implementation Notes
+## Advanced Usage
 The underlying implementation is a set of [serializers] that take the normal serializer result and put it into a dataframe.  Then, the included [renderers] generate the output using the built in pandas functionality.
 
+As of version 0.4, DRP includes three custom serializers with `transform_dataframe()` functions that address common use cases.  These serializer classes can be leveraged by assigning them to `pandas_serializer_class` on your view.
+
+### PandasUnstackedSerializer
+FIXME: add details
+
+### PandasScatterSerializer
+FIXME: add details
+
+### PandasBoxplotSerializer
+FIXME: add details
+
+### Loading CSV in d3.js
 Perhaps counterintuitively, the CSV renderer is the default in Django REST Pandas, as it is the most stable and useful for API building.  While the pandas JSON serializer is improving, the primary reason for making CSV the default is the compactness it provides over JSON when serializing time series data.  This is particularly valuable for pandas dataframes, in which:
 
  - each record has the same keys, and
  - there are (usually) no nested objects
 
-While a normal CSV file only has a single row of column headers, pandas can produce files with nested columns.  This is a useful way to provide metadata about time series that is difficult to represent in a plain CSV file.  However, it also makes the resulting CSV more difficult to parse.  For this reason, you may be interested in [wq/pandas.js], a d3 extension for loading the complex CSV generated by pandas Dataframes.
+The default CSV output from DRP will have single row of column headers, making it suitable as-is for use with e.g. d3.csv().  However, if you are using a pivoting serializer, DRP may produce a dataframe with nested multi-row column headers, which makes the resulting CSV more difficult to parse.  If you are using a pivoting serializer with d3.js, you may be interested in [wq/pandas.js], a d3 extension for loading the complex CSV generated by pandas Dataframes.
 
 ```javascript
 // mychart.js
 define(['d3', 'wq/pandas'], function(d3, pandas) {
 
+// Unpivoted data (single-row header)
 d3.csv("/data.csv", render);
-// Or
+
+// Pivoted data (multi-row header)
 pandas.get('/data.csv' render);
 
 function render(error, data) {
