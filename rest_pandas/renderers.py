@@ -64,7 +64,9 @@ class PandasFileRenderer(PandasBaseRenderer):
         return [self.filename]
 
     def get_output(self):
-        result = open(self.filename, 'rb').read()
+        file = open(self.filename, 'rb')
+        result = file.read()
+        file.close()
         os.unlink(self.filename)
         return result
 
