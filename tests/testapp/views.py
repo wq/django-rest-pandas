@@ -8,6 +8,7 @@ from .serializers import (
     ComplexTimeSeriesSerializer, ComplexScatterSerializer,
     ComplexBoxplotSerializer,
 )
+import pandas as pd
 
 
 class NoModelView(PandasSimpleView):
@@ -18,6 +19,11 @@ class NoModelView(PandasSimpleView):
             {'x': 8, 'y': 6},
             {'x': 5, 'y': 4},
         ]
+
+
+class FromFileView(PandasSimpleView):
+    def get_data(self, request, *args, **kwargs):
+        return pd.read_csv('tests/data.csv')
 
 
 class TimeSeriesView(PandasView):

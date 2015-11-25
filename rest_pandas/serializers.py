@@ -45,12 +45,17 @@ class PandasSerializer(BaseSerializer):
 
     @property
     def data(self):
-        data = super(PandasSerializer, self).data
-        if data:
+        data = super(BaseSerializer, self).data
+        if isinstance(data, DataFrame) or data:
             dataframe = self.get_dataframe(data)
             return self.transform_dataframe(dataframe)
         else:
             return DataFrame([])
+
+    def to_representation(self, data):
+        if isinstance(data, DataFrame):
+            return data
+        return super().to_representation(data)
 
     @property
     def model_serializer(self):

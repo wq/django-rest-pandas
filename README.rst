@@ -129,6 +129,26 @@ Getting Started
 Usage Example
 ~~~~~~~~~~~~~
 
+No Model
+^^^^^^^^
+
+The example below allows you to create a simple API for an existing
+Pandas DataFrame, e.g. generated from an existing file.
+
+.. code:: python
+
+    # views.py
+    from rest_pandas import PandasSimpleView
+    import pandas as pd
+
+
+    class TimeSeriesView(PandasSimpleView):
+        def get_data(self):
+            return pd.read_csv('data.csv')
+
+Model-Backed
+^^^^^^^^^^^^
+
 The example below assumes you already have a Django project set up with
 a single ``TimeSeries`` model.
 
@@ -194,6 +214,13 @@ a single ``TimeSeries`` model.
             dataframe.some_pivot_function(in_place=True)
             return dataframe
         
+        # NOTE: As the name implies, the primary purpose of transform_dataframe()
+        # is to apply a transformation to an existing dataframe.  In PandasView,
+        # this dataframe is created by serializing data queried from a Django
+        # model.  If you would like to supply your own custom DataFrame from the
+        # start (without using a Django model), you can do so with PandasSimpleView
+        # as shown in the first example.
+
         # Step 4. Finally, the provided renderer classes will convert the DataFrame
         # to any of the supported output formats (see above).  By default, all of
         # the formats above are enabled.  To restrict output to only the formats
@@ -201,6 +228,9 @@ a single ``TimeSeries`` model.
         renderer_classes = [PandasCSVRenderer, PandasExcelRenderer]
         # You can also set the default renderers for all of your pandas views by
         # defining the PANDAS_RENDERERS in your settings.py.
+
+Registering URLs
+^^^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -221,9 +251,7 @@ the provided model in a simple tabular form. You can also use a
 ``PandasViewSet`` if you are using Django REST Framework's
 `ViewSets <http://www.django-rest-framework.org/api-guide/viewsets>`__
 and
-`Routers <http://www.django-rest-framework.org/api-guide/routers>`__, or
-a ``PandasSimpleView`` if you would just like to serve up some data
-without a Django model as the source.
+`Routers <http://www.django-rest-framework.org/api-guide/routers>`__.
 
 Advanced Usage
 --------------

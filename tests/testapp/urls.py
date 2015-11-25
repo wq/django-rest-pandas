@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import (
-    NoModelView, TimeSeriesView, TimeSeriesViewSet,
+    NoModelView, FromFileView, TimeSeriesView, TimeSeriesViewSet,
     MultiTimeSeriesView, MultiScatterView, MultiBoxplotView,
     ComplexTimeSeriesView, ComplexScatterView, ComplexBoxplotView,
 )
@@ -13,6 +13,7 @@ router.register('timeseries', TimeSeriesViewSet)
 
 urlpatterns = patterns('',
     url(r'^nomodel$', NoModelView.as_view()),  # noqa
+    url(r'^fromfile$', FromFileView.as_view()),
     url(r'^timeseries$', TimeSeriesView.as_view()),
     url(r'^multitimeseries$', MultiTimeSeriesView.as_view()),
     url(r'^multiscatter$', MultiScatterView.as_view()),

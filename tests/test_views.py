@@ -55,5 +55,11 @@ class PandasTestCase(APITestCase):
         self.assertEqual(len(data), 4)
         self.assertEqual(data[0].x, '5')
 
+    def test_from_file(self):
+        response = self.client.get("/fromfile.csv")
+        data = self.load_string(response)
+        self.assertEqual(len(data), 4)
+        self.assertEqual(data[0].x, '5')
+
     def load_string(self, response):
         return load_string(response.content.decode('utf-8'))
