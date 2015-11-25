@@ -18,12 +18,6 @@ def parse_markdown_readme():
     except OSError:
         return LONG_DESCRIPTION
 
-    else:
-        # Pandoc's RST tables don't work with rst2html...
-        subprocess.call(
-            ['patch', 'README.rst', 'README.rst.patch']
-        )
-
     # Attempt to load output
     try:
         readme = open('README.rst')
