@@ -268,7 +268,7 @@ class TimeSeriesView(PandasView):
 With the above example data, this configuration would output a CSV file with the following layout:
 
 &nbsp; | Value | Value | Value
----|---|---
+---|---|---|---
 **Location** | *site1* | *site1* | *site2*
 **Measurement** | *temperature* | *humidity* | *temperature*
 **Date** | | |
