@@ -241,14 +241,14 @@ For documentation purposes, the examples below assume the following dataset:
 ### PandasUnstackedSerializer
 `PandasUnstackedSerializer` [unstacks] the dataframe so a few key attributes are listed in a multi-row column header.  This makes it easier to include metadata about e.g. a time series without repeating the same values on every data row.
 
-To specify which attributes to use in column headers, define the attribute `pandas_unstacked_header` on your `ModelSerializer` subclass.  This header would usually contain information that distinguiYou will generally also want to define `pandas_index`, which is a list of metadata fields unique to each row (e.g. the timestamp).
+To specify which attributes to use in column headers, define the attribute `pandas_unstacked_header` on your `ModelSerializer` subclass.  You will generally also want to define `pandas_index`, which is a list of metadata fields unique to each row (e.g. the timestamp).
 
 ```python
 # serializers.py
 from rest_framework import serializers
 from .models import TimeSeries
 
-class TimeSeriesSerializer(ModelSerializer):
+class TimeSeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = MultiTimeSeries
         pandas_index = ['date']
@@ -272,8 +272,37 @@ With the above example data, this configuration would output a CSV file with the
 **Location** | *site1* | *site1* | *site2*
 **Measurement** | *temperature* | *humidity* | *temperature*
 **Date** | | |
-2014-01-01 | 3 | 30 | 4
-2014-01-02 | | | 5
+2016-01-01 | 3 | 30 | 4
+2016-01-02 | | | 5
+
+This could then be processed by [wq/pandas.js] into the following structure:
+
+```javascript
+[
+    {
+        "location": "site1",
+        "measurement": "temperature",
+        "data": [
+            {"date": "2016-01-01", "value": 3}
+        ]
+    },
+    {
+        "location": "site1",
+        "measurement": "humidity",
+        "data": [
+            {"date": "2016-01-01", "value": 30}
+        ]
+    },
+    {
+        "location": "site2",
+        "measurement": "temperature",
+        "data": [
+            {"date": "2016-01-01", "value": 4},
+            {"date": "2016-01-02", "value": 5}
+        ]
+    }
+]
+```
 
 The output of `PandasUnstackedSerializer` can be used with the `timeSeries()` chart provided by [wq/chart.js]:
 
@@ -290,7 +319,90 @@ pandas.get('/data/timeseries.csv', function(data) {
 ```
 
 ### PandasScatterSerializer
-FIXME: add details
+`PandasScatterSerializer` unstacks the dataframe and also combines selected attributes to make it easier to plot two measurements against each other in an x-y scatterplot.
+
+To specify which attributes to use for the coordinate names, define the attribute `pandas_scatter_coord` on your `ModelSerializer` subclass.  You can also specify additional metadata attributes to include in the header with `pandas_scatter_header`.  You will generally also want to define `pandas_index`, which is a list of metadata fields unique to each row (e.g. the timestamp).
+
+```python
+# serializers.py
+from rest_framework import serializers
+from .models import TimeSeries
+
+class TimeSeriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MultiTimeSeries
+        pandas_index = ['date']
+        pandas_scatter_coord = ['measurement']
+        pandas_scatter_header = ['location']
+
+# views.py
+from rest_pandas import PandasView, ScatterSerializer
+from .models import TimeSeries
+from .serializers import TimeSeriesSerializer
+
+class TimeSeriesView(PandasView):
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
+    pandas_serializer_class = PandasUnstackedSerializer
+```
+
+With the above example data, this configuration would output a CSV file with the following layout:
+
+&nbsp; | temperature-value | humidity-value | temperature-value
+---|---|---|---
+**Location** | *site1* | *site1* | *site2*
+**Date** | | |
+2014-01-01 | 3 | 30 | 4
+2014-01-02 | | | 5
+
+This could then be processed by [wq/pandas.js] into the following structure:
+
+```javascript
+[
+    {
+        "location": "site1",
+        "data": [
+            {
+                "date": "2016-01-01",
+                "temperature-value": 3,
+                "humidity-value": 30
+            }
+        ]
+    },
+    {
+        "location": "site2",
+        "data": [
+            {
+                "date": "2016-01-01",
+                "temperature-value": 4
+            },
+            {
+                "date": "2016-01-01",
+                "temperature-value": 4
+            }
+        ]
+    }
+]
+```
+
+The output of `PandasScatterSerializer` can be used with the `scatter()` chart provided by [wq/chart.js]:
+
+```javascript
+define(['d3', 'wq/pandas', 'wq/chart'], function(d3, pandas, chart) {
+
+var svg = d3.select('svg');
+var plot = chart.scatter()
+    .xvalue(function(d) {
+        return d['temperature-value'];
+    })
+    .yvalue(function(d) {
+        return d['humidity-value'];
+    });
+
+pandas.get('/data/scatter.csv', function(data) {
+    svg.datum(data).call(plot);
+});
+```
 
 ### PandasBoxplotSerializer
 FIXME: add details
