@@ -1,11 +1,6 @@
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
-from wq.io import ExcelFileIO
-
-
-class TestExcelIO(ExcelFileIO):
-    header_row = 0
-    start_row = 2
+from wq.io import load_file
 
 
 class ExcelTestCase(APITestCase):
@@ -26,7 +21,7 @@ class ExcelTestCase(APITestCase):
         xlfile.write(response.content)
         xlfile.close()
 
-        data = TestExcelIO(filename="tests/output.xls")
+        data = load_file("tests/output.xls")
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].date.year, 2014)
         self.assertEqual(data[0].value, 0.5)
@@ -37,7 +32,7 @@ class ExcelTestCase(APITestCase):
         xlfile.write(response.content)
         xlfile.close()
 
-        data = TestExcelIO(filename="tests/output.xlsx")
+        data = load_file("tests/output.xlsx")
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].date.year, 2014)
         self.assertEqual(data[0].value, 0.5)
