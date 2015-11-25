@@ -1,8 +1,10 @@
 from rest_framework.test import APITestCase
+from rest_pandas import USE_LIST_SERIALIZERS
 from tests.testapp.models import TimeSeries
 from wq.io import load_string
 import json
 import datetime
+import unittest
 
 
 class PandasTestCase(APITestCase):
@@ -55,6 +57,7 @@ class PandasTestCase(APITestCase):
         self.assertEqual(len(data), 4)
         self.assertEqual(data[0].x, '5')
 
+    @unittest.skipUnless(USE_LIST_SERIALIZERS, "requires DRF 3")
     def test_from_file(self):
         response = self.client.get("/fromfile.csv")
         data = self.load_string(response)

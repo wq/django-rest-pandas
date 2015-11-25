@@ -33,6 +33,9 @@ Forks| |GitHub Issues|
 |Travis Build Status| |Python Support| |Django Support| |Django REST
 Framework Support|
 
+**Note:** Support for Django REST Framework 2.4 will be dropped in DRP
+0.5.
+
 Live Demo
 ---------
 
