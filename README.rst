@@ -129,6 +129,22 @@ Getting Started
 
     pip3 install rest-pandas
 
+**NOTE:** Django REST Pandas relies on pandas, which itself relies on
+NumPy and other scientific Python libraries. If you are having trouble
+installing DRP due to dependency issues, you may want to pre-install
+Pandas using another tool. For example, on Ubuntu 14.04 LTS you can
+pre-install pandas using this command:
+
+.. code:: bash
+
+    sudo apt-get install python3-pandas
+    sudo pip3 install rest-pandas
+
+The `pandas documentation <http://pandas.pydata.org>`__ recommends using
+conda to install pandas for similar reasons. We've found the apt-get
+approach to be the fastest route to getting DRP running with the default
+Apache WSGI implementation on Ubuntu.
+
 Usage Example
 ~~~~~~~~~~~~~
 
@@ -352,5 +368,5 @@ DRF views.
    :target: https://pypi.python.org/pypi/rest-pandas
 .. |Django Support| image:: https://img.shields.io/badge/Django-1.7%2C%201.8-blue.svg
    :target: https://pypi.python.org/pypi/rest-pandas
-.. |Django REST Framework Support| image:: https://img.shields.io/badge/DRF-2.4%2C%203.1-blue.svg
+.. |Django REST Framework Support| image:: https://img.shields.io/badge/DRF-2.4%2C%203.3-blue.svg
    :target: https://pypi.python.org/pypi/rest-pandas
