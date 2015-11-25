@@ -199,7 +199,7 @@ urlpatterns = format_suffix_patterns(urlpatterns)
 
 The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's [ViewSets] and [Routers].
 
-## Building Interactive Charts with DRP and d3.js
+## Building Interactive Charts
 
 In addition to use as a data export tool, DRP is well-suited for creating data API backends for interactive charts.  In particular, DRP can be used with [d3.js], [wq/pandas.js], and [wq/chart.js], to create interactive time series, scatter, and box plot charts - as well as any of the infinite other charting possibilities d3.js provides.
 
@@ -402,6 +402,8 @@ var plot = chart.scatter()
 pandas.get('/data/scatter.csv', function(data) {
     svg.datum(data).call(plot);
 });
+
+});
 ```
 
 ### PandasBoxplotSerializer
@@ -436,11 +438,11 @@ With the above example data, this configuration will output a CSV file with the 
 
 name | purpose
 -----|---------
-?group=series | Group by series (`pandas_boxplot_group`)
-?group=series-year | Group by series, then by year
-?group=series-month | Group by series, then by month
-?group=year | Summarize all data by year
-?group=month | Summarize all data by month
+`?group=series` | Group by series (`pandas_boxplot_group`)
+`?group=series-year` | Group by series, then by year
+`?group=series-month` | Group by series, then by month
+`?group=year` | Summarize all data by year
+`?group=month` | Summarize all data by month
 
 The output of `PandasBoxplotSerializer` can be used with the `boxplot()` chart provided by [wq/chart.js]:
 
@@ -451,6 +453,8 @@ var svg = d3.select('svg');
 var plot = chart.boxplot();
 pandas.get('/data/boxplot.csv?group=year', function(data) {
     svg.datum(data).call(plot);
+});
+
 });
 ```
 
