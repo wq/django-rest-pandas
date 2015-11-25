@@ -203,7 +203,7 @@ The default `PandasView` will serve up all of the available data from the provid
 
 In addition to use as a data export tool, DRP is well-suited for creating data API backends for interactive charts.  In particular, DRP can be used with [d3.js], [wq/pandas.js], and [wq/chart.js], to create interactive time series, scatter, and box plot charts - as well as any of the infinite other charting possibilities d3.js provides.
 
-To facilitate data API building, the CSV renderer is the default in Django REST Pandas.  While the pandas JSON serializer is improving, the primary reason for making CSV the default is the compactness it provides over JSON when serializing time series data.  The default CSV output from DRP will have single row of column headers, making it suitable as-is for use with e.g. d3.csv().   However, DRP is often used with the custom serializers below to produce a dataframe with nested multi-row column headers.  This is harder to parse with `d3.csv()` but can be easily processed by [wq/pandas.js], an extension to d3.js.
+To facilitate data API building, the CSV renderer is the default in Django REST Pandas.  While the pandas JSON serializer is improving, the primary reason for making CSV the default is the compactness it provides over JSON when serializing time series data.  The default CSV output from DRP will have single row of column headers, making it suitable as-is for use with e.g. `d3.csv()`.   However, DRP is often used with the custom serializers below to produce a dataframe with nested multi-row column headers.  This is harder to parse with `d3.csv()` but can be easily processed by [wq/pandas.js], an extension to d3.js.
 
 ```javascript
 // mychart.js
@@ -267,10 +267,10 @@ class TimeSeriesView(PandasView):
 
 With the above example data, this configuration would output a CSV file with the following layout:
 
-&nbsp; | Value | Value
+&nbsp; | Value | Value | Value
 ---|---|---
-**Location** | site1 | site1 | site2
-**Measurement** | temperature | humidity | temperature
+**Location** | *site1* | *site1* | *site2*
+**Measurement** | *temperature* | *humidity* | *temperature*
 **Date** | | |
 2014-01-01 | 3 | 30 | 4
 2014-01-02 | | | 5

@@ -293,7 +293,7 @@ Django REST Pandas. While the pandas JSON serializer is improving, the
 primary reason for making CSV the default is the compactness it provides
 over JSON when serializing time series data. The default CSV output from
 DRP will have single row of column headers, making it suitable as-is for
-use with e.g. d3.csv(). However, DRP is often used with the custom
+use with e.g. ``d3.csv()``. However, DRP is often used with the custom
 serializers below to produce a dataframe with nested multi-row column
 headers. This is harder to parse with ``d3.csv()`` but can be easily
 processed by `wq/pandas.js <http://wq.io/docs/pandas-js>`__, an
@@ -386,19 +386,19 @@ is a list of metadata fields unique to each row (e.g. the timestamp).
 With the above example data, this configuration would output a CSV file
 with the following layout:
 
-+-------------------+---------------+------------+---------------+
-|                   | Value         | Value      |
-+===================+===============+============+===============+
-| **Location**      | site1         | site1      | site2         |
-+-------------------+---------------+------------+---------------+
-| **Measurement**   | temperature   | humidity   | temperature   |
-+-------------------+---------------+------------+---------------+
-| **Date**          |               |            |
-+-------------------+---------------+------------+---------------+
-| 2014-01-01        | 3             | 30         | 4             |
-+-------------------+---------------+------------+---------------+
-| 2014-01-02        |               |            | 5             |
-+-------------------+---------------+------------+---------------+
++-------------------+-----------------+--------------+-----------------+
+|                   | Value           | Value        | Value           |
++===================+=================+==============+=================+
+| **Location**      | *site1*         | *site1*      | *site2*         |
++-------------------+-----------------+--------------+-----------------+
+| **Measurement**   | *temperature*   | *humidity*   | *temperature*   |
++-------------------+-----------------+--------------+-----------------+
+| **Date**          |                 |              |
++-------------------+-----------------+--------------+-----------------+
+| 2014-01-01        | 3               | 30           | 4               |
++-------------------+-----------------+--------------+-----------------+
+| 2014-01-02        |                 |              | 5               |
++-------------------+-----------------+--------------+-----------------+
 
 The output of ``PandasUnstackedSerializer`` can be used with the
 ``timeSeries()`` chart provided by
