@@ -19,7 +19,7 @@ DRP does not include any JavaScript code, leaving the implementation of interact
 
 [![Travis Build Status](https://img.shields.io/travis/wq/django-rest-pandas.svg)](https://travis-ci.org/wq/django-rest-pandas)
 [![Python Support](https://img.shields.io/pypi/pyversions/rest-pandas.svg)](https://pypi.python.org/pypi/rest-pandas)
-[![Django Support](https://img.shields.io/badge/Django-1.7%2C%201.8-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
+[![Django Support](https://img.shields.io/badge/Django-1.7%2C%201.8%2C%201.9-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
 [![Django REST Framework Support](https://img.shields.io/badge/DRF-2.4%2C%203.3-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
 
 **Note:** Support for Django REST Framework 2.4 will be dropped in DRP 0.5.
@@ -73,7 +73,7 @@ The underlying implementation is a set of [serializers] that take the normal ser
 pip3 install rest-pandas
 ```
 
-**NOTE:** Django REST Pandas relies on pandas, which itself relies on NumPy and other scientific Python libraries.  If you are having trouble installing DRP due to dependency issues, you may want to pre-install Pandas using another tool.  For example, on Ubuntu 14.04 LTS you can pre-install pandas using this command:
+**NOTE:** Django REST Pandas relies on pandas, which itself relies on NumPy and other scientific Python libraries.  If you are having trouble installing DRP due to dependency issues, you may want to pre-install pandas using another tool.  For example, on Ubuntu 14.04 LTS you can pre-install pandas using this command:
 
 ```bash
 sudo apt-get install python3-pandas
@@ -92,7 +92,6 @@ The example below allows you to create a simple API for an existing Pandas DataF
 # views.py
 from rest_pandas import PandasSimpleView
 import pandas as pd
-
 
 class TimeSeriesView(PandasSimpleView):
     def get_data(self):
