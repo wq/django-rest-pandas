@@ -55,11 +55,11 @@ The HTTP header and format parameter are enabled by default on every pandas view
 
 Format | Content Type | pandas DataFrame Function | Notes
 -------|--------------|---------------------------|--------
-CSV    | `text/csv` | `to_csv()` |
+CSV    | `text/csv` | `to_csv()` | &nbsp;
 TXT    | `text/plain` | `to_csv()` | Useful for testing, as most browsers will download a CSV file instead of displaying it
-JSON   | `application/json` | `to_json()` |
-XLSX   | `application/vnd.openxml...sheet` | `to_excel()` |
-XLS    | `application/vnd.ms-excel` | `to_excel()` 
+JSON   | `application/json` | `to_json()` | &nbsp;
+XLSX   | `application/vnd.openxml...sheet` | `to_excel()` | &nbsp;
+XLS    | `application/vnd.ms-excel` | `to_excel()` | &nbsp;
 PNG    | `image/png` | `plot()` | Currently not very customizable, but a simple way to view the data as an image. 
 SVG    | `image/svg` | `plot()` | Eventually these could become a fallback for clients that can't handle d3.js
 
@@ -270,7 +270,7 @@ With the above example data, this configuration would output a CSV file with the
 ---|---|---|---
 **Location** | *site1* | *site1* | *site2*
 **Measurement** | *temperature* | *humidity* | *temperature*
-**Date** | | |
+**Date** | | | &nbsp;
 2016-01-01 | 3 | 30 | 4
 2016-01-02 | | | 5
 
@@ -350,7 +350,7 @@ With the above example data, this configuration would output a CSV file with the
 &nbsp; | temperature-value | humidity-value | temperature-value
 ---|---|---|---
 **Location** | *site1* | *site1* | *site2*
-**Date** | | |
+**Date** | | | &nbsp;
 2014-01-01 | 3 | 30 | 4
 2014-01-02 | | | 5
 
