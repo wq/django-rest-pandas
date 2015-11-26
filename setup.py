@@ -28,7 +28,7 @@ def parse_markdown_readme():
 
 setup(
     name='rest-pandas',
-    version='0.3.2',
+    version='0.4.0',
     author='S. Andrew Sheppard',
     author_email='andrew@wq.io',
     url='https://github.com/wq/django-rest-pandas',
