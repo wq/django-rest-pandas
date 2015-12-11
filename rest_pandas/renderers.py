@@ -11,6 +11,7 @@ except ImportError:
     from io import StringIO
 
 import os
+from io import BytesIO
 
 
 class PandasBaseRenderer(BaseRenderer):
@@ -148,7 +149,7 @@ class PandasImageRenderer(PandasBaseRenderer):
         return {'ax': self.ax}
 
     def get_output(self):
-        data = StringIO()
+        data = BytesIO()
         self.fig.savefig(data, format=self.format)
         return data.getvalue()
 
