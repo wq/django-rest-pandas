@@ -47,7 +47,7 @@ In summary, DRP is designed for use cases where:
 
 The following output formats are provided by default.  These are provided as [renderer classes] in order to leverage the content type negotiation built into Django REST Framework.  This means clients can specify a format via:
 
- * an HTTP "Accepts" header (`Accepts: text/csv`),
+ * an HTTP "Accept" header (`Accept: text/csv`),
  * a format parameter (`/path?format=csv`), or
  * a format extension (`/path.csv`)
 
