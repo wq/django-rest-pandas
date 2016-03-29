@@ -8,10 +8,6 @@ if hasattr(serializers, 'ListSerializer'):
     # Django REST Framework 3
     BaseSerializer = serializers.ListSerializer
     USE_LIST_SERIALIZERS = True
-else:
-    # Django REST Framework 2
-    BaseSerializer = serializers.Serializer
-    USE_LIST_SERIALIZERS = False
 
 
 class PandasSerializer(BaseSerializer):
