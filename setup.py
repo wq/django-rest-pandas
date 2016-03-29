@@ -2,7 +2,8 @@ import subprocess
 from setuptools import setup, find_packages
 
 LONG_DESCRIPTION = """
-Serves up pandas dataframes via the Django REST Framework for client-side (i.e. d3.js) visualizations
+Serves up pandas dataframes via the Django REST Framework for client-side
+(i.e. d3.js) visualizations
 """
 
 
@@ -37,8 +38,8 @@ setup(
     description=LONG_DESCRIPTION.strip(),
     long_description=parse_markdown_readme(),
     install_requires=[
-        'djangorestframework>=2.3.12',
-        'pandas>=0.13.0',
+        'djangorestframework>=3.3.1',
+        'pandas>=0.18.0',
     ],
     classifiers=[
         'Framework :: Django',
@@ -50,6 +51,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Scientific/Engineering :: Visualization',
     ],
