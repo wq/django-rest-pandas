@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -11,7 +11,7 @@ from .views import (
 router = DefaultRouter()
 router.register('timeseries', TimeSeriesViewSet)
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^nomodel$', NoModelView.as_view()),  # noqa
     url(r'^fromfile$', FromFileView.as_view()),
     url(r'^timeseries$', TimeSeriesView.as_view()),
@@ -21,8 +21,8 @@ urlpatterns = patterns('',
     url(r'^complextimeseries$', ComplexTimeSeriesView.as_view()),
     url(r'^complexscatter$', ComplexScatterView.as_view()),
     url(r'^complexboxplot$', ComplexBoxplotView.as_view()),
-)
+]
 urlpatterns = format_suffix_patterns(urlpatterns)
-urlpatterns += patterns('',
+urlpatterns += [
     url(r'^router/', include(router.urls)),  # noqa
-)
+]
