@@ -7,8 +7,7 @@ python:
 env:
   matrix:
     - DJANGO="django==1.8.11" REST="djangorestframework==3.3.3"
-    - DJANGO="django==1.8.11" REST="djangorestframework==3.3.3" LINT=1
-    - DJANGO="django>=1.9.4" REST="djangorestframework==3.3.3"
+    - DJANGO="django==1.9.4" REST="djangorestframework==3.3.3"
   global:
     - PANDAS="pandas>=0.18"
 install:
