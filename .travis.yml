@@ -3,16 +3,14 @@ sudo: false
 python:
  - "2.7"
  - "3.4"
+ - "3.5"
 env:
   matrix:
-    - DJANGO="django==1.7.11" REST="djangorestframework==2.4.8"
-    - DJANGO="django==1.7.11" REST="djangorestframework==3.2.3"
-    - DJANGO="django==1.8.7" REST="djangorestframework==2.4.8"
-    - DJANGO="django==1.8.7" REST="djangorestframework==3.3.1"
-    - DJANGO="django==1.8.7" REST="djangorestframework==3.3.1" LINT=1
-    - DJANGO="django==1.9rc2" REST="djangorestframework==3.3.1"
+    - DJANGO="django>=1.8, <1.10" REST="djangorestframework==3.3.3"
+    - DJANGO="django==1.8, <1.10" REST="djangorestframework==3.3.3" LINT=1
+    - DJANGO="django>=1.9, <1.10" REST="djangorestframework==3.3.3"
   global:
-    - PANDAS="pandas==0.17.1"
+    - PANDAS="pandas>=0.18"
 install:
  - pip install $DJANGO
  - pip install $REST
