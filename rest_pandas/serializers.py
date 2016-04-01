@@ -149,9 +149,9 @@ class PandasScatterSerializer(PandasSerializer):
         Include scatter & header fields in initial index for later unstacking
         """
         return (
-            self.get_index_fields()
-            + self.get_header_fields()
-            + self.get_coord_fields()
+            self.get_index_fields() +
+            self.get_header_fields() +
+            self.get_coord_fields()
         )
 
     def transform_dataframe(self, dataframe):
