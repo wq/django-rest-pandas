@@ -4,13 +4,6 @@ from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
 from rest_pandas import USE_LIST_SERIALIZERS
 
 
-if not USE_LIST_SERIALIZERS:
-    # DRF 2.4 appended 00:00:00 to dates
-    class DateField(DateField):
-        def to_native(self, date):
-            return str(date)
-
-
 class TimeSeriesSerializer(ModelSerializer):
     class Meta:
         model = TimeSeries
