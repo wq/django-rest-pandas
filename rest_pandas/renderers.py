@@ -60,7 +60,7 @@ class PandasFileRenderer(PandasBaseRenderer):
     def init_output(self):
         file, filename = mkstemp(suffix='.' + self.format)
         self.filename = filename
-        file.close()
+        os.close(file)
 
     def get_pandas_args(self, data):
         return [self.filename]
