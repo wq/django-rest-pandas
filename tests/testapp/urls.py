@@ -12,7 +12,7 @@ router = DefaultRouter()
 router.register('timeseries', TimeSeriesViewSet)
 
 urlpatterns = [
-    url(r'^nomodel$', NoModelView.as_view()),  # noqa
+    url(r'^nomodel$', NoModelView.as_view()),
     url(r'^fromfile$', FromFileView.as_view()),
     url(r'^timeseries$', TimeSeriesView.as_view()),
     url(r'^multitimeseries$', MultiTimeSeriesView.as_view()),
@@ -24,5 +24,5 @@ urlpatterns = [
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
 urlpatterns += [
-    url(r'^router/', include(router.urls)),  # noqa
+    url(r'^router/', include(router.urls)),
 ]

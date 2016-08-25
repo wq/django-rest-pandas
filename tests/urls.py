@@ -1,4 +1,4 @@
 from django.conf.urls import include, url
 urlpatterns = [
-    url(r'^', include('tests.testapp.urls'))  # noqa
+    url(r'^', include('tests.testapp.urls'))
 ]
