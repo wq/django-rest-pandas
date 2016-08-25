@@ -2,7 +2,7 @@ from .views import (
     PandasMixin,
     PandasSimpleView,
     PandasView,
-    PandasViewset,
+    PandasViewSet,
 )
 from .serializers import (
     PandasSerializer,
@@ -10,6 +10,7 @@ from .serializers import (
     PandasScatterSerializer,
     PandasBoxplotSerializer,
     SimpleSerializer,
+    USE_LIST_SERIALIZERS,
 )
 from .renderers import (
     PandasBaseRenderer,
@@ -29,13 +30,14 @@ __all__ = [
     'PandasMixin',
     'PandasSimpleView',
     'PandasView',
-    'PandasViewset',
+    'PandasViewSet',
 
     'PandasSerializer',
     'PandasUnstackedSerializer',
     'PandasScatterSerializer',
     'PandasBoxplotSerializer',
     'SimpleSerializer',
+    'USE_LIST_SERIALIZERS',
 
     'PandasBaseRenderer',
     'PandasFileRenderer',
