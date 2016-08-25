@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
-urlpatterns = patterns('',
+from django.conf.urls import include, url
+urlpatterns = [
     url(r'^', include('tests.testapp.urls'))  # noqa
-)
+]
