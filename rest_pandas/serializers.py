@@ -30,7 +30,10 @@ class PandasSerializer(BaseSerializer):
         if index:
             if self.index_none_value is not None:
                 for key in index:
-                    dataframe[key].fillna(self.index_none_value, inplace=True)
+                    try:
+                        dataframe[key].fillna(self.index_none_value, inplace=True)
+                    except ValueError:
+                        pass
             dataframe.set_index(index, inplace=True)
         else:
             # Name auto-index column to ensure valid CSV output
