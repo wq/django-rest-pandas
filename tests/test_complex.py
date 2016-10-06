@@ -38,18 +38,18 @@ class ComplexTestCase(APITestCase):
     def test_complex_series(self):
         response = self.client.get("/complextimeseries.csv")
         self.assertEqual(
-            """,,flag,value,value,value
-            units,,cfs,-,cfs,cfs
-            parameter,,flow,height,flow,flow
-            site,,site1,site1,site1,site2
+            """,,value,value,value,flag
+            units,,-,cfs,cfs,cfs
+            parameter,,height,flow,flow,flow
+            site,,site1,site1,site2,site1
             date,type,,,,
-            2015-01-01,routine,,0.5,,0.0
-            2015-01-01,special,,,0.7,
-            2015-01-02,routine,,0.4,0.8,0.7
-            2015-01-03,routine,Q,0.6,0.0,0.2
-            2015-01-04,routine,,,0.9,0.3
-            2015-01-04,special,,0.2,,
-            2015-01-05,routine,,0.1,0.3,0.8
+            2015-01-01,routine,0.5,,0.0,
+            2015-01-01,special,,0.7,,
+            2015-01-02,routine,0.4,0.8,0.7,
+            2015-01-03,routine,0.6,0.0,0.2,Q
+            2015-01-04,routine,,0.9,0.3,
+            2015-01-04,special,0.2,,,
+            2015-01-05,routine,0.1,0.3,0.8,
             """.replace(' ', ''),
             response.content.decode('utf-8'),
         )
