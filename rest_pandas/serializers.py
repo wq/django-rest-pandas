@@ -31,7 +31,9 @@ class PandasSerializer(BaseSerializer):
             if self.index_none_value is not None:
                 for key in index:
                     try:
-                        dataframe[key].fillna(self.index_none_value, inplace=True)
+                        dataframe[key].fillna(
+                            self.index_none_value, inplace=True
+                        )
                     except ValueError:
                         pass
             dataframe.set_index(index, inplace=True)
