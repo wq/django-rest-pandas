@@ -1,11 +1,5 @@
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
-import unittest
-
-try:
-    import matplotlib
-except ImportError:
-    matplotlib = None
 
 
 class ImageTestCase(APITestCase):
@@ -20,13 +14,11 @@ class ImageTestCase(APITestCase):
         for date, value in data:
             TimeSeries.objects.create(date=date, value=value)
 
-    @unittest.skipUnless(matplotlib, "requires matplotlib")
     def test_png(self):
         response = self.client.get("/timeseries.png")
         header = response.content[1:4]
         self.assertEqual(header, b"PNG")
 
-    @unittest.skipUnless(matplotlib, "requires matplotlib")
     def test_svg(self):
         response = self.client.get("/timeseries.svg")
         header = response.content[2:5]

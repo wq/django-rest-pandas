@@ -3,11 +3,6 @@ from tests.testapp.models import MultiTimeSeries
 from tests.testapp.serializers import NotUnstackableSerializer
 from rest_pandas.test import parse_csv
 from django.core.exceptions import ImproperlyConfigured
-import unittest
-try:
-    from matplotlib.cbook import boxplot_stats
-except ImportError:
-    boxplot_stats = None
 
 
 class MultiTestCase(APITestCase):
@@ -77,7 +72,6 @@ class MultiTestCase(APITestCase):
             response.content.decode('utf-8')
         )
 
-    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_multi_boxplot(self):
         # Default: group=series-year
         response = self.client.get("/multiboxplot.csv")
@@ -102,7 +96,6 @@ class MultiTestCase(APITestCase):
         self.assertEqual(round(stats['value-mean'], 8), 0.54)
         self.assertEqual(stats['value-whishi'], 0.9)
 
-    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_multi_boxplot_series(self):
         response = self.client.get("/multiboxplot.csv?group=series")
         datasets = self.parse_csv(response)[0]['data']
@@ -124,7 +117,6 @@ class MultiTestCase(APITestCase):
         self.assertEqual(round(stats['value-mean'], 8), 0.54)
         self.assertEqual(stats['value-whishi'], 0.9)
 
-    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_multi_boxplot_series_month(self):
         response = self.client.get("/multiboxplot.csv?group=series-month")
 
@@ -148,7 +140,6 @@ class MultiTestCase(APITestCase):
         self.assertEqual(round(stats['value-mean'], 8), 0.54)
         self.assertEqual(stats['value-whishi'], 0.9)
 
-    @unittest.skipUnless(boxplot_stats, "test requires matplotlib 1.4+")
     def test_multi_boxplot_year(self):
         response = self.client.get("/multiboxplot.csv?group=year")
 
