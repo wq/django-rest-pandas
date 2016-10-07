@@ -14,8 +14,9 @@ env:
     - REST="djangorestframework==3.4.6"
     - PANDAS="pandas>=0.18"
 install:
- - pip install --only-binary=pandas $DJANGO $REST $PANDAS
- - pip install --only-binary=matplotlib
+ - pip install --upgrade pip
+ - pip install $DJANGO $REST $PANDAS
+ - pip install matplotlib
  - pip install flake8
 script:
  - ./runtests.sh
