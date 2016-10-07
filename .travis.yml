@@ -14,9 +14,8 @@ env:
     - REST="djangorestframework==3.4.6"
     - PANDAS="pandas>=0.18"
 install:
- - pip install $DJANGO
- - pip install $REST
- - pip install $PANDAS
+ - pip install cython # To build pandas on older pip versions
+ - pip install $DJANGO $REST $PANDAS
  - pip install matplotlib
  - pip install flake8
 script:
