@@ -17,14 +17,14 @@
         {{/description}}
         <div data-role="controlgroup" data-type="horizontal" data-mini="true">
           {{#available_formats}}
-          <a href="{{url}}.{{.}}" rel="external" class="ui-btn ui-corner-all">
+          <a href="{{url}}.{{.}}{{url_params}}" rel="external" class="ui-btn ui-corner-all">
             {{.}}
           </a>
           {{/available_formats}}
         </div>
         {{#wq_chart_type}}
         <hr>
-        <svg data-wq-url="{{url}}.csv" data-wq-type="{{wq_chart_type}}"></svg>
+        <svg data-wq-url="{{url}}.csv{{url_params}}" data-wq-type="{{wq_chart_type}}"></svg>
         {{/wq_chart_type}}
         <hr>
         {{{table}}}

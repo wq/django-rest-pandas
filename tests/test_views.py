@@ -42,7 +42,7 @@ class PandasTestCase(APITestCase):
         self.assertEqual(date, datetime.datetime(2014, 1, 1))
 
     def test_view_html(self):
-        response = self.client.get("/timeseries")
+        response = self.client.get("/timeseries?test=1")
         expected = open(
             os.path.join(os.path.dirname(__file__), 'files', 'timeseries.html')
         ).read()

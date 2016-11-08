@@ -94,6 +94,9 @@ class PandasHTMLRenderer(TemplateHTMLRenderer, PandasBaseRenderer):
         data['name'] = view.get_view_name()
         data['description'] = view.get_view_description(html=True)
         data['url'] = request.path.replace('.html', '')
+        full_path = request.get_full_path()
+        if '?' in full_path:
+            data['url_params'] = full_path[full_path.index('?'):]
         data['available_formats'] = [
             cls.format for cls in view.renderer_classes
             if cls.format != 'html'

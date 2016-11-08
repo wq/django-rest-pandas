@@ -27,6 +27,9 @@ class FromFileView(PandasSimpleView):
 
 
 class TimeSeriesView(PandasView):
+    """
+    A simple time series view.
+    """
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesSerializer
 
@@ -41,6 +44,9 @@ class TimeSeriesViewSet(PandasViewSet):
 
 
 class MultiTimeSeriesView(PandasView):
+    """
+    Multiple time series.
+    """
     queryset = MultiTimeSeries.objects.all()
     serializer_class = MultiTimeSeriesSerializer
     pandas_serializer_class = PandasUnstackedSerializer
