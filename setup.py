@@ -29,7 +29,7 @@ def parse_markdown_readme():
 
 setup(
     name='rest-pandas',
-    version='0.4.1',
+    version='0.5.0',
     author='S. Andrew Sheppard',
     author_email='andrew@wq.io',
     url='https://github.com/wq/django-rest-pandas',
@@ -57,6 +57,10 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Framework :: Django',
+        'Framework :: Django :: 1.8',
+        'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.10',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Scientific/Engineering :: Visualization',
     ],
