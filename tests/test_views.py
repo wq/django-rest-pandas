@@ -3,6 +3,7 @@ from tests.testapp.models import TimeSeries
 from wq.io import load_string
 import json
 import datetime
+import os
 
 
 class PandasTestCase(APITestCase):
@@ -17,7 +18,7 @@ class PandasTestCase(APITestCase):
         for date, value in data:
             TimeSeries.objects.create(date=date, value=value)
 
-    def test_view(self):
+    def test_view_csv(self):
         response = self.client.get("/timeseries.csv")
         data = self.load_string(response)
         self.assertEqual(len(data), 5)
@@ -39,6 +40,13 @@ class PandasTestCase(APITestCase):
         self.assertEqual(data[0]["value"], 0.5)
         date = datetime.datetime.utcfromtimestamp(data[0]["date"] / 1000)
         self.assertEqual(date, datetime.datetime(2014, 1, 1))
+
+    def test_view_html(self):
+        response = self.client.get("/timeseries")
+        expected = open(
+            os.path.join(os.path.dirname(__file__), 'files', 'timeseries.html')
+        ).read()
+        self.assertHTMLEqual(expected, response.content.decode('utf-8'))
 
     def test_viewset(self):
         response = self.client.get("/router/timeseries.csv")

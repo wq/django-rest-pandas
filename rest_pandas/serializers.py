@@ -10,6 +10,7 @@ class PandasSerializer(serializers.ListSerializer):
     """
     read_only = True
     index_none_value = None
+    wq_chart_type = None
 
     def get_index(self, dataframe):
         return self.get_index_fields()
@@ -95,6 +96,7 @@ class PandasUnstackedSerializer(PandasSerializer):
     (Use with wq/chart.js' timeSeries() function)
     """
     index_none_value = '-'
+    wq_chart_type = 'timeSeries'
 
     def get_index(self, dataframe):
         """
@@ -133,6 +135,7 @@ class PandasScatterSerializer(PandasSerializer):
     (Use with wq/chart.js' scatter() function)
     """
     index_none_value = '-'
+    wq_chart_type = 'scatter'
 
     def get_index(self, dataframe):
         """
@@ -203,6 +206,7 @@ class PandasBoxplotSerializer(PandasSerializer):
     (Use with wq/chart.js' boxplot() function)
     """
     index_none_value = '-'
+    wq_chart_type = 'boxplot'
 
     def get_index(self, dataframe):
         group_field = self.get_group_field()

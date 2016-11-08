@@ -35,11 +35,16 @@ setup(
     url='https://github.com/wq/django-rest-pandas',
     license='MIT',
     packages=['rest_pandas'],
+    package_data={
+        'rest_pandas': [
+            'mustache/*.*',
+        ]
+    },
     description=LONG_DESCRIPTION.strip(),
     long_description=parse_markdown_readme(),
     install_requires=[
         'djangorestframework>=3.3.1',
-        'pandas>=0.13.0',
+        'pandas>=0.19.0',
     ],
     classifiers=[
         'Framework :: Django',
@@ -56,5 +61,8 @@ setup(
         'Topic :: Scientific/Engineering :: Visualization',
     ],
     test_suite='tests',
-    tests_require=['wq.io', 'xlwt', 'openpyxl', 'matplotlib'],
+    tests_require=[
+        'wq.io', 'xlwt', 'openpyxl', 'matplotlib',
+        'django', 'django-mustache'
+    ],
 )

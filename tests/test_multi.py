@@ -3,6 +3,7 @@ from tests.testapp.models import MultiTimeSeries
 from tests.testapp.serializers import NotUnstackableSerializer
 from rest_pandas.test import parse_csv
 from django.core.exceptions import ImproperlyConfigured
+import os
 
 
 class MultiTestCase(APITestCase):
@@ -58,6 +59,13 @@ class MultiTestCase(APITestCase):
         d0 = s2data['data'][4]
         self.assertEqual(d0['date'], '2015-01-05')
         self.assertEqual(d0['value'], 0.3)
+
+    def test_multi_series_html(self):
+        response = self.client.get("/multitimeseries.html")
+        expected = open(os.path.join(
+            os.path.dirname(__file__), 'files', 'multitimeseries.html'
+        )).read()
+        self.assertHTMLEqual(expected, response.content.decode('utf-8'))
 
     def test_multi_scatter(self):
         response = self.client.get("/multiscatter.csv")

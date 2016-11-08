@@ -1,4 +1,4 @@
-from rest_framework.renderers import BaseRenderer
+from rest_framework.renderers import BaseRenderer, TemplateHTMLRenderer
 from rest_framework import status
 from tempfile import mkstemp
 from pandas import DataFrame
@@ -73,6 +73,44 @@ class PandasFileRenderer(PandasBaseRenderer):
         return result
 
 
+class PandasHTMLRenderer(TemplateHTMLRenderer, PandasBaseRenderer):
+    media_type = "text/html"
+    format = "html"
+    template_name = "rest_pandas.html"
+
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        table = PandasBaseRenderer.render(
+            self, data, accepted_media_type, renderer_context,
+        )
+
+        return TemplateHTMLRenderer.render(
+            self, {'table': table}, accepted_media_type, renderer_context,
+        )
+
+    def get_template_context(self, data, renderer_context):
+        view = renderer_context['view']
+        request = renderer_context['request']
+
+        data['name'] = view.get_view_name()
+        data['description'] = view.get_view_description(html=True)
+        data['url'] = request.path.replace('.html', '')
+        data['available_formats'] = [
+            cls.format for cls in view.renderer_classes
+            if cls.format != 'html'
+        ]
+
+        chart_type = view.pandas_serializer_class.wq_chart_type
+        if chart_type:
+            data['wq_chart_type'] = chart_type
+        return data
+
+    def get_pandas_kwargs(self, data, renderer_context):
+        return {
+            'classes': 'ui-table table-stripe',
+            'na_rep': '',
+        }
+
+
 class PandasCSVRenderer(PandasBaseRenderer):
     """
     Renders data frame as CSV
@@ -137,8 +175,11 @@ class PandasImageRenderer(PandasBaseRenderer):
     Renders dataframe using built-in plot() function
     """
     function = "plot"
+    matplotlib_backend = 'Agg'
 
     def init_output(self):
+        import matplotlib
+        matplotlib.use(self.matplotlib_backend)
         import matplotlib.pyplot as plt
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)

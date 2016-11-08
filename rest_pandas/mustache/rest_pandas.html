@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{name}}</title>
+    {{>head}}
+  </head>
+  <body>
+    <div data-role="page">
+      <div data-role="header">
+        {{>home}}
+        <h1>{{name}}</h1>
+      </div>
+      <div role="main" class="ui-content">
+        <h1>{{name}}</h1>
+        {{#description}}
+        {{{description}}}
+        {{/description}}
+        <div data-role="controlgroup" data-type="horizontal" data-mini="true">
+          {{#available_formats}}
+          <a href="{{url}}.{{.}}" rel="external" class="ui-btn ui-corner-all">
+            {{.}}
+          </a>
+          {{/available_formats}}
+        </div>
+        {{#wq_chart_type}}
+        <hr>
+        <svg data-wq-url="{{url}}.csv" data-wq-type="{{wq_chart_type}}"></svg>
+        {{/wq_chart_type}}
+        <hr>
+        {{{table}}}
+      </div>
+    </div>
+  </body>
+</html>

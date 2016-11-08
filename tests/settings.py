@@ -3,6 +3,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'tests.testapp',
+    'rest_pandas',
 )
 DATABASES = {
     'default': {
@@ -11,3 +12,9 @@ DATABASES = {
     }
 }
 ROOT_URLCONF = "tests.urls"
+TEMPLATES = [
+    {
+        'BACKEND': 'django_mustache.Mustache',
+        'APP_DIRS': True,
+    },
+]

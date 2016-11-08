@@ -1,7 +1,5 @@
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
-import matplotlib
-matplotlib.use('Agg')
 
 
 class ImageTestCase(APITestCase):

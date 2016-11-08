@@ -22,6 +22,10 @@ if PANDAS_RENDERERS is None:
         "rest_pandas.renderers.PandasPNGRenderer",
         "rest_pandas.renderers.PandasSVGRenderer",
     )
+    if "rest_pandas" in settings.INSTALLED_APPS:
+        PANDAS_RENDERERS = (
+            "rest_pandas.renderers.PandasHTMLRenderer",
+        ) + PANDAS_RENDERERS
 
 PANDAS_RENDERERS = perform_import(PANDAS_RENDERERS, "PANDAS_RENDERERS")
 
