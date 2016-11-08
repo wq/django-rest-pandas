@@ -6,12 +6,12 @@ python:
  - "3.5"
 env:
   matrix:
-    - DJANGO="django==1.8.14"
-    - DJANGO="django==1.9.9"
-    - DJANGO="django==1.10"
-    - DJANGO="django==1.10" LINT=1
+    - DJANGO="django==1.8.16"
+    - DJANGO="django==1.9.11"
+    - DJANGO="django==1.10.3"
+    - DJANGO="django==1.10.3" LINT=1
   global:
-    - REST="djangorestframework==3.4.6"
+    - REST="djangorestframework==3.5.3"
     - PANDAS="pandas>=0.18"
 install:
  - pip install --upgrade pip
