@@ -20,9 +20,7 @@ DRP does not include any JavaScript code, leaving the implementation of interact
 [![Travis Build Status](https://img.shields.io/travis/wq/django-rest-pandas.svg)](https://travis-ci.org/wq/django-rest-pandas)
 [![Python Support](https://img.shields.io/pypi/pyversions/rest-pandas.svg)](https://pypi.python.org/pypi/rest-pandas)
 [![Django Support](https://img.shields.io/badge/Django-1.8%2C%201.9%2C%201.10-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
-[![Django REST Framework Support](https://img.shields.io/badge/DRF-2.4%2C%203.4-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
-
-**Note:** Support for Django REST Framework 2.4 will be dropped in DRP 0.5.
+[![Django REST Framework Support](https://img.shields.io/badge/DRF-3.5-blue.svg)](https://pypi.python.org/pypi/rest-pandas)
 
 ## Live Demo
 
