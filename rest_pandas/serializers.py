@@ -4,17 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 import datetime
 
 
-if hasattr(serializers, 'ListSerializer'):
-    # Django REST Framework 3
-    BaseSerializer = serializers.ListSerializer
-    USE_LIST_SERIALIZERS = True
-else:
-    # Django REST Framework 2
-    BaseSerializer = serializers.Serializer
-    USE_LIST_SERIALIZERS = False
-
-
-class PandasSerializer(BaseSerializer):
+class PandasSerializer(serializers.ListSerializer):
     """
     Transforms dataset into a dataframe and applies an index
     """
@@ -50,7 +40,7 @@ class PandasSerializer(BaseSerializer):
 
     @property
     def data(self):
-        data = super(BaseSerializer, self).data
+        data = super(serializers.ListSerializer, self).data
         if isinstance(data, DataFrame) or data:
             dataframe = self.get_dataframe(data)
             return self.transform_dataframe(dataframe)
@@ -64,14 +54,9 @@ class PandasSerializer(BaseSerializer):
 
     @property
     def model_serializer(self):
-        if USE_LIST_SERIALIZERS:
-            serializer = type(self.child)
-        else:
-            serializer = type(self)
+        serializer = type(self.child)
         if serializer.__name__ == 'SerializerWithListSerializer':
-            for base in serializer.__bases__:
-                if not issubclass(base, PandasSerializer):
-                    return base
+            return serializer.__bases__[0]
         return serializer
 
     @property
@@ -365,13 +350,7 @@ class SimpleSerializer(serializers.Serializer):
     """
     Simple serializer for non-model (simple) views
     """
-
-    # DRF 3
     def to_representation(self, obj):
-        return obj
-
-    # DRF 2
-    def to_native(self, obj):
         return obj
 
 

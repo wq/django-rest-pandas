@@ -8,7 +8,7 @@ from django.conf import settings
 from rest_framework.settings import perform_import
 
 from .serializers import (
-    SimpleSerializer, PandasSerializer, USE_LIST_SERIALIZERS
+    SimpleSerializer, PandasSerializer
 )
 
 PANDAS_RENDERERS = getattr(settings, "PANDAS_RENDERERS", None)
@@ -30,25 +30,16 @@ class PandasMixin(object):
     renderer_classes = PANDAS_RENDERERS
     pandas_serializer_class = PandasSerializer
 
-    paginate_by = None  # DRF 2
-    pagination_class = None  # DRF 3
+    pagination_class = None
 
     def with_list_serializer(self, cls):
-        if not USE_LIST_SERIALIZERS:
-            # Django REST Framework 2 used the instance serializer for lists
-            class SerializerWithListSerializer(
-                    self.pandas_serializer_class, cls):
-                pass
-        else:
+        meta = getattr(cls, 'Meta', object)
+        if getattr(meta, 'list_serializer_class', None):
+            return cls
 
-            # DRF3 uses a separate list_serializer_class; set if not present
-            meta = getattr(cls, 'Meta', object)
-            if getattr(meta, 'list_serializer_class', None):
-                return cls
-
-            class SerializerWithListSerializer(cls):
-                class Meta(meta):
-                    list_serializer_class = self.pandas_serializer_class
+        class SerializerWithListSerializer(cls):
+            class Meta(meta):
+                list_serializer_class = self.pandas_serializer_class
 
         return SerializerWithListSerializer
 

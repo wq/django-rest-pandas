@@ -10,7 +10,6 @@ from .serializers import (
     PandasScatterSerializer,
     PandasBoxplotSerializer,
     SimpleSerializer,
-    USE_LIST_SERIALIZERS,
 )
 from .renderers import (
     PandasBaseRenderer,
@@ -37,7 +36,6 @@ __all__ = [
     'PandasScatterSerializer',
     'PandasBoxplotSerializer',
     'SimpleSerializer',
-    'USE_LIST_SERIALIZERS',
 
     'PandasBaseRenderer',
     'PandasFileRenderer',
