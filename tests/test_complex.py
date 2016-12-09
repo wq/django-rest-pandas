@@ -18,6 +18,10 @@ class ComplexTestCase(APITestCase):
             ('site1', 'flow', 'cfs', '2015-01-04', 'routine', 0.9, None),
             ('site1', 'flow', 'cfs', '2015-01-05', 'routine', 0.3, None),
 
+            ('site2', 'height', None, '2015-01-01', 'routine', 1.0, None),
+            ('site2', 'height', None, '2015-01-02', 'routine', 1.1, None),
+            ('site2', 'height', None, '2015-01-05', 'routine', 1.5, None),
+
             ('site2', 'flow', 'cfs', '2015-01-01', 'routine', 0.0, None),
             ('site2', 'flow', 'cfs', '2015-01-02', 'routine', 0.7, None),
             ('site2', 'flow', 'cfs', '2015-01-03', 'routine', 0.2, None),
@@ -38,29 +42,28 @@ class ComplexTestCase(APITestCase):
     def test_complex_series(self):
         response = self.client.get("/complextimeseries.csv")
         self.assertEqual(
-            """,,value,value,value,flag
-            units,,-,cfs,cfs,cfs
-            parameter,,height,flow,flow,flow
-            site,,site1,site1,site2,site1
-            date,type,,,,
-            2015-01-01,routine,0.5,,0.0,
-            2015-01-01,special,,0.7,,
-            2015-01-02,routine,0.4,0.8,0.7,
-            2015-01-03,routine,0.6,0.0,0.2,Q
-            2015-01-04,routine,,0.9,0.3,
-            2015-01-04,special,0.2,,,
-            2015-01-05,routine,0.1,0.3,0.8,
+            """,,value,value,value,value,flag
+            units,,-,-,cfs,cfs,cfs
+            parameter,,height,height,flow,flow,flow
+            site,,site1,site2,site1,site2,site1
+            date,type,,,,,
+            2015-01-01,routine,0.5,1.0,,0.0,
+            2015-01-01,special,,,0.7,,
+            2015-01-02,routine,0.4,1.1,0.8,0.7,
+            2015-01-03,routine,0.6,,0.0,0.2,Q
+            2015-01-04,routine,,,0.9,0.3,
+            2015-01-04,special,0.2,,,,
+            2015-01-05,routine,0.1,1.5,0.3,0.8,
             """.replace(' ', ''),
             response.content.decode('utf-8'),
         )
         datasets = self.parse_csv(response)
-        self.assertEqual(len(datasets), 3)
-        for dataset in datasets:
-            self.assertEqual(len(dataset['data']), 5)
+        self.assertEqual(len(datasets), 4)
 
         s1flow = None
         s1height = None
         s2flow = None
+        s2height = None
         for dataset in datasets:
             if dataset['site'] == "site1":
                 if dataset['parameter'] == "flow":
@@ -68,7 +71,15 @@ class ComplexTestCase(APITestCase):
                 else:
                     s1height = dataset
             else:
-                s2flow = dataset
+                if dataset['parameter'] == "flow":
+                    s2flow = dataset
+                else:
+                    s2height = dataset
+
+        self.assertEqual(len(s1flow['data']), 5)
+        self.assertEqual(len(s1height['data']), 5)
+        self.assertEqual(len(s2flow['data']), 5)
+        self.assertEqual(len(s2height['data']), 3)
 
         d0 = s1height['data'][0]
         self.assertEqual(d0['date'], '2015-01-01')
@@ -86,12 +97,13 @@ class ComplexTestCase(APITestCase):
     def test_complex_scatter(self):
         response = self.client.get("/complexscatter.csv")
         self.assertEqual(
-            """,,flow-cfs-value,flow-cfs-value,height-value
-            site,,site1,site2,site1
-            date,type,,,
-            2015-01-02,routine,0.8,0.7,0.4
-            2015-01-03,routine,0.0,0.2,0.6
-            2015-01-05,routine,0.3,0.8,0.1
+            """,,flow-cfs-value,flow-cfs-value,height-value,height-value
+            site,,site1,site2,site1,site2
+            date,type,,,,
+            2015-01-01,routine,,0.0,,1.0
+            2015-01-02,routine,0.8,0.7,0.4,1.1
+            2015-01-03,routine,0.0,,0.6,
+            2015-01-05,routine,0.3,0.8,0.1,1.5
             """.replace(' ', ''),
             response.content.decode('utf-8')
         )
@@ -106,12 +118,12 @@ class ComplexTestCase(APITestCase):
                  'flow-cfs-value': 0.3, 'height-value': 0.1},
                 ]},
             {'site': 'site2', 'data': [
+                {'date': '2015-01-01', 'type': 'routine',
+                 'flow-cfs-value': 0.0, 'height-value': 1.0},
                 {'date': '2015-01-02', 'type': 'routine',
-                 'flow-cfs-value': 0.7},
-                {'date': '2015-01-03', 'type': 'routine',
-                 'flow-cfs-value': 0.2},
+                 'flow-cfs-value': 0.7, 'height-value': 1.1},
                 {'date': '2015-01-05', 'type': 'routine',
-                 'flow-cfs-value': 0.8},
+                 'flow-cfs-value': 0.8, 'height-value': 1.5},
                 ]},
         ], datasets)
 
@@ -120,10 +132,12 @@ class ComplexTestCase(APITestCase):
         response = self.client.get("/complexboxplot.csv")
         datasets = self.parse_csv(response)
 
-        self.assertEqual(len(datasets), 3)
+        self.assertEqual(len(datasets), 4)
         s1flow = None
         s1height = None
         s2flow = None
+        s2height = None
+
         for dataset in datasets:
             if dataset['site'] == "site1":
                 if dataset['parameter'] == "flow":
@@ -131,7 +145,10 @@ class ComplexTestCase(APITestCase):
                 else:
                     s1height = dataset
             else:
-                s2flow = dataset
+                if dataset['parameter'] == "flow":
+                    s2flow = dataset
+                else:
+                    s2height = dataset
 
         self.assertEqual(len(s1height['data']), 1)
         self.assertEqual(s1height['units'], '-')
@@ -148,6 +165,13 @@ class ComplexTestCase(APITestCase):
         self.assertEqual(round(stats['value-mean'], 8), 0.54)
         self.assertEqual(stats['value-whishi'], 0.9)
 
+        self.assertEqual(s2height['units'], '-')
+        stats = s2height['data'][0]
+        self.assertEqual(stats['year'], '2015')
+        self.assertEqual(stats['value-whislo'], 1.0)
+        self.assertEqual(stats['value-mean'], 1.2)
+        self.assertEqual(stats['value-whishi'], 1.5)
+
         self.assertEqual(s2flow['units'], 'cfs')
         stats = s2flow['data'][0]
         self.assertEqual(stats['year'], '2015')
@@ -161,6 +185,8 @@ class ComplexTestCase(APITestCase):
         s1flow = None
         s1height = None
         s2flow = None
+        s2height = None
+
         for dataset in datasets:
             if dataset['site'] == "site1":
                 if dataset['parameter'] == "flow":
@@ -168,7 +194,10 @@ class ComplexTestCase(APITestCase):
                 else:
                     s1height = dataset
             else:
-                s2flow = dataset
+                if dataset['parameter'] == "flow":
+                    s2flow = dataset
+                else:
+                    s2height = dataset
 
         self.assertEqual(len(s1height['data']), 1)
         stats = s1height['data'][0]
@@ -183,7 +212,12 @@ class ComplexTestCase(APITestCase):
         self.assertEqual(round(stats['value-mean'], 8), 0.54)
         self.assertEqual(stats['value-whishi'], 0.9)
 
-        self.assertEqual(len(s1flow['data']), 1)
+        stats = s2height['data'][0]
+        self.assertNotIn('year', stats)
+        self.assertEqual(stats['value-whislo'], 1.0)
+        self.assertEqual(stats['value-mean'], 1.2)
+        self.assertEqual(stats['value-whishi'], 1.5)
+
         stats = s2flow['data'][0]
         self.assertNotIn('year', stats)
         self.assertEqual(stats['value-whislo'], 0.0)
@@ -196,6 +230,8 @@ class ComplexTestCase(APITestCase):
         s1flow = None
         s1height = None
         s2flow = None
+        s2height = None
+
         for dataset in datasets:
             if dataset['site'] == "site1":
                 if dataset['parameter'] == "flow":
@@ -203,7 +239,10 @@ class ComplexTestCase(APITestCase):
                 else:
                     s1height = dataset
             else:
-                s2flow = dataset
+                if dataset['parameter'] == "flow":
+                    s2flow = dataset
+                else:
+                    s2height = dataset
 
         self.assertEqual(len(s1height['data']), 1)
         stats = s1height['data'][0]
@@ -218,7 +257,12 @@ class ComplexTestCase(APITestCase):
         self.assertEqual(round(stats['value-mean'], 8), 0.54)
         self.assertEqual(stats['value-whishi'], 0.9)
 
-        self.assertEqual(len(s1flow['data']), 1)
+        stats = s2height['data'][0]
+        self.assertEqual(stats['month'], '1')
+        self.assertEqual(stats['value-whislo'], 1.0)
+        self.assertEqual(stats['value-mean'], 1.2)
+        self.assertEqual(stats['value-whishi'], 1.5)
+
         stats = s2flow['data'][0]
         self.assertEqual(stats['month'], '1')
         self.assertEqual(stats['value-whislo'], 0.0)
@@ -232,8 +276,8 @@ class ComplexTestCase(APITestCase):
         stats = datasets[0]['data'][0]
         self.assertEqual(stats['year'], 2015)
         self.assertEqual(stats['value-whislo'], 0.0)
-        self.assertEqual(round(stats['value-mean'], 5), 0.43333)
-        self.assertEqual(stats['value-whishi'], 0.9)
+        self.assertEqual(round(stats['value-mean'], 5), 0.56111)
+        self.assertEqual(stats['value-whishi'], 1.5)
 
     def parse_csv(self, response):
         return parse_csv(response.content.decode('utf-8'))

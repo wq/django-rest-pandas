@@ -154,7 +154,15 @@ class PandasScatterSerializer(PandasSerializer):
         """
         coord_fields = self.get_coord_fields()
         header_fields = self.get_header_fields()
-        for i in range(len(header_fields) + len(coord_fields)):
+
+        # Remove any pairs that don't have data for both x & y
+        for i in range(len(coord_fields)):
+            dataframe = dataframe.unstack()
+        dataframe = dataframe.dropna(axis=1, how='all')
+        dataframe = dataframe.dropna(axis=0, how='any')
+
+        # Unstack series header
+        for i in range(len(header_fields)):
             dataframe = dataframe.unstack()
 
         # Compute new column headers
@@ -178,11 +186,6 @@ class PandasScatterSerializer(PandasSerializer):
         dataframe.columns = columns
         dataframe.columns.names = [''] + header_fields
 
-        # Remove blank columns
-        dataframe = dataframe.dropna(axis=1, how='all')
-
-        # Remove any rows that don't have data for all columns (e.g. x & y)
-        dataframe = dataframe.dropna(axis=0, how='any')
         return dataframe
 
     def get_coord_fields(self):
