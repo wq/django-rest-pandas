@@ -105,6 +105,10 @@ class PandasHTMLRenderer(TemplateHTMLRenderer, PandasBaseRenderer):
         chart_type = view.pandas_serializer_class.wq_chart_type
         if chart_type:
             data['wq_chart_type'] = chart_type
+
+        if hasattr(view, 'get_template_context'):
+            data.update(view.get_template_context(data))
+
         return data
 
     def get_pandas_kwargs(self, data, renderer_context):

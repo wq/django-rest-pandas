@@ -37,6 +37,9 @@ class TimeSeriesView(PandasView):
         df['date'] = df['date'].astype('datetime64[D]')
         return df
 
+    def get_template_context(self, data):
+        return {'name': data['name'] + ' Custom'}
+
 
 class TimeSeriesViewSet(PandasViewSet):
     queryset = TimeSeries.objects.all()
