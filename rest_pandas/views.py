@@ -11,6 +11,7 @@ from .serializers import (
     SimpleSerializer, PandasSerializer
 )
 
+DEFAULT_TEMPLATE = False
 PANDAS_RENDERERS = getattr(settings, "PANDAS_RENDERERS", None)
 if PANDAS_RENDERERS is None:
     PANDAS_RENDERERS = (
@@ -23,6 +24,7 @@ if PANDAS_RENDERERS is None:
         "rest_pandas.renderers.PandasSVGRenderer",
     )
     if "rest_pandas" in settings.INSTALLED_APPS:
+        DEFAULT_TEMPLATE = True
         PANDAS_RENDERERS = (
             "rest_pandas.renderers.PandasHTMLRenderer",
         ) + PANDAS_RENDERERS
@@ -35,6 +37,9 @@ class PandasMixin(object):
     pandas_serializer_class = PandasSerializer
 
     pagination_class = None
+
+    if DEFAULT_TEMPLATE:
+        template_name = 'rest_pandas.html'
 
     def with_list_serializer(self, cls):
         meta = getattr(cls, 'Meta', object)

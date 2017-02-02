@@ -76,7 +76,6 @@ class PandasFileRenderer(PandasBaseRenderer):
 class PandasHTMLRenderer(TemplateHTMLRenderer, PandasBaseRenderer):
     media_type = "text/html"
     format = "html"
-    template_name = "rest_pandas.html"
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         table = PandasBaseRenderer.render(
