@@ -55,7 +55,7 @@ Format | Content Type | pandas DataFrame Function | Notes
 -------|--------------|---------------------------|--------
 CSV    | `text/csv` | `to_csv()` | &nbsp;
 TXT    | `text/plain` | `to_csv()` | Useful for testing, as most browsers will download a CSV file instead of displaying it
-JSON   | `application/json` | `to_json()` | &nbsp;
+JSON   | `application/json` | `to_json()` | [`date_format` and `orient`][to_json] can be provided in URL (e.g. `/path.json?orient=columns`)
 XLSX   | `application/vnd.openxml...sheet` | `to_excel()` | &nbsp;
 XLS    | `application/vnd.ms-excel` | `to_excel()` | &nbsp;
 PNG    | `image/png` | `plot()` | Currently not very customizable, but a simple way to view the data as an image. 
@@ -475,5 +475,6 @@ pandas.get('/data/boxplot.csv?group=year', function(data) {
 [serializers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py
 [renderers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py
 [wq/pandas.js]: http://wq.io/docs/pandas-js
+[to_json]: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_json.html
 [unstacks]: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.unstack.html
 [boxplot_stats]: http://matplotlib.org/api/cbook_api.html#matplotlib.cbook.boxplot_stats
