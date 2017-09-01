@@ -1,9 +1,12 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from rest_pandas import PandasUnstackedSerializer
 from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
 
 
 class TimeSeriesSerializer(ModelSerializer):
+    date = serializers.DateField(format=None)
+
     class Meta:
         model = TimeSeries
         fields = '__all__'

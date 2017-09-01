@@ -33,10 +33,6 @@ class TimeSeriesView(PandasView):
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesSerializer
 
-    def transform_dataframe(self, df):
-        df['date'] = df['date'].astype('datetime64[D]')
-        return df
-
     def get_template_context(self, data):
         return {'name': data['name'] + ' Custom'}
 

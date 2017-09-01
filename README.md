@@ -196,6 +196,26 @@ urlpatterns = format_suffix_patterns(urlpatterns)
 
 The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's [ViewSets] and [Routers].
 
+### Date Formatting
+
+By default, Django REST Framework will serialize dates as strings before they are processed by the renderer classes.  In many cases, you may want to preserve the dates as `datetime` objects and let Pandas handle the rendering.  To do this, define an explicit [DateTimeField] or [DateField] on your DRF serializer and set `format=None`:
+
+```python
+# serializers.py
+class TimeSeriesSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(format=None)
+    class Meta:
+        model = TimeSeries
+        fields = '__all__'
+```
+
+Alternately, you can disable date serialization globally by setting `DATETIME_FORMAT` and/or `DATE_FORMAT` to `None` in your `settings.py`:
+
+```python
+# settings.py
+DATE_FORMAT = None
+```
+
 ## Building Interactive Charts
 
 In addition to use as a data export tool, DRP is well-suited for creating data API backends for interactive charts.  In particular, DRP can be used with [d3.js], [wq/pandas.js], and [wq/chart.js], to create interactive time series, scatter, and box plot charts - as well as any of the infinite other charting possibilities d3.js provides.
@@ -248,6 +268,7 @@ from .models import TimeSeries
 class TimeSeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = MultiTimeSeries
+        fields = ['date', 'location', 'measurement', 'value']
         pandas_index = ['date']
         pandas_unstacked_header = ['location', 'measurement']
 
@@ -328,6 +349,7 @@ from .models import TimeSeries
 class TimeSeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = MultiTimeSeries
+        fields = ['date', 'location', 'measurement', 'value']
         pandas_index = ['date']
         pandas_scatter_coord = ['measurement']
         pandas_scatter_header = ['location']
@@ -416,6 +438,7 @@ from .models import TimeSeries
 class TimeSeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = MultiTimeSeries
+        fields = ['date', 'location', 'measurement', 'value']
         pandas_boxplot_group = 'site'
         pandas_boxplot_date = 'date'
         pandas_boxplot_header = ['measurement']
@@ -472,6 +495,8 @@ pandas.get('/data/boxplot.csv?group=year', function(data) {
 [renderer classes]: http://www.django-rest-framework.org/api-guide/renderers
 [ViewSets]: http://www.django-rest-framework.org/api-guide/viewsets
 [Routers]: http://www.django-rest-framework.org/api-guide/routers
+[DateField]: http://www.django-rest-framework.org/api-guide/fields/#datefield
+[DateTimeField]: http://www.django-rest-framework.org/api-guide/fields/#datetimefield
 [serializers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py
 [renderers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py
 [wq/pandas.js]: http://wq.io/docs/pandas-js
