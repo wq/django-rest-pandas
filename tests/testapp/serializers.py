@@ -12,6 +12,12 @@ class TimeSeriesSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class TimeSeriesNoIdSerializer(TimeSeriesSerializer):
+    class Meta:
+        model = TimeSeries
+        exclude = ['id']
+
+
 class MultiTimeSeriesSerializer(ModelSerializer):
     class Meta:
         model = MultiTimeSeries

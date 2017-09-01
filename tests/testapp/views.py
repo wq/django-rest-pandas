@@ -4,7 +4,8 @@ from rest_pandas import (
 )
 from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
 from .serializers import (
-    TimeSeriesSerializer, MultiTimeSeriesSerializer,
+    TimeSeriesSerializer, TimeSeriesNoIdSerializer,
+    MultiTimeSeriesSerializer,
     ComplexTimeSeriesSerializer, ComplexScatterSerializer,
     ComplexBoxplotSerializer,
 )
@@ -35,6 +36,11 @@ class TimeSeriesView(PandasView):
 
     def get_template_context(self, data):
         return {'name': data['name'] + ' Custom'}
+
+
+class TimeSeriesNoIdView(PandasView):
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesNoIdSerializer
 
 
 class TimeSeriesViewSet(PandasViewSet):

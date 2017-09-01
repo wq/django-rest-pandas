@@ -70,7 +70,8 @@ class PandasSerializer(serializers.ListSerializer):
         """
         default_fields = []
         if getattr(self.model_serializer_meta, 'model', None):
-            default_fields = ['id']
+            if 'id' in self.child.get_fields():
+                default_fields = ['id']
         return self.get_meta_option('index', default_fields)
 
     def get_meta_option(self, name, default=None):
