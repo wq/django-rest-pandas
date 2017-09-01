@@ -177,6 +177,31 @@ class TimeSeriesView(PandasView):
     # defining the PANDAS_RENDERERS in your settings.py.
 ```
 
+#### Django Pandas Integration
+
+You can also let [Django Pandas] handle querying and generating the dataframe, and only use Django REST Pandas for the rendering:
+
+```python
+# models.py
+from django_pandas.managers import DataFrameManager
+
+class TimeSeries(models.Model):
+    # ...
+    objects = DataFrameManager()
+
+```
+
+```python
+# views.py
+from rest_pandas import PandasSimpleView
+from .models import TimeSeries
+
+class TimeSeriesView(PandasSimpleView):
+    def get_data(self, request, *args, **kwargs):
+        return TimeSeries.objects.to_timeseries(
+            index='date',
+        )
+```
 
 #### Registering URLs
 

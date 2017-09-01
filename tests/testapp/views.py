@@ -48,6 +48,13 @@ class TimeSeriesViewSet(PandasViewSet):
     serializer_class = TimeSeriesSerializer
 
 
+class DjangoPandasView(PandasSimpleView):
+    def get_data(self, request, *args, **kwargs):
+        return TimeSeries.objects.to_timeseries(
+            index='date',
+        )
+
+
 class MultiTimeSeriesView(PandasView):
     """
     Multiple time series.
