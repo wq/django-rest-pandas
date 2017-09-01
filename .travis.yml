@@ -4,15 +4,16 @@ python:
  - "2.7"
  - "3.4"
  - "3.5"
+ - "3.6"
 env:
   matrix:
-    - DJANGO="django==1.8.16"
-    - DJANGO="django==1.9.11"
-    - DJANGO="django==1.10.3"
-    - DJANGO="django==1.10.3" LINT=1
+    - DJANGO="django==1.8.18"
+    - DJANGO="django==1.10.7"
+    - DJANGO="django==1.11.4"
+    - DJANGO="django==1.11.4" LINT=1
   global:
-    - REST="djangorestframework==3.5.3"
-    - PANDAS="pandas>=0.18"
+    - REST="djangorestframework==3.6.4"
+    - PANDAS="pandas==0.20.3"
 install:
  - pip install --upgrade pip
  - pip install $DJANGO $REST $PANDAS
