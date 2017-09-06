@@ -52,7 +52,7 @@ The following output formats are provided by default.  These are provided as [re
 The HTTP header and format parameter are enabled by default on every pandas view.  Using the extension requires a custom URL configuration (see below).
 
 Format | Content Type | pandas DataFrame Function | Notes
--------|--------------|---------------------------|--------
+-------|--------------|---------------------------|--------------
 CSV    | `text/csv` | `to_csv()` | &nbsp;
 TXT    | `text/plain` | `to_csv()` | Useful for testing, as most browsers will download a CSV file instead of displaying it
 JSON   | `application/json` | `to_json()` | [`date_format` and `orient`][to_json] can be provided in URL (e.g. `/path.json?orient=columns`)
@@ -221,7 +221,7 @@ urlpatterns = format_suffix_patterns(urlpatterns)
 
 The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's [ViewSets] and [Routers].
 
-### Customizing Renderers
+#### Customizing Renderers
 
 You can override the default renderers by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your individual view(s).  `PANDAS_RENDERERS` is defined separately from Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, in case you want to have DRP-enabled views intermingled with regular DRF views.
 
@@ -241,7 +241,7 @@ class TimeSeriesView(PandasMixin, ListAPIView):
     ...
 ```
 
-### Date Formatting
+#### Date Formatting
 
 By default, Django REST Framework will serialize dates as strings before they are processed by the renderer classes.  In many cases, you may want to preserve the dates as `datetime` objects and let Pandas handle the rendering.  To do this, define an explicit [DateTimeField] or [DateField] on your DRF serializer and set `format=None`:
 
