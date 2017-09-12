@@ -1,4 +1,13 @@
-from rest_framework.views import APIView
+from .renderers import PandasBaseRenderer
+try:
+    from rest_framework.views import APIView
+except ImportError as e:
+    if 'APIView' in e.msg:
+        raise ImportError(
+            "Try importing rest_pandas before rest_framework.views"
+        )
+    else:
+        raise
 from rest_framework.generics import ListAPIView
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
@@ -33,13 +42,7 @@ PANDAS_RENDERERS = perform_import(PANDAS_RENDERERS, "PANDAS_RENDERERS")
 
 
 class PandasMixin(object):
-    renderer_classes = PANDAS_RENDERERS
     pandas_serializer_class = PandasSerializer
-
-    pagination_class = None
-
-    if DEFAULT_TEMPLATE:
-        template_name = 'rest_pandas.html'
 
     def with_list_serializer(self, cls):
         meta = getattr(cls, 'Meta', object)
@@ -52,8 +55,35 @@ class PandasMixin(object):
 
         return SerializerWithListSerializer
 
+    def get_serializer_class(self):
 
-class PandasSimpleView(PandasMixin, APIView):
+        # c.f rest_framework.generics.GenericAPIView
+        # (not using super() since this is a mixin class)
+        assert self.serializer_class is not None, (
+            "'%s' should either include a `serializer_class` attribute, "
+            "or override the `get_serializer_class()` method."
+            % self.__class__.__name__
+        )
+
+        renderer = self.request.accepted_renderer
+        if hasattr(renderer, 'get_default_renderer'):
+            # BrowsableAPIRenderer
+            renderer = renderer.get_default_renderer(self)
+
+        if isinstance(renderer, PandasBaseRenderer):
+            return self.with_list_serializer(self.serializer_class)
+        else:
+            return self.serializer_class
+
+
+class PandasViewBase(PandasMixin):
+    renderer_classes = PANDAS_RENDERERS
+    pagination_class = None
+    if DEFAULT_TEMPLATE:
+        template_name = 'rest_pandas.html'
+
+
+class PandasSimpleView(PandasViewBase, APIView):
     """
     Simple (non-model) Pandas API view; override get_data
     with a function that returns a list of dicts.
@@ -65,24 +95,20 @@ class PandasSimpleView(PandasMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         data = self.get_data(request, *args, **kwargs)
-        serializer_class = self.with_list_serializer(self.serializer_class)
+        serializer_class = self.get_serializer_class()
         serializer = serializer_class(data, many=True)
         return Response(serializer.data)
 
 
-class PandasView(PandasMixin, ListAPIView):
+class PandasView(PandasViewBase, ListAPIView):
     """
     Pandas-capable model list view
     """
-    def get_serializer_class(self, *args, **kwargs):
-        cls = super(PandasView, self).get_serializer_class(*args, **kwargs)
-        return self.with_list_serializer(cls)
+    pass
 
 
-class PandasViewSet(PandasMixin, ListModelMixin, GenericViewSet):
+class PandasViewSet(PandasViewBase, ListModelMixin, GenericViewSet):
     """
     Pandas-capable model ViewSet (list only)
     """
-    def get_serializer_class(self, *args, **kwargs):
-        cls = super(PandasViewSet, self).get_serializer_class(*args, **kwargs)
-        return self.with_list_serializer(cls)
+    pass

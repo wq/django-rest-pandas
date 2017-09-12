@@ -14,6 +14,12 @@ import os
 from io import BytesIO
 
 
+RESPONSE_ERROR = (
+    "Response data is a %s, not a DataFrame! "
+    "Did you extend PandasMixin?"
+)
+
+
 class PandasBaseRenderer(BaseRenderer):
     """
     Renders DataFrames using their built in pandas implementation.
@@ -28,7 +34,7 @@ class PandasBaseRenderer(BaseRenderer):
 
         if not isinstance(data, DataFrame):
             raise Exception(
-                "Response data is a %s, not a DataFrame!" % type(data)
+                RESPONSE_ERROR % type(data).__name__
             )
         name = getattr(self, 'function', "to_%s" % self.format)
         function = getattr(data, name, None)

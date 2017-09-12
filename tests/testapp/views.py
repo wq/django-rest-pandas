@@ -1,7 +1,10 @@
 from rest_pandas import (
-    PandasSimpleView, PandasView, PandasViewSet,
+    PandasMixin, PandasSimpleView, PandasView, PandasViewSet,
     PandasUnstackedSerializer, PandasScatterSerializer, PandasBoxplotSerializer
 )
+from rest_framework import renderers
+from rest_framework.generics import ListAPIView
+from rest_pandas import renderers as pandas_renderers
 from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
 from .serializers import (
     TimeSeriesSerializer, TimeSeriesNoIdSerializer,
@@ -43,9 +46,36 @@ class TimeSeriesNoIdView(PandasView):
     serializer_class = TimeSeriesNoIdSerializer
 
 
+class TimeSeriesMixedRendererView(PandasView):
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
+
+    renderer_classes = [
+         renderers.BrowsableAPIRenderer,
+         pandas_renderers.PandasCSVRenderer,
+         renderers.JSONRenderer,
+    ]
+
+
 class TimeSeriesViewSet(PandasViewSet):
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesSerializer
+
+
+class TimeSeriesMixinView(PandasMixin, ListAPIView):
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
+    renderer_classes = [
+        pandas_renderers.PandasCSVRenderer
+    ]
+
+
+class TimeSeriesNoMixinView(ListAPIView):
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
+    renderer_classes = [
+        pandas_renderers.PandasCSVRenderer
+    ]
 
 
 class DjangoPandasView(PandasSimpleView):

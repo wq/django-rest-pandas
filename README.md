@@ -221,6 +221,26 @@ urlpatterns = format_suffix_patterns(urlpatterns)
 
 The default `PandasView` will serve up all of the available data from the provided model in a simple tabular form.  You can also use a `PandasViewSet` if you are using Django REST Framework's [ViewSets] and [Routers].
 
+### Customizing Renderers
+
+You can override the default renderers by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your individual view(s).  `PANDAS_RENDERERS` is defined separately from Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, in case you want to have DRP-enabled views intermingled with regular DRF views.
+
+You can also include DRP renderers in `DEFAULT_RENDERER_CLASSES`.  In that case, be sure to have all of your views extend `PandasMixin`, otherwise you may get an error saying the serializer output is not a `DataFrame`.  In short, there are three paths to getting DRP renderers working with your views:
+
+ 1. Extend `PandasView`, `PandasSimpleView`, or `PandasViewSet`, and use the `PANDAS_RENDERERS` setting (which defaults to the list above).
+ 2. Extend `PandasMixin` and customize `REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']` to add one or more `rest_pandas` renderers.
+ 3. Extend any of the `Pandas*` classes and set `renderer_classes` explicitly on the view.
+
+```python
+class TimeSeriesView(PandasView):
+    # renderer_classes default to PANDAS_RENDERERS
+    ...
+
+class TimeSeriesView(PandasMixin, ListAPIView):
+    # renderer_classes default to REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']
+    ...
+```
+
 ### Date Formatting
 
 By default, Django REST Framework will serialize dates as strings before they are processed by the renderer classes.  In many cases, you may want to preserve the dates as `datetime` objects and let Pandas handle the rendering.  To do this, define an explicit [DateTimeField] or [DateField] on your DRF serializer and set `format=None`:
@@ -267,9 +287,7 @@ function render(error, data) {
 });
 ```
 
-You can override the default renderers by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your `PandasView` subclass.  `PANDAS_RENDERERS` is intentionally set separately from Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, as it is likely that you will be mixing DRP views with regular DRF views.
-
-As of version 0.4, DRP includes three custom serializers with `transform_dataframe()` functions that address common use cases.  These serializer classes can be leveraged by assigning them to `pandas_serializer_class` on your view.
+DRP includes three custom serializers with `transform_dataframe()` functions that address common use cases.  These serializer classes can be leveraged by assigning them to `pandas_serializer_class` on your view.
 
 For documentation purposes, the examples below assume the following dataset:
 

@@ -66,6 +66,39 @@ class PandasTestCase(APITestCase):
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].value, '0.5')
 
+    def test_mixed_renderer_csv(self):
+        response = self.client.get("/mixedrenderers.csv")
+        data = self.load_string(response)
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0].value, '0.5')
+
+    def test_mixed_renderer_api(self):
+        response = self.client.get("/mixedrenderers.api")
+        data = self.load_string(response)
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0].value, '0.5')
+
+    def test_mixed_renderer_json(self):
+        response = self.client.get("/mixedrenderers.json")
+        data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0]['value'], 0.5)
+
+    def test_pandas_mixin(self):
+        response = self.client.get("/mixin.csv")
+        data = self.load_string(response)
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0].value, '0.5')
+
+    def test_pandas_no_mixin(self):
+        with self.assertRaises(Exception) as e:
+            self.client.get("/nomixin.csv")
+        self.assertEqual(
+            e.exception.args[0],
+            "Response data is a ReturnList, not a DataFrame! "
+            "Did you extend PandasMixin?"
+        )
+
     def test_no_model(self):
         response = self.client.get("/nomodel.csv")
         data = self.load_string(response)
