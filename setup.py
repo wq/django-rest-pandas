@@ -1,10 +1,10 @@
 import subprocess
 from setuptools import setup, find_packages
 
-LONG_DESCRIPTION = """
-Serves up pandas dataframes via the Django REST Framework for client-side
-(i.e. d3.js) visualizations
-"""
+LONG_DESCRIPTION = (
+    "Serves up pandas dataframes via the Django REST Framework for client-side"
+    "(i.e. d3.js) visualizations"
+)
 
 
 def parse_markdown_readme():
@@ -29,7 +29,7 @@ def parse_markdown_readme():
 
 setup(
     name='rest-pandas',
-    version='1.0.0',
+    version='1.0.1-dev',
     author='S. Andrew Sheppard',
     author_email='andrew@wq.io',
     url='https://github.com/wq/django-rest-pandas',
