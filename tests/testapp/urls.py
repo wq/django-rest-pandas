@@ -8,6 +8,7 @@ from .views import (
     DjangoPandasView, TimeSeriesViewSet,
     MultiTimeSeriesView, MultiScatterView, MultiBoxplotView,
     ComplexTimeSeriesView, ComplexScatterView, ComplexBoxplotView,
+    CustomIndexSeriesView,
 )
 
 router = DefaultRouter()
@@ -28,6 +29,7 @@ urlpatterns = [
     url(r'^complextimeseries$', ComplexTimeSeriesView.as_view()),
     url(r'^complexscatter$', ComplexScatterView.as_view()),
     url(r'^complexboxplot$', ComplexBoxplotView.as_view()),
+    url(r'^customindex$', CustomIndexSeriesView.as_view()),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
 urlpatterns += [

@@ -36,15 +36,20 @@ class PandasBaseRenderer(BaseRenderer):
             raise Exception(
                 RESPONSE_ERROR % type(data).__name__
             )
+
         name = getattr(self, 'function', "to_%s" % self.format)
-        function = getattr(data, name, None)
-        if not function:
+        if not hasattr(data, name):
             raise Exception("Data frame is missing %s property!" % name)
+
         self.init_output()
         args = self.get_pandas_args(data)
         kwargs = self.get_pandas_kwargs(data, renderer_context)
-        function(*args, **kwargs)
+        self.render_dataframe(data, name, *args, **kwargs)
         return self.get_output()
+
+    def render_dataframe(self, data, name, *args, **kwargs):
+        function = getattr(data, name)
+        function(*args, **kwargs)
 
     def init_output(self):
         self.output = StringIO()
@@ -150,18 +155,43 @@ class PandasJSONRenderer(PandasBaseRenderer):
     media_type = "application/json"
     format = "json"
 
+    orient_choices = {
+        'records-index',  # Unique to DRP
+        'split',
+        'records',
+        'index',
+        'columns',
+        'values',
+        'table',
+    }
+    default_orient = 'records-index'
+
+    date_format_choices = {'epoch', 'iso'}
+    default_date_format = 'iso'
+
     def get_pandas_kwargs(self, data, renderer_context):
         request = renderer_context['request']
+
         orient = request.GET.get('orient', '')
+        if orient not in self.orient_choices:
+            orient = self.default_orient
+
         date_format = request.GET.get('date_format', '')
-        if orient not in {'split', 'records', 'index', 'columns', 'values'}:
-            orient = 'records'
-        if date_format not in {'epoch', 'iso'}:
-            date_format = 'iso'
+        if date_format not in self.date_format_choices:
+            date_format = self.default_date_format
+
         return {
             'orient': orient,
             'date_format': date_format,
         }
+
+    def render_dataframe(self, data, name, *args, **kwargs):
+        if kwargs.get('orient') == 'records-index':
+            kwargs['orient'] = 'records'
+            data.reset_index(inplace=True)
+        return super(PandasJSONRenderer, self).render_dataframe(
+            data, name, *args, **kwargs
+        )
 
 
 class PandasExcelRenderer(PandasFileRenderer):

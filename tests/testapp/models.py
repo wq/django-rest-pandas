@@ -33,3 +33,8 @@ class ComplexTimeSeries(models.Model):
     # Values
     value = models.FloatField()
     flag = models.CharField(max_length=1, null=True, blank=True)
+
+
+class CustomIndexSeries(models.Model):
+    code = models.SlugField(primary_key=True)
+    value = models.FloatField()

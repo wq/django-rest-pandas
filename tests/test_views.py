@@ -1,5 +1,5 @@
 from rest_framework.test import APITestCase
-from tests.testapp.models import TimeSeries
+from tests.testapp.models import TimeSeries, CustomIndexSeries
 from wq.io import load_string
 import json
 import datetime
@@ -17,6 +17,10 @@ class PandasTestCase(APITestCase):
         )
         for date, value in data:
             TimeSeries.objects.create(date=date, value=value)
+            CustomIndexSeries.objects.create(
+                code='v' + date.replace('-', ''),
+                value=value,
+            )
 
     def test_view_csv(self):
         response = self.client.get("/timeseries.csv")
@@ -41,6 +45,8 @@ class PandasTestCase(APITestCase):
         self.assertEqual(response.accepted_media_type, "application/json")
         data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(data), 5)
+        self.assertIn('id', data[0])
+        self.assertEqual(data[0]["id"], 1)
         self.assertEqual(data[0]["value"], 0.5)
         self.assertEqual(data[0]["date"], "2014-01-01T00:00:00.000Z")
 
@@ -52,6 +58,11 @@ class PandasTestCase(APITestCase):
         self.assertEqual(data[0]["value"], 0.5)
         date = datetime.datetime.utcfromtimestamp(data[0]["date"] / 1000)
         self.assertEqual(date, datetime.datetime(2014, 1, 1))
+
+        response = self.client.get("/timeseries.json?orient=index")
+        data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(len(data.values()), 5)
+        self.assertEqual(data["1"]["value"], 0.5)
 
     def test_view_html(self):
         response = self.client.get("/timeseries?test=1")
@@ -110,6 +121,25 @@ class PandasTestCase(APITestCase):
         data = self.load_string(response)
         self.assertEqual(len(data), 4)
         self.assertEqual(data[0].x, '5')
+
+    def test_customindex_csv(self):
+        response = self.client.get("/customindex.csv")
+        data = self.load_string(response)
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0].code, 'v20140101')
+        self.assertEqual(data[0].value, '0.5')
+
+    def test_customindex_json(self):
+        response = self.client.get("/customindex.json")
+        data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data[0]['code'], 'v20140101')
+        self.assertEqual(data[0]['value'], 0.5)
+
+        response = self.client.get("/customindex.json?orient=index")
+        data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(len(data), 5)
+        self.assertEqual(data['v20140101']['value'], 0.5)
 
     def load_string(self, response):
         return load_string(response.content.decode('utf-8'))

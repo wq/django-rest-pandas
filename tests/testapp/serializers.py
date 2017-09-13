@@ -1,7 +1,9 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from rest_pandas import PandasUnstackedSerializer
-from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
+from .models import (
+    TimeSeries, MultiTimeSeries, ComplexTimeSeries, CustomIndexSeries,
+)
 
 
 class TimeSeriesSerializer(ModelSerializer):
@@ -62,3 +64,9 @@ class NotUnstackableSerializer(ModelSerializer):
         list_serializer_class = PandasUnstackedSerializer
         # pandas_unstacked_header = Missing
         pandas_index = ['series']
+
+
+class CustomIndexSeriesSerializer(ModelSerializer):
+    class Meta:
+        model = CustomIndexSeries
+        fields = '__all__'

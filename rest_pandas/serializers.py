@@ -68,11 +68,17 @@ class PandasSerializer(serializers.ListSerializer):
         """
         List of fields to use for index
         """
-        default_fields = []
-        if getattr(self.model_serializer_meta, 'model', None):
-            if 'id' in self.child.get_fields():
-                default_fields = ['id']
-        return self.get_meta_option('index', default_fields)
+        index_fields = self.get_meta_option('index', [])
+        if index_fields:
+            return index_fields
+
+        model = getattr(self.model_serializer_meta, 'model', None)
+        if model:
+            pk_name = model._meta.pk.name
+            if pk_name in self.child.get_fields():
+                return [pk_name]
+
+        return []
 
     def get_meta_option(self, name, default=None):
         meta_name = 'pandas_' + name

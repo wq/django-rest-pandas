@@ -5,12 +5,15 @@ from rest_pandas import (
 from rest_framework import renderers
 from rest_framework.generics import ListAPIView
 from rest_pandas import renderers as pandas_renderers
-from .models import TimeSeries, MultiTimeSeries, ComplexTimeSeries
+from .models import (
+    TimeSeries, MultiTimeSeries, ComplexTimeSeries, CustomIndexSeries,
+)
 from .serializers import (
     TimeSeriesSerializer, TimeSeriesNoIdSerializer,
     MultiTimeSeriesSerializer,
     ComplexTimeSeriesSerializer, ComplexScatterSerializer,
     ComplexBoxplotSerializer,
+    CustomIndexSeriesSerializer,
 )
 import pandas as pd
 
@@ -122,3 +125,8 @@ class ComplexBoxplotView(PandasView):
     queryset = ComplexTimeSeries.objects.all()
     serializer_class = ComplexBoxplotSerializer
     pandas_serializer_class = PandasBoxplotSerializer
+
+
+class CustomIndexSeriesView(PandasView):
+    queryset = CustomIndexSeries.objects.all()
+    serializer_class = CustomIndexSeriesSerializer
