@@ -53,6 +53,7 @@ The HTTP header and format parameter are enabled by default on every pandas view
 
 Format | Content Type | pandas DataFrame Function | Notes
 -------|--------------|---------------------------|--------------
+HTML   | `text/html` | `to_html()` | See notes on [HTML output](#html-output)
 CSV    | `text/csv` | `to_csv()` | &nbsp;
 TXT    | `text/plain` | `to_csv()` | Useful for testing, as most browsers will download a CSV file instead of displaying it
 JSON   | `application/json` | `to_json()` | [`date_format` and `orient`][to_json] can be provided in URL (e.g. `/path.json?orient=columns`)
@@ -76,7 +77,7 @@ pip install rest-pandas
 
 **NOTE:** Django REST Pandas relies on pandas, which itself relies on NumPy and other scientific Python libraries written in C.  This is usually fine, since pip can use Python Wheels to install precompiled versions.  If you are having trouble installing DRP due to dependency issues, you may need to pre-install pandas using apt or conda.
 
-### Usage Example
+### Usage Examples
 
 #### No Model
 
@@ -257,6 +258,26 @@ Alternately, you can disable date serialization globally by setting `DATETIME_FO
 DATE_FORMAT = None
 ```
 
+#### HTML Output
+
+The HTML renderer provides the ability to create an interactive view that shares the same URL as your data API.  The dataframe is processed by `to_html()`, then passed to [TemplateHTMLRenderer] with the following context:
+
+context variable | description
+-----------------|------------------
+`table` | Output `<table>` from `to_html()`
+`name` | View name
+`description` | View description
+`url` | Current URL Path (without parameters)
+`url_params` | URL parameters
+`available_formats` | Array of allowed extensions (e.g. `'csv'`, `'json'`, `'xlsx'`)
+`wq_chart_type` | Recommended chart type (for use with [wq/chartapp.js], see below)
+
+As with `TemplateHTMLRenderer`, the template name is controlled by the view.  If you are using DRP together with the [wq framework], you can leverage the default [mustache/rest_pandas.html] template, which is designed for use with the [wq/chartapp.js] plugin.  Otherwise, you will probably want to provide a custom template and/or set `template_name` on the view.
+
+If you need to do a lot of customization, and/or you don't really need the entire dataframe rendered in a `<table>`, you can always create another view for the interface and make the `PandasView` only handle the API.
+
+> Note: For backwards compatibility, `PandasHTMLRenderer` is only included in the default `PANDAS_RENDERERS` if `rest_pandas` is listed in your installed apps.
+
 ## Building Interactive Charts
 
 In addition to use as a data export tool, DRP is well-suited for creating data API backends for interactive charts.  In particular, DRP can be used with [d3.js], [wq/pandas.js], and [wq/chart.js], to create interactive time series, scatter, and box plot charts - as well as any of the infinite other charting possibilities d3.js provides.
@@ -283,7 +304,7 @@ function render(error, data) {
 });
 ```
 
-DRP includes three custom serializers with `transform_dataframe()` functions that address common use cases.  These serializer classes can be leveraged by assigning them to `pandas_serializer_class` on your view.
+DRP includes three custom serializers with `transform_dataframe()` functions that address common use cases.  These serializer classes can be leveraged by assigning them to `pandas_serializer_class` on your view.  If you are using the [wq framework], these serializers can automatically leverage DRP's default [HTML template](#html-output) together with [wq/chartapp.js] to provide interactive charts.  If you are not using the full wq framework, you can still use [wq/pandas.js] and [wq/chart.js] directly with the CSV output of these serializers.
 
 For documentation purposes, the examples below assume the following dataset:
 
@@ -520,10 +541,10 @@ pandas.get('/data/boxplot.csv?group=year', function(data) {
 [Django REST Framework]: http://django-rest-framework.org
 [pandas]: http://pandas.pydata.org
 [d3.js]: http://d3js.org
-[wq.app]: http://wq.io/wq.app
-[wq/chart.js]: http://wq.io/docs/chart-js
-[wq.db]: http://wq.io/wq.db
-[chart]: http://wq.io/docs/chart
+[wq.app]: https://wq.io/wq.app
+[wq/chart.js]: https://wq.io/docs/chart-js
+[wq.db]: https://wq.io/wq.db
+[chart]: https://wq.io/docs/chart
 [climata-viewer]: http://climata.houstoneng.net
 [Django Pandas]: https://github.com/chrisdev/django-pandas/
 [bokeh]: http://bokeh.pydata.org/
@@ -538,7 +559,11 @@ pandas.get('/data/boxplot.csv?group=year', function(data) {
 [DateTimeField]: http://www.django-rest-framework.org/api-guide/fields/#datetimefield
 [serializers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/serializers.py
 [renderers]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/renderers.py
-[wq/pandas.js]: http://wq.io/docs/pandas-js
+[TemplateHTMLRenderer]: http://www.django-rest-framework.org/api-guide/renderers/#templatehtmlrenderer
+[wq framework]: https://wq.io/
+[wq/chartapp.js]: https://wq.io/docs/chartapp-js
+[wq/pandas.js]: https://wq.io/docs/pandas-js
+[mustache/rest_pandas.html]: https://github.com/wq/django-rest-pandas/blob/master/rest_pandas/mustache/rest_pandas.html
 [to_json]: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_json.html
 [unstacks]: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.unstack.html
 [boxplot_stats]: http://matplotlib.org/api/cbook_api.html#matplotlib.cbook.boxplot_stats
