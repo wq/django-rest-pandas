@@ -68,17 +68,13 @@ The underlying implementation is a set of [serializers] that take the normal ser
 ### Getting Started
 
 ```bash
-pip3 install rest-pandas
+# Recommended: create virtual environment
+# python3 -m venv venv
+# . venv/bin/activate
+pip install rest-pandas
 ```
 
-**NOTE:** Django REST Pandas relies on pandas, which itself relies on NumPy and other scientific Python libraries.  If you are having trouble installing DRP due to dependency issues, you may want to pre-install pandas using another tool.  For example, on Ubuntu 14.04 LTS you can pre-install pandas using this command:
-
-```bash
-sudo apt-get install python3-pandas
-sudo pip3 install rest-pandas
-```
-
-The [pandas documentation][pandas] recommends using conda to install pandas for similar reasons.  We've found the apt-get approach to be the fastest route to getting DRP running with the default Apache WSGI implementation on Ubuntu.
+**NOTE:** Django REST Pandas relies on pandas, which itself relies on NumPy and other scientific Python libraries written in C.  This is usually fine, since pip can use Python Wheels to install precompiled versions.  If you are having trouble installing DRP due to dependency issues, you may need to pre-install pandas using apt or conda.
 
 ### Usage Example
 
