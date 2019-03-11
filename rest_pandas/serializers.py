@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from pandas import DataFrame
+from pandas.api.types import is_numeric_dtype
 from django.core.exceptions import ImproperlyConfigured
 import datetime
+from collections import OrderedDict
 
 
 class PandasSerializer(serializers.ListSerializer):
@@ -222,12 +224,15 @@ class PandasBoxplotSerializer(PandasSerializer):
         group_field = self.get_group_field()
         date_field = self.get_date_field()
         header_fields = self.get_header_fields()
+        extra_index_fields = self.get_extra_index_fields()
 
+        index = []
         if date_field:
-            group_fields = [date_field, group_field]
-        else:
-            group_fields = [group_field]
-        return group_fields + header_fields
+            index.append(date_field)
+        index += extra_index_fields
+        index.append(group_field)
+        index += header_fields
+        return index
 
     def transform_dataframe(self, dataframe):
         """
@@ -255,35 +260,30 @@ class PandasBoxplotSerializer(PandasSerializer):
             interval = None
 
         # Compute stats for each column, potentially grouped by year
-        all_stats = []
+        series_infos = OrderedDict()
         for header, series in groups.items():
             if interval:
                 series_stats = self.boxplots_for_interval(series, interval)
             else:
-                interval = None
                 series_stats = [self.compute_boxplot(series)]
 
-            series_infos = []
             for series_stat in series_stats:
-                series_info = {}
                 if isinstance(header, tuple):
                     value_name = header[0]
                     col_values = header[1:]
                 else:
                     value_name = header
                     col_values = []
-                col_names = zip(dataframe.columns.names[1:], col_values)
-                for col_name, value in col_names:
-                    series_info[col_name] = value
+                col_names = tuple(zip(dataframe.columns.names[1:], col_values))
+                if interval in series_stat:
+                    col_names += ((interval, series_stat[interval]),)
+                series_infos.setdefault(col_names, dict(col_names))
+                series_info = series_infos[col_names]
                 for stat_name, val in series_stat.items():
-                    if stat_name == interval:
-                        series_info[stat_name] = val
-                    else:
+                    if stat_name != interval:
                         series_info[value_name + '-' + stat_name] = val
-                series_infos.append(series_info)
-            all_stats += series_infos
 
-        dataframe = DataFrame(all_stats)
+        dataframe = DataFrame(list(series_infos.values()))
         if 'series' in grouping:
             index = header_fields + [group_field]
             unstack = len(header_fields)
@@ -336,10 +336,18 @@ class PandasBoxplotSerializer(PandasSerializer):
         series = series[series.notnull()]
         if len(series.values) == 0:
             return {}
+        elif not is_numeric_dtype(series):
+            return self.non_numeric_stats(series)
         stats = boxplot_stats(list(series.values))[0]
         stats['count'] = len(series.values)
         stats['fliers'] = "|".join(map(str, stats['fliers']))
         return stats
+
+    def non_numeric_stats(self, series):
+        return {
+            'count': len(series),
+            'mode': series.mode()[0],
+        }
 
     def get_group_field(self):
         """
@@ -358,6 +366,12 @@ class PandasBoxplotSerializer(PandasSerializer):
         Additional series metadata for boxplot column headers
         """
         return self.get_meta_option('boxplot_header', [])
+
+    def get_extra_index_fields(self):
+        """
+        Fields that identify each row but don't need to be considered for plot
+        """
+        return self.get_meta_option('boxplot_extra_index', [])
 
 
 class SimpleSerializer(serializers.Serializer):

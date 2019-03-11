@@ -12,7 +12,7 @@ from .serializers import (
     TimeSeriesSerializer, TimeSeriesNoIdSerializer,
     MultiTimeSeriesSerializer,
     ComplexTimeSeriesSerializer, ComplexScatterSerializer,
-    ComplexBoxplotSerializer,
+    ComplexBoxplotSerializer, ComplexBoxplotExtraSerializer,
     CustomIndexSeriesSerializer,
 )
 import pandas as pd
@@ -124,6 +124,12 @@ class ComplexScatterView(PandasView):
 class ComplexBoxplotView(PandasView):
     queryset = ComplexTimeSeries.objects.all()
     serializer_class = ComplexBoxplotSerializer
+    pandas_serializer_class = PandasBoxplotSerializer
+
+
+class ComplexBoxplotExtraView(PandasView):
+    queryset = ComplexTimeSeries.objects.all()
+    serializer_class = ComplexBoxplotExtraSerializer
     pandas_serializer_class = PandasBoxplotSerializer
 
 

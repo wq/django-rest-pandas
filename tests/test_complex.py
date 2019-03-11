@@ -30,16 +30,19 @@ class ComplexTestCase(APITestCase):
             ('site2', 'flow', 'cfs', '2015-01-04', 'routine', 0.3, None),
             ('site2', 'flow', 'cfs', '2015-01-05', 'routine', 0.8, None),
         )
-        for site, parameter, units, date, type, value, flag in data:
-            ComplexTimeSeries.objects.create(
-                site=site,
-                parameter=parameter,
-                units=units,
-                date=date,
-                type=type,
-                value=value,
-                flag=flag,
-            )
+        for row in data:
+            self.create_row(*row)
+
+    def create_row(self, site, parameter, units, date, type, value, flag):
+        ComplexTimeSeries.objects.create(
+            site=site,
+            parameter=parameter,
+            units=units,
+            date=date,
+            type=type,
+            value=value,
+            flag=flag,
+        )
 
     def test_complex_series(self):
         response = self.client.get("/complextimeseries.csv")
@@ -284,6 +287,16 @@ class ComplexTestCase(APITestCase):
         self.assertEqual(stats['value-whislo'], 0.0)
         self.assertEqual(round(stats['value-mean'], 5), 0.56111)
         self.assertEqual(stats['value-whishi'], 1.5)
+
+    @unittest.skipUnless(HAS_MATPLOTLIB, "requires matplotlib")
+    def test_complex_boxplot_extra(self):
+        self.create_row(
+            'site1', 'flow', 'cfs', '2015-01-01', 'routine', 0.3, None
+        )
+        with self.assertRaises(ValueError):
+            response = self.client.get("/complexboxplot.csv")
+        response = self.client.get("/complexboxplotextra.csv")
+        self.assertEqual(1, len(response.data))
 
     def parse_csv(self, response):
         return parse_csv(response.content.decode('utf-8'))

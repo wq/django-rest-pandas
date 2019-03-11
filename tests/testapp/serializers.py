@@ -57,6 +57,16 @@ class ComplexBoxplotSerializer(ComplexTimeSeriesSerializer):
         pandas_boxplot_header = ['units', 'parameter']
 
 
+class ComplexBoxplotExtraSerializer(ComplexTimeSeriesSerializer):
+    class Meta:
+        model = ComplexTimeSeries
+        fields = '__all__'
+        pandas_boxplot_group = 'site'
+        pandas_boxplot_date = 'date'
+        pandas_boxplot_extra_index = ['id']  # Ensure row uniqueness
+        pandas_boxplot_header = ['units', 'parameter']
+
+
 class NotUnstackableSerializer(ModelSerializer):
     class Meta:
         model = MultiTimeSeries
