@@ -21,7 +21,7 @@ TEMPLATES = [
 
 
 try:
-    import matplotlib
+    import matplotlib   # noqa
 except ImportError:
     HAS_MATPLOTLIB = False
 else:
@@ -29,7 +29,7 @@ else:
 
 
 try:
-   import django_pandas
+   import django_pandas   # noqa
 except ImportError:
     HAS_DJANGO_PANDAS = False
 else:
