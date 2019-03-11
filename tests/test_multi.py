@@ -6,6 +6,7 @@ from rest_pandas.test import parse_csv
 from django.core.exceptions import ImproperlyConfigured
 import os
 from .settings import HAS_MATPLOTLIB
+import pandas
 
 
 class MultiTestCase(APITestCase):
@@ -71,9 +72,12 @@ class MultiTestCase(APITestCase):
 
     def test_multi_scatter(self):
         response = self.client.get("/multiscatter.csv")
-        self.assertEqual(
-            """,test1-value,test2-value
-            date,,
+        if pandas.__version__ == "0.20.3":
+            # FIXME: Remove when dropping Python 3.4 support
+            header = "date,test1-value,test2-value"
+        else:
+            header = ",test1-value,test2-value\ndate,,"
+        self.assertEqual(header + """
             2015-01-01,0.5,0.7
             2015-01-02,0.4,0.8
             2015-01-03,0.6,0.0
