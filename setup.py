@@ -1,4 +1,3 @@
-import subprocess
 from setuptools import setup, find_packages
 
 LONG_DESCRIPTION = (
@@ -7,21 +6,9 @@ LONG_DESCRIPTION = (
 )
 
 
-def parse_markdown_readme():
-    """
-    Convert README.md to RST via pandoc, and load into memory
-    (fallback to LONG_DESCRIPTION on failure)
-    """
+def readme():
     try:
-        subprocess.call(
-            ['pandoc', '-t', 'rst', '-o', 'README.rst', 'README.md']
-        )
-    except OSError:
-        return LONG_DESCRIPTION
-
-    # Attempt to load output
-    try:
-        readme = open('README.rst')
+        readme = open('README.md')
     except IOError:
         return LONG_DESCRIPTION
     else:
@@ -29,7 +16,7 @@ def parse_markdown_readme():
 
 setup(
     name='rest-pandas',
-    version='1.0.1-dev',
+    use_scm_version=True,
     author='S. Andrew Sheppard',
     author_email='andrew@wq.io',
     url='https://github.com/wq/django-rest-pandas',
@@ -41,7 +28,8 @@ setup(
         ]
     },
     description=LONG_DESCRIPTION.strip(),
-    long_description=parse_markdown_readme(),
+    long_description=readme(),
+    long_description_content_type='text/markdown',
     install_requires=[
         'djangorestframework>=3.3.1',
         'pandas>=0.19.0',
@@ -70,5 +58,8 @@ setup(
     tests_require=[
         'wq.io', 'xlwt', 'openpyxl', 'matplotlib',
         'django', 'django-mustache'
+    ],
+    setup_requires=[
+        'setuptools_scm',
     ],
 )
