@@ -1,5 +1,8 @@
 from django.db import models
-from django_pandas.managers import DataFrameManager
+try:
+   from django_pandas.managers import DataFrameManager
+except ImportError:
+   DataFrameManager = models.Manager
 
 
 class TimeSeries(models.Model):

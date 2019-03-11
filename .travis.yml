@@ -1,24 +1,57 @@
 language: python
-sudo: false
-python:
- - "2.7"
- - "3.4"
- - "3.5"
- - "3.6"
+dist: xenial
 env:
-  matrix:
-    - DJANGO="django==1.8.18"
-    - DJANGO="django==1.10.7"
-    - DJANGO="django==1.11.4"
-    - DJANGO="django==1.11.4" LINT=1
   global:
-    - REST="djangorestframework==3.6.4"
-    - PANDAS="pandas==0.20.3"
+    - DJANGO="django==2.1.7"
+    - REST="djangorestframework==3.9.1"
+    - PANDAS="pandas==0.24.1"
+matrix:
+  include:
+    - python: "2.7"
+      name: "Python 2.7 (Django 1.8)"
+      env:
+        - DJANGO="django==1.8.19"
+        - REST="djangorestframework==3.6.4"
+    - python: "3.5"
+      name: "Python 3.5 (Django 1.8)"
+      env:
+        - DJANGO="django==1.8.19"
+        - REST="djangorestframework==3.6.4"
+    - python: "2.7"
+      name: "Python 2.7 (Django 1.11)"
+      env:
+        - DJANGO="django==1.11.20"
+    - python: "3.7"
+      name: "Python 3.7 (Django 1.11)"
+      env:
+        - DJANGO="django==1.11.20"
+    - python: "3.4"
+      name: "Python 3.4"
+      env:
+        - DJANGO="django==2.0.13"
+    - python: "3.5"
+      name: "Python 3.5"
+      env: []
+    - python: "3.6"
+      name: "Python 3.6"
+      env: []
+    - python: "3.7"
+      name: "Python 3.7"
+      env: []
+    - python: "3.7"
+      name: "Python 3.7 + matplotlib"
+      env:
+        - MATPLOTLIB="matplotlib"
+    - python: "3.7"
+      name: "Python 3.7 + django-pandas"
+      env:
+        - DJPANDAS="django-pandas"
+    - python: "3.7"
+      name: "Code Lint"
+      env:
+        - LINT="flake8"
 install:
  - pip install --upgrade pip
- - pip install $DJANGO $REST $PANDAS
- - pip install matplotlib
- - pip install flake8
- - pip install django-pandas
+ - pip install $DJANGO $REST $PANDAS $MATPLOTLIB $DJPANDAS $LINT
 script:
  - ./runtests.sh

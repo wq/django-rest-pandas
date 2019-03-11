@@ -1,9 +1,11 @@
+import unittest
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries, CustomIndexSeries
 from wq.io import load_string
 import json
 import datetime
 import os
+from .settings import HAS_DJANGO_PANDAS
 
 
 class PandasTestCase(APITestCase):
@@ -34,6 +36,7 @@ class PandasTestCase(APITestCase):
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].value, '0.5')
 
+    @unittest.skipUnless(HAS_DJANGO_PANDAS, 'requires django-pandas')
     def test_view_django_pandas(self):
         response = self.client.get("/djangopandas.csv")
         data = self.load_string(response)

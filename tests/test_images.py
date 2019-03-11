@@ -1,7 +1,10 @@
+import unittest
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
+from .settings import HAS_MATPLOTLIB
 
 
+@unittest.skipUnless(HAS_MATPLOTLIB, "requires matplotlib")
 class ImageTestCase(APITestCase):
     def setUp(self):
         data = (

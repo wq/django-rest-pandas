@@ -18,3 +18,19 @@ TEMPLATES = [
         'APP_DIRS': True,
     },
 ]
+
+
+try:
+    import matplotlib
+except ImportError:
+    HAS_MATPLOTLIB = False
+else:
+    HAS_MATPLOTLIB = True
+
+
+try:
+   import django_pandas
+except ImportError:
+    HAS_DJANGO_PANDAS = False
+else:
+    HAS_DJANGO_PANDAS = True

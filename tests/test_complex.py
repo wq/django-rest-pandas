@@ -1,6 +1,8 @@
+import unittest
 from rest_framework.test import APITestCase
 from tests.testapp.models import ComplexTimeSeries
 from rest_pandas.test import parse_csv
+from .settings import HAS_MATPLOTLIB
 
 
 class ComplexTestCase(APITestCase):
@@ -127,6 +129,7 @@ class ComplexTestCase(APITestCase):
                 ]},
         ], datasets)
 
+    @unittest.skipUnless(HAS_MATPLOTLIB, "requires matplotlib")
     def test_complex_boxplot(self):
         # Default group=series-year
         response = self.client.get("/complexboxplot.csv")
@@ -179,6 +182,7 @@ class ComplexTestCase(APITestCase):
         self.assertEqual(stats['value-mean'], 0.4)
         self.assertEqual(stats['value-whishi'], 0.8)
 
+    @unittest.skipUnless(HAS_MATPLOTLIB, "requires matplotlib")
     def test_complex_boxplot_series(self):
         response = self.client.get("/complexboxplot.csv?group=series")
         datasets = self.parse_csv(response)
@@ -224,6 +228,7 @@ class ComplexTestCase(APITestCase):
         self.assertEqual(stats['value-mean'], 0.4)
         self.assertEqual(stats['value-whishi'], 0.8)
 
+    @unittest.skipUnless(HAS_MATPLOTLIB, "requires matplotlib")
     def test_complex_boxplot_month_group(self):
         response = self.client.get("/complexboxplot.csv?group=series-month")
         datasets = self.parse_csv(response)
@@ -269,6 +274,7 @@ class ComplexTestCase(APITestCase):
         self.assertEqual(stats['value-mean'], 0.4)
         self.assertEqual(stats['value-whishi'], 0.8)
 
+    @unittest.skipUnless(HAS_MATPLOTLIB, "requires matplotlib")
     def test_complex_boxplot_year(self):
         response = self.client.get("/complexboxplot.csv?group=year")
         datasets = self.parse_csv(response)

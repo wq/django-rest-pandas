@@ -56,8 +56,7 @@ setup(
     ],
     test_suite='tests',
     tests_require=[
-        'wq.io', 'xlwt', 'openpyxl', 'matplotlib',
-        'django', 'django-mustache'
+        'wq.io', 'xlwt', 'openpyxl', 'django', 'django-mustache'
     ],
     setup_requires=[
         'setuptools_scm',
