@@ -8,7 +8,7 @@ INSTALLED_APPS = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        'NAME': 'rest_pandas_test.sqlite3',
     }
 }
 ROOT_URLCONF = "tests.urls"
@@ -18,6 +18,8 @@ TEMPLATES = [
         'APP_DIRS': True,
     },
 ]
+
+DEBUG = True
 
 
 try:

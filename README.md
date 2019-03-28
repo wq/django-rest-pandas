@@ -171,6 +171,18 @@ class TimeSeriesView(PandasView):
     renderer_classes = [PandasCSVRenderer, PandasExcelRenderer]
     # You can also set the default renderers for all of your pandas views by
     # defining the PANDAS_RENDERERS in your settings.py.
+
+    # Step 5 (Optional).  The default filename may not be particularly useful
+    # for your users.  To override, define get_pandas_filename() on your view.
+    # If a filename is returned, rest_pandas will include the following header:
+    # 'Content-Disposition: attachment; filename="Data Export.xlsx"'
+    def get_pandas_filename(self, request, format):
+        if format in ('xls', 'xlsx'):
+            # Use custom filename and Content-Disposition header
+            return "Data Export"  # Extension will be appended automatically
+        else:
+            # Default filename from URL (no Content-Disposition header)
+            return None
 ```
 
 #### Django Pandas Integration

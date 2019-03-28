@@ -43,6 +43,12 @@ class TimeSeriesView(PandasView):
     def get_template_context(self, data):
         return {'name': data['name'] + ' Custom'}
 
+    def get_pandas_filename(self, request, format):
+        if format in ('xls', 'xlsx'):
+            return self.get_view_name()
+        else:
+            return None
+
 
 class TimeSeriesNoIdView(PandasView):
     queryset = TimeSeries.objects.all()

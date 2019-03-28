@@ -17,6 +17,10 @@ class ExcelTestCase(APITestCase):
 
     def test_xls(self):
         response = self.client.get("/timeseries.xls")
+        self.assertEqual(
+            'attachment; filename="Time Series.xls"',
+            response['content-disposition'],
+        )
         xlfile = open('tests/output.xls', 'wb')
         xlfile.write(response.content)
         xlfile.close()
@@ -28,6 +32,10 @@ class ExcelTestCase(APITestCase):
 
     def test_xlsx(self):
         response = self.client.get("/timeseries.xlsx")
+        self.assertEqual(
+            'attachment; filename="Time Series.xlsx"',
+            response['content-disposition'],
+        )
         xlfile = open('tests/output.xlsx', 'wb')
         xlfile.write(response.content)
         xlfile.close()

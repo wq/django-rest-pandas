@@ -75,6 +75,31 @@ class PandasMixin(object):
         else:
             return self.serializer_class
 
+    def get_pandas_filename(self, request, format):
+        return None
+
+    def get_pandas_headers(self, request):
+        format = request.accepted_renderer.format
+        filename = self.get_pandas_filename(request, format)
+        if not filename:
+            return {}
+
+        extension = '.' + format
+        if not filename.endswith(extension):
+            filename += extension
+
+        return {
+            'Content-Disposition': 'attachment; filename="{}"'.format(
+                filename
+            )
+        }
+
+    def update_pandas_headers(self, response):
+        headers = self.get_pandas_headers(self.request)
+        for key, val in headers.items():
+            response[key] = val
+        return response
+
 
 class PandasViewBase(PandasMixin):
     renderer_classes = PANDAS_RENDERERS
@@ -97,18 +122,24 @@ class PandasSimpleView(PandasViewBase, APIView):
         data = self.get_data(request, *args, **kwargs)
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(data, many=True)
-        return Response(serializer.data)
+        response = Response(serializer.data)
+        return self.update_pandas_headers(response)
 
 
 class PandasView(PandasViewBase, ListAPIView):
     """
     Pandas-capable model list view
     """
-    pass
+
+    def list(self, request, *args, **kwargs):
+        response = super(PandasView, self).list(request, *args, **kwargs)
+        return self.update_pandas_headers(response)
 
 
 class PandasViewSet(PandasViewBase, ListModelMixin, GenericViewSet):
     """
     Pandas-capable model ViewSet (list only)
     """
-    pass
+    def list(self, request, *args, **kwargs):
+        response = super(PandasViewSet, self).list(request, *args, **kwargs)
+        return self.update_pandas_headers(response)
