@@ -185,6 +185,10 @@ class TimeSeriesView(PandasView):
             return None
 ```
 
+#### Integrating with Existing Views
+
+If you have an existing viewset, or are otherwise unable to directly subclass one of `PandasSimpleView`, `PandasView`, `PandasViewSet`, or `PandasMixin`, you can also integrate the renderers and serializer directly.  The most important thing is to ensure that your serializer class has `Meta.list_serializer_class` set to `PandasSerializer` or a subclass.  Then, make sure that the Pandas renderers are included in your [renderer options](https://github.com/wq/django-rest-pandas#customizing-renderers).  See [#32] and [#36] for examples.
+
 #### Django Pandas Integration
 
 You can also let [Django Pandas] handle querying and generating the dataframe, and only use Django REST Pandas for the rendering:
@@ -233,11 +237,11 @@ The default `PandasView` will serve up all of the available data from the provid
 
 You can override the default renderers by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your individual view(s).  `PANDAS_RENDERERS` is defined separately from Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, in case you want to have DRP-enabled views intermingled with regular DRF views.
 
-You can also include DRP renderers in `DEFAULT_RENDERER_CLASSES`.  In that case, be sure to have all of your views extend `PandasMixin`, otherwise you may get an error saying the serializer output is not a `DataFrame`.  In short, there are three paths to getting DRP renderers working with your views:
+You can also include DRP renderers in `DEFAULT_RENDERER_CLASSES`.  In that case, extend `PandasMixin` or set `list_serializer_class` on your serializer.  Otherwise, you may get an error saying the serializer output is not a `DataFrame`.  In short, there are three paths to getting DRP renderers working with your views:
 
  1. Extend `PandasView`, `PandasSimpleView`, or `PandasViewSet`, and use the `PANDAS_RENDERERS` setting (which defaults to the list above).
  2. Extend `PandasMixin` and customize `REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']` to add one or more `rest_pandas` renderers.
- 3. Extend any of the `Pandas*` classes and set `renderer_classes` explicitly on the view.
+ 3. Set `renderer_classes` explicitly on the view, and set `Serializer.Meta.list_serializer_class` to `PandasSerializer` or a subclass.  (See [#32] and [#36] for examples.)
 
 ```python
 class TimeSeriesView(PandasView):
@@ -578,3 +582,5 @@ pandas.get('/data/boxplot.csv?group=year', function(data) {
 [to_json]: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_json.html
 [unstacks]: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.unstack.html
 [boxplot_stats]: http://matplotlib.org/api/cbook_api.html#matplotlib.cbook.boxplot_stats
+[#32]: https://github.com/wq/django-rest-pandas/issues/32
+[#36]: https://github.com/wq/django-rest-pandas/issues/36
