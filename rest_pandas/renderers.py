@@ -27,7 +27,7 @@ class PandasBaseRenderer(BaseRenderer):
     Uses a StringIO to capture the output of dataframe.to_[format]()
     """
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        if 'response' in renderer_context:
+        if renderer_context and 'response' in renderer_context:
             status_code = renderer_context['response'].status_code
             if not status.is_success(status_code):
                 return "Error: %s" % data.get('detail', status_code)
