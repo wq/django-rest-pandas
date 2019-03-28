@@ -4,7 +4,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import (
     NoModelView, FromFileView, TimeSeriesView, TimeSeriesNoIdView,
-    TimeSeriesMixedRendererView, TimeSeriesMixinView, TimeSeriesNoMixinView,
+    TimeSeriesMixedRendererView, TimeSeriesCustomCSVView,
+    TimeSeriesMixinView, TimeSeriesNoMixinView,
     DjangoPandasView, TimeSeriesViewSet,
     MultiTimeSeriesView, MultiScatterView, MultiBoxplotView,
     ComplexTimeSeriesView, ComplexScatterView,
@@ -21,6 +22,7 @@ urlpatterns = [
     url(r'^timeseries$', TimeSeriesView.as_view()),
     url(r'^timeseriesnoid$', TimeSeriesNoIdView.as_view()),
     url(r'^mixedrenderers$', TimeSeriesMixedRendererView.as_view()),
+    url(r'^customcsv$', TimeSeriesCustomCSVView.as_view()),
     url(r'^mixin$', TimeSeriesMixinView.as_view()),
     url(r'^nomixin$', TimeSeriesNoMixinView.as_view()),
     url(r'^djangopandas$', DjangoPandasView.as_view()),

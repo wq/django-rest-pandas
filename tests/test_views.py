@@ -98,6 +98,11 @@ class PandasTestCase(APITestCase):
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0]['value'], 0.5)
 
+    def test_custom_csv_date_format(self):
+        response = self.client.get("/customcsv.csv")
+        data = self.load_string(response)
+        self.assertEqual(data[0].date, '01-01-2014')
+
     def test_pandas_mixin(self):
         response = self.client.get("/mixin.csv")
         data = self.load_string(response)

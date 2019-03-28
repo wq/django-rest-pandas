@@ -15,6 +15,7 @@ from .serializers import (
     ComplexBoxplotSerializer, ComplexBoxplotExtraSerializer,
     CustomIndexSeriesSerializer,
 )
+from .renderers import CustomCSVRenderer
 import pandas as pd
 
 
@@ -64,6 +65,19 @@ class TimeSeriesMixedRendererView(PandasView):
          pandas_renderers.PandasCSVRenderer,
          renderers.JSONRenderer,
     ]
+
+
+class TimeSeriesCustomCSVView(PandasView):
+    queryset = TimeSeries.objects.all()
+    serializer_class = TimeSeriesSerializer
+
+    renderer_classes = [
+         CustomCSVRenderer,
+    ]
+
+    def transform_dataframe(self, df):
+        df['date'] = df['date'].astype('datetime64')
+        return df
 
 
 class TimeSeriesViewSet(PandasViewSet):
