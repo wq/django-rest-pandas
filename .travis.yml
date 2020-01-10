@@ -6,9 +6,10 @@ env:
     - DJANGO="django==3.0.2"
     - REST="djangorestframework==3.11.0"
     - PANDAS="pandas==0.25.3"
+    - OPENPYXL="openpyxl==3.0.2"
 matrix:
   include:
-    - name: "Defaults (Python 3.8, Django 3.0, DRF 3.11, Pandas 0.25)"
+    - name: "Defaults (Python 3.8, Django 3.0, DRF 3.11, Pandas 0.25, openpyxl 3.0)"
     - name: "+ matplotlib"
       env:
         - MATPLOTLIB="matplotlib"
@@ -25,27 +26,30 @@ matrix:
     - name: "Django 1.11"
       env:
         - DJANGO="django==1.11.27"
-    - name: "Python 3.5, Django 2.2"
+    - name: "Python 3.5, Django 2.2, openpyxl 2.6"
       python: "3.5"
       env:
         - DJANGO="django==2.2.9"
-    - name: "Python 3.4, Django 2.0, DRF 3.9, Pandas 0.20"
+        - OPENPYXL="openpyxl==2.6.4"
+    - name: "Python 3.4, Django 2.0, DRF 3.9, Pandas 0.20, openpyxl 2.5"
       python: "3.4"
       env:
         - DJANGO="django==2.0.13"
         - REST="djangorestframework==3.9.4"
         - PANDAS="pandas==0.20.3"
-    - name: "Python 2.7, Django 1.8, DRF 3.6, Pandas 0.24"
+        - OPENPYXL="openpyxl==2.5.14"
+    - name: "Python 2.7, Django 1.8, DRF 3.6, Pandas 0.24, openpyxl 2.6"
       python: "2.7"
       env:
         - DJANGO="django==1.8.19"
         - REST="djangorestframework==3.6.4"
         - PANDAS="pandas==0.24.2"
+        - OPENPYXL="openpyxl==2.6.4"
     - name: "Code Lint"
       env:
         - LINT="flake8"
 install:
  - pip install --upgrade pip
- - pip install $DJANGO $REST $PANDAS $MATPLOTLIB $DJPANDAS $LINT
+ - pip install $DJANGO $REST $PANDAS $OPENPYXL $MATPLOTLIB $DJPANDAS $LINT
 script:
  - ./runtests.sh
