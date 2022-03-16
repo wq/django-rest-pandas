@@ -64,6 +64,6 @@ setup(
         'wq.io', 'xlwt', 'openpyxl', 'django', 'django-mustache'
     ],
     setup_requires=[
-        'setuptools_scm',
+        'setuptools_scm<=5',
     ],
 )
