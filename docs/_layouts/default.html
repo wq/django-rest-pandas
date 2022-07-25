@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{{ page.title }}{% if page.title != 'Django REST Pandas' %} - Django REST Pandas{% endif %}</title>
+    <script type="module" src="/js/$index.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=yes" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/images/icons/django-rest-pandas.svg">
+    <link rel="alternate icon" sizes="16x16 32x32 48x48" href="/favicon.ico">
+    <style>
+      img[src$=".svg"], img[src$=".png"] {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+      }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LTN8HFGJT2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LTN8HFGJT2');
+    </script>
+  </head>
+  <body>
+    <div id="content" style="display:none">
+      {% if page.url != '/' %}
+      <nav>
+        <a href="/">Home</a>
+        &gt;
+        {% if page.dir != page.url %}
+        <a href="{{ page.dir }}">
+          {{ site.pages | where_exp:"p","p.url == page.dir" | map: "title" | first }}
+        </a>
+        &gt;
+        {% endif %}
+        {{ page.title }}
+      </nav>
+      {% endif %}
+      <main>
+        {{ content }}
+        {% if page.url == '/' %}
+        <ul>
+          {% for p in site.pages %}{% if p.wq_config != nil and p.wq_config.show_in_index != false %}
+          <li><a href="{{ p.url }}">{{ p.title }}</a></li>{% endif %}{% endfor %}
+        </ul>
+        {% elsif page.dir == page.url and page.wq_config.autoindex != false %}
+        <ul>
+          {% for p in site.pages %}{% if p.dir == page.dir and p.url != page.dir and p.name != '$index.json' %}
+          <li><a href="{{ p.url }}">{{ p.title }}</a></li>{% endif %}{% endfor %}
+        </ul>
+        {% endif %}
+      </main>
+    </div>
+    <script nomodule>
+      document.getElementById('content').style.display = 'block';
+    </script>
+  </body>
+</html>
