@@ -1,0 +1,18 @@
+{
+    "name": "@wq/chart",
+    "version": "0.0.0",
+    "scripts": {
+        "test": "echo"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wq/django-rest-pandas.git",
+        "directory": "packages/chart"
+    },
+    "author": "S. Andrew Sheppard",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/wq/django-rest-pandas/issues"
+    },
+    "homepage": "https://django-rest-pandas.wq.io/@wq/chart"
+}

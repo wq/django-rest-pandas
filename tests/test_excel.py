@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
-from wq.io import load_file
+from itertable import load_file
 
 
 class ExcelTestCase(APITestCase):

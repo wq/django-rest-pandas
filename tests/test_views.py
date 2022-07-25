@@ -1,7 +1,7 @@
 import unittest
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries, CustomIndexSeries
-from wq.io import load_string
+from itertable import load_string
 import json
 import datetime
 import os

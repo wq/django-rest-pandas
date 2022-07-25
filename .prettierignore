@@ -1,0 +1,9 @@
+*.yml
+*.md
+*.css
+*.html
+docs/**/*.json
+docs/**/*.js
+build/
+dist/
+rest_pandas/static/

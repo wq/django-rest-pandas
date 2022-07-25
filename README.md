@@ -17,7 +17,7 @@ DRP does not include any JavaScript code, leaving the implementation of interact
 [![GitHub Forks](https://img.shields.io/github/forks/wq/django-rest-pandas.svg)](https://github.com/wq/django-rest-pandas/network)
 [![GitHub Issues](https://img.shields.io/github/issues/wq/django-rest-pandas.svg)](https://github.com/wq/django-rest-pandas/issues)
 
-[![Travis Build Status](https://img.shields.io/travis/wq/django-rest-pandas.svg)](https://travis-ci.org/wq/django-rest-pandas)
+[![Tests](https://github.com/wq/django-rest-pandas/actions/workflows/test.yml/badge.svg)](https://github.com/wq/django-rest-pandas/actions/workflows/test.yml)
 [![Python Support](https://img.shields.io/pypi/pyversions/rest-pandas.svg)](https://pypi.org/project/rest-pandas)
 [![Django Support](https://img.shields.io/pypi/djversions/rest-pandas.svg)](https://pypi.org/project/rest-pandas)
 

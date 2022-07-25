@@ -1,0 +1,115 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.variant }} py=${{ matrix.python-version }} dj=${{ matrix.django-version }} drf=${{ matrix.drf-version }} pandas=${{ matrix.pandas-version }}
+    runs-on: ubuntu-20.04
+    env:
+      TEST_VARIANT: ${{ matrix.variant }}
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.9", "3.8"]
+        django-version: [4.0.6]
+        drf-version: [3.13.1]
+        pandas-version: [1.4.3]
+        variant: ['']
+        include:
+        - python-version: "3.10"
+          django-version: 4.0.6
+          drf-version: 3.13.1
+          pandas-version: 1.4.3
+          variant: matplotlib
+        - python-version: "3.10"
+          django-version: 4.0.6
+          drf-version: 3.13.1
+          pandas-version: 1.4.3
+          variant: django-pandas
+        - python-version: "3.10"
+          django-version: 3.2.14
+          drf-version: 3.13.1
+          pandas-version: 1.4.3
+          variant: ''
+        - python-version: "3.7"
+          django-version: 3.2.14
+          drf-version: 3.13.1
+          pandas-version: 1.3.5
+          variant: ''
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8 wheel
+        python -m pip install django==${{ matrix.django-version }}
+        python -m pip install djangorestframework==${{ matrix.drf-version }}
+        python -m pip install pandas==${{ matrix.pandas-version }}
+        python -m pip install itertable[oldexcel] django-mustache
+    - name: Install matplotlib
+      if: ${{ matrix.variant == 'matplotlib' }}
+      run: python -m pip install matplotlib
+    - name: Install django-pandas
+      if: ${{ matrix.variant == 'django-pandas' }}
+      run: python -m pip install django-pandas
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with unittest
+      run: python -m unittest discover -s tests -t . -v
+  npm:
+    name: "@wq/${{ matrix.package }}"
+    runs-on: ubuntu-20.04
+    env:
+      PACKAGE: ${{ matrix.package }}
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+        node-version: [16]
+        package:
+          - pandas
+          - chart
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Node ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        npm ci
+        npm run lerna exec npm ci
+        npm run bootstrap
+        npm run build
+    - name: Lint with ESLint
+      run: npm run lint
+    - name: Test with Jest
+      run: |
+         cd packages/$PACKAGE
+         npm run test
+    - uses: smartsquaregmbh/delete-old-packages@v0.4.0
+      if: github.event_name == 'push'
+      with:
+         keep: 5
+         names: ${{ matrix.package }}
+    - name: Publish to Github Packages
+      if: github.event_name == 'push'
+      run: |
+         ./set_dev_version.sh
+         cd packages/$PACKAGE
+         echo "registry=https://npm.pkg.github.com/wq" > .npmrc
+         echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+         npm publish
