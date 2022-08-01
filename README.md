@@ -1,5 +1,8 @@
-Django REST Pandas
-==================
+<p align="center">
+  <a href="https://django-rest-pandas.wq.io">
+    <img src="https://django-rest-pandas.wq.io/images/django-rest-pandas.svg" alt="Django REST Pandas">
+  </a>
+</p>
 
 #### [Django REST Framework] + [pandas] = A Model-driven Visualization API
 

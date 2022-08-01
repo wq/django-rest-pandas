@@ -28,8 +28,8 @@ const config = {
     },
     material: {
         theme: {
-            primary: '#000080',
-            secondary: '#ffcf00',
+            primary: '#00723f',
+            secondary: '#c3ff00',
         }
     },
     pages: {
