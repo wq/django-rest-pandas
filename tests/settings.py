@@ -44,8 +44,13 @@ else:
 
 
 try:
-   import django_pandas   # noqa
+    import django_pandas   # noqa
 except ImportError:
     HAS_DJANGO_PANDAS = False
 else:
     HAS_DJANGO_PANDAS = True
+
+
+from django import VERSION   # noqa
+
+HAS_DJANGO_4 = VERSION[0] == 4

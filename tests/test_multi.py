@@ -5,7 +5,7 @@ from tests.testapp.serializers import NotUnstackableSerializer
 from rest_pandas.test import parse_csv
 from django.core.exceptions import ImproperlyConfigured
 import os
-from .settings import HAS_MATPLOTLIB
+from .settings import HAS_MATPLOTLIB, HAS_DJANGO_4
 import pandas
 
 
@@ -63,6 +63,7 @@ class MultiTestCase(APITestCase):
         self.assertEqual(d0['date'], '2015-01-05')
         self.assertEqual(d0['value'], 0.3)
 
+    @unittest.skipUnless(HAS_DJANGO_4, "requires django 4")
     def test_multi_series_html(self):
         response = self.client.get("/multitimeseries.html")
         expected = open(os.path.join(

@@ -5,7 +5,7 @@ from itertable import load_string
 import json
 import datetime
 import os
-from .settings import HAS_DJANGO_PANDAS
+from .settings import HAS_DJANGO_PANDAS, HAS_DJANGO_4
 
 
 class PandasTestCase(APITestCase):
@@ -67,6 +67,7 @@ class PandasTestCase(APITestCase):
         self.assertEqual(len(data.values()), 5)
         self.assertEqual(data["1"]["value"], 0.5)
 
+    @unittest.skipUnless(HAS_DJANGO_4, 'requires django 4')
     def test_view_html(self):
         response = self.client.get("/timeseries?test=1")
         expected = open(
