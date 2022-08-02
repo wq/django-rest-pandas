@@ -1,82 +1,155 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Time Series Custom</title>
-  </head>
-  <body>
-    <div data-role="page">
-      <div data-role="header">
-        <h1>Time Series Custom</h1>
-      </div>
-      <div role="main" class="ui-content">
-        <h1>Time Series Custom</h1>
-        <p>A simple time series view.</p>
-        <div data-role="controlgroup" data-type="horizontal" data-mini="true">
-          <a href="/timeseries.csv?test=1" rel="external" class="ui-btn ui-corner-all">
-            csv
-          </a>
-          <a href="/timeseries.txt?test=1" rel="external" class="ui-btn ui-corner-all">
-            txt
-          </a>
-          <a href="/timeseries.json?test=1" rel="external" class="ui-btn ui-corner-all">
-            json
-          </a>
-          <a href="/timeseries.xlsx?test=1" rel="external" class="ui-btn ui-corner-all">
-            xlsx
-          </a>
-          <a href="/timeseries.xls?test=1" rel="external" class="ui-btn ui-corner-all">
-            xls
-          </a>
-          <a href="/timeseries.png?test=1" rel="external" class="ui-btn ui-corner-all">
-            png
-          </a>
-          <a href="/timeseries.svg?test=1" rel="external" class="ui-btn ui-corner-all">
-            svg
-          </a>
+
+<html lang="en-us" dir="ltr">
+<head>
+<title>Time Series Custom</title>
+<link rel="stylesheet" type="text/css" href="admin/css/base.css">
+
+
+<link rel="stylesheet" type="text/css" href="admin/css/forms.css">
+
+
+
+
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="admin/css/responsive.css">
+    
+
+<meta name="robots" content="NONE,NOARCHIVE">
+</head>
+
+
+<body class=""
+  data-admin-utc-offset="-18000">
+
+<!-- Container -->
+<div id="container">
+
+    
+    <!-- Header -->
+    <div id="header">
+        <div id="branding">
+        
+<h1 id="site-name"><a href="/admin">Django administration</a></h1>
+
         </div>
-        <hr>
-        <table border="1" class="dataframe ui-table table-stripe">
-	  <thead>
-	    <tr style="text-align: right;">
-	      <th></th>
-	      <th>date</th>
-	      <th>value</th>
-	    </tr>
-	    <tr>
-	      <th>id</th>
-	      <th></th>
-	      <th></th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr>
-	      <th>1</th>
-	      <td>2014-01-01</td>
-	      <td>0.5</td>
-	    </tr>
-	    <tr>
-	      <th>2</th>
-	      <td>2014-01-02</td>
-	      <td>0.4</td>
-	    </tr>
-	    <tr>
-	      <th>3</th>
-	      <td>2014-01-03</td>
-	      <td>0.6</td>
-	    </tr>
-	    <tr>
-	      <th>4</th>
-	      <td>2014-01-04</td>
-	      <td>0.2</td>
-	    </tr>
-	    <tr>
-	      <th>5</th>
-	      <td>2014-01-05</td>
-	      <td>0.1</td>
-	    </tr>
-	  </tbody>
-	</table>
+        
+        
+        
+        
+    </div>
+    <!-- END Header -->
+    
+<div class="breadcrumbs">
+  <a href="/admin">Admin Home</a>
+  &rsaquo;
+  Time Series Custom
+</div>
+
+    
+
+    <div class="main shifted" id="main">
+      
+      <div class="content">
+        
+          
+        
+        <!-- Content -->
+        <div id="content" class="colM">
+          
+          
+<div style="display:flex">
+<h1 style="flex:1">Time Series Custom</h1>
+<select onchange="window.open(event.target.value)">
+  <option value="/timeseries?test=1">Select format to download...</option>
+
+  <option value="/timeseries.csv?test=1">
+    csv
+  </option>
+
+  <option value="/timeseries.txt?test=1">
+    txt
+  </option>
+
+  <option value="/timeseries.json?test=1">
+    json
+  </option>
+
+  <option value="/timeseries.xlsx?test=1">
+    xlsx
+  </option>
+
+  <option value="/timeseries.xls?test=1">
+    xls
+  </option>
+
+  <option value="/timeseries.png?test=1">
+    png
+  </option>
+
+  <option value="/timeseries.svg?test=1">
+    svg
+  </option>
+
+</select>
+</div>
+
+          
+          
+
+<p><p>A simple time series view.</p></p>
+
+
+<table border="1" class="dataframe ui-table table-stripe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>value</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>2014-01-01</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2014-01-02</td>
+      <td>0.4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2014-01-03</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2014-01-04</td>
+      <td>0.2</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2014-01-05</td>
+      <td>0.1</td>
+    </tr>
+  </tbody>
+</table>
+
+          
+          <br class="clear">
+        </div>
+        <!-- END Content -->
+        <div id="footer"></div>
       </div>
     </div>
-  </body>
+</div>
+<!-- END Container -->
+</body>
 </html>

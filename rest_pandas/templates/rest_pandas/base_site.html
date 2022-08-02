@@ -1,0 +1,16 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% block title %}{{ label }}{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Admin Home</a>
+  &rsaquo;
+  {{ label }}
+</div>
+{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+{% endblock %}
+{% block content_title %}
+<h1>{{label}}</h1>
+{% endblock %}

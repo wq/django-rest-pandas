@@ -1,9 +1,13 @@
 SECRET_KEY = '1234'
 INSTALLED_APPS = (
-    'django.contrib.contenttypes',
+    'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.messages',
+    'django.contrib.sessions',
     'tests.testapp',
     'rest_pandas',
+    'rest_framework',
 )
 DATABASES = {
     'default': {
@@ -14,8 +18,17 @@ DATABASES = {
 ROOT_URLCONF = "tests.urls"
 TEMPLATES = [
     {
-        'BACKEND': 'django_mustache.Mustache',
-        'APP_DIRS': True,
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
     },
 ]
 

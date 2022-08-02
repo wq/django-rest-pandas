@@ -1,88 +1,161 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Multi Time Series</title>
-  </head>
-  <body>
-    <div data-role="page">
-      <div data-role="header">
-        <h1>Multi Time Series</h1>
-      </div>
-      <div role="main" class="ui-content">
-        <h1>Multi Time Series</h1>
-        <p>Multiple time series.</p>
-        <div data-role="controlgroup" data-type="horizontal" data-mini="true">
-          <a href="/multitimeseries.csv" rel="external" class="ui-btn ui-corner-all">
-            csv
-          </a>
-          <a href="/multitimeseries.txt" rel="external" class="ui-btn ui-corner-all">
-            txt
-          </a>
-          <a href="/multitimeseries.json" rel="external" class="ui-btn ui-corner-all">
-            json
-          </a>
-          <a href="/multitimeseries.xlsx" rel="external" class="ui-btn ui-corner-all">
-            xlsx
-          </a>
-          <a href="/multitimeseries.xls" rel="external" class="ui-btn ui-corner-all">
-            xls
-          </a>
-          <a href="/multitimeseries.png" rel="external" class="ui-btn ui-corner-all">
-            png
-          </a>
-          <a href="/multitimeseries.svg" rel="external" class="ui-btn ui-corner-all">
-            svg
-          </a>
+
+<html lang="en-us" dir="ltr">
+<head>
+<title>Multi Time Series</title>
+<link rel="stylesheet" type="text/css" href="admin/css/base.css">
+
+
+<link rel="stylesheet" type="text/css" href="admin/css/forms.css">
+
+
+
+
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="admin/css/responsive.css">
+    
+
+<meta name="robots" content="NONE,NOARCHIVE">
+</head>
+
+
+<body class=""
+  data-admin-utc-offset="-18000">
+
+<!-- Container -->
+<div id="container">
+
+    
+    <!-- Header -->
+    <div id="header">
+        <div id="branding">
+        
+<h1 id="site-name"><a href="/admin">Django administration</a></h1>
+
         </div>
-        <hr>
-        <svg data-wq-url="/multitimeseries.csv" data-wq-type="timeSeries"></svg>
-        <hr>
-        <table border="1" class="dataframe ui-table table-stripe">
-	  <thead>
-	    <tr>
-	      <th></th>
-	      <th colspan="2" halign="left">value</th>
-	    </tr>
-	    <tr>
-	      <th>series</th>
-	      <th>test1</th>
-	      <th>test2</th>
-	    </tr>
-	    <tr>
-	      <th>date</th>
-	      <th></th>
-	      <th></th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr>
-	      <th>2015-01-01</th>
-	      <td>0.5</td>
-	      <td>0.7</td>
-	    </tr>
-	    <tr>
-	      <th>2015-01-02</th>
-	      <td>0.4</td>
-	      <td>0.8</td>
-	    </tr>
-	    <tr>
-	      <th>2015-01-03</th>
-	      <td>0.6</td>
-	      <td>0.0</td>
-	    </tr>
-	    <tr>
-	      <th>2015-01-04</th>
-	      <td>0.2</td>
-	      <td>0.9</td>
-	    </tr>
-	    <tr>
-	      <th>2015-01-05</th>
-	      <td>0.1</td>
-	      <td>0.3</td>
-	    </tr>
-	  </tbody>
-	</table>
+        
+        
+        
+        
+    </div>
+    <!-- END Header -->
+    
+<div class="breadcrumbs">
+  <a href="/admin">Admin Home</a>
+  &rsaquo;
+  Multi Time Series
+</div>
+
+    
+
+    <div class="main shifted" id="main">
+      
+      <div class="content">
+        
+          
+        
+        <!-- Content -->
+        <div id="content" class="colM">
+          
+          
+<div style="display:flex">
+<h1 style="flex:1">Multi Time Series</h1>
+<select onchange="window.open(event.target.value)">
+  <option value="/multitimeseries">Select format to download...</option>
+
+  <option value="/multitimeseries.csv">
+    csv
+  </option>
+
+  <option value="/multitimeseries.txt">
+    txt
+  </option>
+
+  <option value="/multitimeseries.json">
+    json
+  </option>
+
+  <option value="/multitimeseries.xlsx">
+    xlsx
+  </option>
+
+  <option value="/multitimeseries.xls">
+    xls
+  </option>
+
+  <option value="/multitimeseries.png">
+    png
+  </option>
+
+  <option value="/multitimeseries.svg">
+    svg
+  </option>
+
+</select>
+</div>
+
+          
+          
+
+<p><p>Multiple time series.</p></p>
+
+
+<p>FIXME: timeSeries
+
+<table border="1" class="dataframe ui-table table-stripe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">value</th>
+    </tr>
+    <tr>
+      <th>series</th>
+      <th>test1</th>
+      <th>test2</th>
+    </tr>
+    <tr>
+      <th>date</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2015-01-01</th>
+      <td>0.5</td>
+      <td>0.7</td>
+    </tr>
+    <tr>
+      <th>2015-01-02</th>
+      <td>0.4</td>
+      <td>0.8</td>
+    </tr>
+    <tr>
+      <th>2015-01-03</th>
+      <td>0.6</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2015-01-04</th>
+      <td>0.2</td>
+      <td>0.9</td>
+    </tr>
+    <tr>
+      <th>2015-01-05</th>
+      <td>0.1</td>
+      <td>0.3</td>
+    </tr>
+  </tbody>
+</table>
+
+          
+          <br class="clear">
+        </div>
+        <!-- END Content -->
+        <div id="footer"></div>
       </div>
     </div>
-  </body>
+</div>
+<!-- END Container -->
+</body>
 </html>

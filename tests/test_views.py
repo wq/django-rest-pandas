@@ -88,7 +88,11 @@ class PandasTestCase(APITestCase):
 
     def test_mixed_renderer_api(self):
         response = self.client.get("/mixedrenderers.api")
-        data = self.load_string(response)
+        html_content = response.content.decode('utf-8')
+        csv_content = html_content.split(
+            '</pre>'
+        )[-2].split('</span>')[-1].strip()
+        data = load_string(csv_content)
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].value, '0.5')
 

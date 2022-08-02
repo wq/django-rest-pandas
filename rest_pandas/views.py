@@ -20,10 +20,10 @@ from .serializers import (
     SimpleSerializer, PandasSerializer
 )
 
-DEFAULT_TEMPLATE = False
 PANDAS_RENDERERS = getattr(settings, "PANDAS_RENDERERS", None)
 if PANDAS_RENDERERS is None:
     PANDAS_RENDERERS = (
+        "rest_pandas.renderers.PandasHTMLRenderer",
         "rest_pandas.renderers.PandasCSVRenderer",
         "rest_pandas.renderers.PandasTextRenderer",
         "rest_pandas.renderers.PandasJSONRenderer",
@@ -32,11 +32,6 @@ if PANDAS_RENDERERS is None:
         "rest_pandas.renderers.PandasPNGRenderer",
         "rest_pandas.renderers.PandasSVGRenderer",
     )
-    if "rest_pandas" in settings.INSTALLED_APPS:
-        DEFAULT_TEMPLATE = True
-        PANDAS_RENDERERS = (
-            "rest_pandas.renderers.PandasHTMLRenderer",
-        ) + PANDAS_RENDERERS
 
 PANDAS_RENDERERS = perform_import(PANDAS_RENDERERS, "PANDAS_RENDERERS")
 
@@ -104,8 +99,7 @@ class PandasMixin(object):
 class PandasViewBase(PandasMixin):
     renderer_classes = PANDAS_RENDERERS
     pagination_class = None
-    if DEFAULT_TEMPLATE:
-        template_name = 'rest_pandas.html'
+    template_name = 'rest_pandas/viewer.html'
 
 
 class PandasSimpleView(PandasViewBase, APIView):

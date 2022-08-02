@@ -1,6 +1,12 @@
 from rest_framework.test import APITestCase
 from tests.testapp.models import TimeSeries
 from itertable import load_file
+import unittest
+
+try:
+    import xlwt
+except ImportError:
+    xlwt = None
 
 
 class ExcelTestCase(APITestCase):
@@ -15,6 +21,7 @@ class ExcelTestCase(APITestCase):
         for date, value in data:
             TimeSeries.objects.create(date=date, value=value)
 
+    @unittest.skipUnless(xlwt, "requires xlwt")
     def test_xls(self):
         response = self.client.get("/timeseries.xls")
         self.assertEqual(

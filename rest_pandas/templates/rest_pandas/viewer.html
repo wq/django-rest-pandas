@@ -1,0 +1,33 @@
+{% extends "rest_pandas/base_site.html" %}
+
+{% load static %}
+{% block title %}{{ name }}{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Admin Home</a>
+  &rsaquo;
+  {{ name }}
+</div>
+{% endblock %}
+{% block content_title %}
+<div style="display:flex">
+<h1 style="flex:1">{{ name }}</h1>
+<select onchange="window.open(event.target.value)">
+  <option value="{{url}}{{url_params}}">Select format to download...</option>
+{% for fmt in available_formats %}
+  <option value="{{url}}.{{fmt}}{{url_params}}">
+    {{fmt}}
+  </option>
+{% endfor %}
+</select>
+</div>
+{% endblock %}
+{% block content %}
+{% if description %}
+<p>{{ description }}</p>
+{% endif %}
+{% if wq_chart_type %}
+<p>FIXME: {{ wq_chart_type }}
+{% endif %}
+{{table|safe}}
+{% endblock %}
