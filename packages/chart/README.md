@@ -8,9 +8,9 @@
 &bull;
 [**API**][api]
 
-[logo]: https://django-rest-chart.wq.io/images/@wq/chart.svg
-[docs]: https://django-rest-chart.wq.io/@wq/chart
-[installation]: https://django-rest-chart.wq.io/@wq/chart#installation
-[api]: https://django-rest-chart.wq.io/@wq/chart#api
+[logo]: https://django-rest-pandas.wq.io/images/@wq/chart.svg
+[docs]: https://django-rest-pandas.wq.io/@wq/chart
+[installation]: https://django-rest-pandas.wq.io/@wq/chart#installation
+[api]: https://django-rest-pandas.wq.io/@wq/chart#api
 
-[Django REST Pandas]: https://django-rest-chart.wq.io/
+[Django REST Pandas]: https://django-rest-pandas.wq.io/
