@@ -126,7 +126,7 @@ class PandasView(PandasViewBase, ListAPIView):
     """
 
     def list(self, request, *args, **kwargs):
-        response = super(PandasView, self).list(request, *args, **kwargs)
+        response = super().list(request, *args, **kwargs)
         return self.update_pandas_headers(response)
 
 
@@ -135,5 +135,5 @@ class PandasViewSet(PandasViewBase, ListModelMixin, GenericViewSet):
     Pandas-capable model ViewSet (list only)
     """
     def list(self, request, *args, **kwargs):
-        response = super(PandasViewSet, self).list(request, *args, **kwargs)
+        response = super().list(request, *args, **kwargs)
         return self.update_pandas_headers(response)

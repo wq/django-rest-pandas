@@ -2,16 +2,8 @@ from rest_framework.renderers import BaseRenderer, TemplateHTMLRenderer
 from rest_framework import status
 from tempfile import mkstemp
 from pandas import DataFrame
-
-try:
-    # Python 2 (uses str)
-    from StringIO import StringIO
-except ImportError:
-    # Python 3 (Python 2 equivalent uses unicode)
-    from io import StringIO
-
+from io import StringIO, BytesIO
 import os
-from io import BytesIO
 
 
 RESPONSE_ERROR = (
@@ -189,7 +181,7 @@ class PandasJSONRenderer(PandasBaseRenderer):
         if kwargs.get('orient') == 'records-index':
             kwargs['orient'] = 'records'
             data.reset_index(inplace=True)
-        return super(PandasJSONRenderer, self).render_dataframe(
+        return super().render_dataframe(
             data, name, *args, **kwargs
         )
 

@@ -43,7 +43,7 @@ class PandasSerializer(serializers.ListSerializer):
 
     @property
     def data(self):
-        data = super(serializers.ListSerializer, self).data
+        data = super().data
         if isinstance(data, DataFrame) or data:
             dataframe = self.get_dataframe(data)
             return self.transform_dataframe(dataframe)
@@ -53,7 +53,7 @@ class PandasSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         if isinstance(data, DataFrame):
             return data
-        return super(PandasSerializer, self).to_representation(data)
+        return super().to_representation(data)
 
     @property
     def model_serializer(self):
