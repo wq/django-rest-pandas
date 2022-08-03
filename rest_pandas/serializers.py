@@ -43,7 +43,7 @@ class PandasSerializer(serializers.ListSerializer):
 
     @property
     def data(self):
-        data = super().data
+        data = super(serializers.ListSerializer, self).data
         if isinstance(data, DataFrame) or data:
             dataframe = self.get_dataframe(data)
             return self.transform_dataframe(dataframe)
