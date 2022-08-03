@@ -1,18 +1,38 @@
 {
     "name": "@wq/chart",
-    "version": "0.0.0",
+    "version": "2.0.0-alpha.1",
+    "description": "wq framework plugin providing re-usable d3.js charts for Django REST Pandas",
+    "main": "dist/index.js",
+    "files": [
+        "src/",
+        "dist/"
+    ],
+    "type": "module",
     "scripts": {
-        "test": "echo"
+        "test": "cd ../../ && npm run jest packages/chart",
+        "prettier": "cd ../../ && npm run prettier",
+        "lint": "cd ../../ && npm run lint",
+        "build": "cd ../../ && npm run rollup -- -c packages/chart/rollup.config.js"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/wq/django-rest-pandas.git",
         "directory": "packages/chart"
     },
+    "keywords": [
+        "wq",
+        "chart",
+        "django-rest-pandas"
+    ],
     "author": "S. Andrew Sheppard",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/wq/django-rest-pandas/issues"
     },
-    "homepage": "https://django-rest-pandas.wq.io/@wq/chart"
+    "homepage": "https://django-rest-pandas.wq.io/@wq/chart",
+    "dependencies": {
+        "@wq/pandas": "file:../pandas",
+        "d3": "^7.6.1",
+        "mustache": "^4.2.0"
+    }
 }

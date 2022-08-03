@@ -10,7 +10,8 @@
     ],
     "globals": {
         "global": "readonly",
-        "module": "readonly"
+        "module": "readonly",
+        "__dirname": "readonly"
     },
     "parser": "@babel/eslint-parser",
     "parserOptions": {
