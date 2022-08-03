@@ -6,5 +6,5 @@ class CustomCSVRenderer(PandasCSVRenderer):
         kwargs = super(CustomCSVRenderer, self).get_pandas_kwargs(
             data, renderer_context
         )
-        kwargs['date_format'] = '%d-%m-%Y'
+        kwargs["date_format"] = "%d-%m-%Y"
         return kwargs

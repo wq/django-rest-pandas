@@ -1,18 +1,29 @@
 from rest_pandas import (
-    PandasMixin, PandasSimpleView, PandasView, PandasViewSet,
-    PandasUnstackedSerializer, PandasScatterSerializer, PandasBoxplotSerializer
+    PandasMixin,
+    PandasSimpleView,
+    PandasView,
+    PandasViewSet,
+    PandasUnstackedSerializer,
+    PandasScatterSerializer,
+    PandasBoxplotSerializer,
 )
 from rest_framework import renderers
 from rest_framework.generics import ListAPIView
 from rest_pandas import renderers as pandas_renderers
 from .models import (
-    TimeSeries, MultiTimeSeries, ComplexTimeSeries, CustomIndexSeries,
+    TimeSeries,
+    MultiTimeSeries,
+    ComplexTimeSeries,
+    CustomIndexSeries,
 )
 from .serializers import (
-    TimeSeriesSerializer, TimeSeriesNoIdSerializer,
+    TimeSeriesSerializer,
+    TimeSeriesNoIdSerializer,
     MultiTimeSeriesSerializer,
-    ComplexTimeSeriesSerializer, ComplexScatterSerializer,
-    ComplexBoxplotSerializer, ComplexBoxplotExtraSerializer,
+    ComplexTimeSeriesSerializer,
+    ComplexScatterSerializer,
+    ComplexBoxplotSerializer,
+    ComplexBoxplotExtraSerializer,
     CustomIndexSeriesSerializer,
 )
 from .renderers import CustomCSVRenderer
@@ -22,30 +33,31 @@ import pandas as pd
 class NoModelView(PandasSimpleView):
     def get_data(self, request, *args, **kwargs):
         return [
-            {'x': 5, 'y': 7},
-            {'x': 3, 'y': 2},
-            {'x': 8, 'y': 6},
-            {'x': 5, 'y': 4},
+            {"x": 5, "y": 7},
+            {"x": 3, "y": 2},
+            {"x": 8, "y": 6},
+            {"x": 5, "y": 4},
         ]
 
 
 class FromFileView(PandasSimpleView):
     def get_data(self, request, *args, **kwargs):
-        return pd.read_csv('tests/data.csv')
+        return pd.read_csv("tests/data.csv")
 
 
 class TimeSeriesView(PandasView):
     """
     A simple time series view.
     """
+
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesSerializer
 
     def get_template_context(self, data):
-        return {'name': data['name'] + ' Custom'}
+        return {"name": data["name"] + " Custom"}
 
     def get_pandas_filename(self, request, format):
-        if format in ('xls', 'xlsx'):
+        if format in ("xls", "xlsx"):
             return self.get_view_name()
         else:
             return None
@@ -61,9 +73,9 @@ class TimeSeriesMixedRendererView(PandasView):
     serializer_class = TimeSeriesSerializer
 
     renderer_classes = [
-         renderers.BrowsableAPIRenderer,
-         pandas_renderers.PandasCSVRenderer,
-         renderers.JSONRenderer,
+        renderers.BrowsableAPIRenderer,
+        pandas_renderers.PandasCSVRenderer,
+        renderers.JSONRenderer,
     ]
 
 
@@ -72,11 +84,11 @@ class TimeSeriesCustomCSVView(PandasView):
     serializer_class = TimeSeriesSerializer
 
     renderer_classes = [
-         CustomCSVRenderer,
+        CustomCSVRenderer,
     ]
 
     def transform_dataframe(self, df):
-        df['date'] = df['date'].astype('datetime64')
+        df["date"] = df["date"].astype("datetime64")
         return df
 
 
@@ -88,23 +100,19 @@ class TimeSeriesViewSet(PandasViewSet):
 class TimeSeriesMixinView(PandasMixin, ListAPIView):
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesSerializer
-    renderer_classes = [
-        pandas_renderers.PandasCSVRenderer
-    ]
+    renderer_classes = [pandas_renderers.PandasCSVRenderer]
 
 
 class TimeSeriesNoMixinView(ListAPIView):
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesSerializer
-    renderer_classes = [
-        pandas_renderers.PandasCSVRenderer
-    ]
+    renderer_classes = [pandas_renderers.PandasCSVRenderer]
 
 
 class DjangoPandasView(PandasSimpleView):
     def get_data(self, request, *args, **kwargs):
         return TimeSeries.objects.to_timeseries(
-            index='date',
+            index="date",
         )
 
 
@@ -112,6 +120,7 @@ class MultiTimeSeriesView(PandasView):
     """
     Multiple time series.
     """
+
     queryset = MultiTimeSeries.objects.all()
     serializer_class = MultiTimeSeriesSerializer
     pandas_serializer_class = PandasUnstackedSerializer

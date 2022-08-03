@@ -8,7 +8,7 @@ LONG_DESCRIPTION = (
 
 def readme():
     try:
-        readme = open('README.md')
+        readme = open("README.md")
     except IOError:
         return LONG_DESCRIPTION
     else:
@@ -16,47 +16,51 @@ def readme():
 
 
 setup(
-    name='rest-pandas',
+    name="rest-pandas",
     use_scm_version=True,
-    author='S. Andrew Sheppard',
-    author_email='andrew@wq.io',
-    url='https://github.com/wq/django-rest-pandas',
-    license='MIT',
-    packages=['rest_pandas'],
+    author="S. Andrew Sheppard",
+    author_email="andrew@wq.io",
+    url="https://github.com/wq/django-rest-pandas",
+    license="MIT",
+    packages=["rest_pandas"],
     package_data={
-        'rest_pandas': [
-            'mustache/*.*',
+        "rest_pandas": [
+            "mustache/*.*",
         ]
     },
     description=LONG_DESCRIPTION.strip(),
     long_description=readme(),
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     install_requires=[
-        'djangorestframework>=3.3.1',
-        'pandas>=0.19.0',
+        "djangorestframework>=3.3.1",
+        "pandas>=0.19.0",
     ],
     classifiers=[
-        'Framework :: Django',
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Web Environment',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Framework :: Django',
-        'Framework :: Django :: 3.2',
-        'Framework :: Django :: 4.0',
-        'Topic :: Scientific/Engineering :: Information Analysis',
-        'Topic :: Scientific/Engineering :: Visualization',
+        "Framework :: Django",
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Web Environment",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Framework :: Django",
+        "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.0",
+        "Topic :: Scientific/Engineering :: Information Analysis",
+        "Topic :: Scientific/Engineering :: Visualization",
     ],
-    test_suite='tests',
+    test_suite="tests",
     tests_require=[
-        'itertable', 'xlwt', 'openpyxl', 'django', 'django-mustache'
+        "itertable",
+        "xlwt",
+        "openpyxl",
+        "django",
+        "django-mustache",
     ],
     setup_requires=[
-        'setuptools_scm',
+        "setuptools_scm",
     ],
 )

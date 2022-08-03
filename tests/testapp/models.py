@@ -1,4 +1,5 @@
 from django.db import models
+
 try:
     from django_pandas.managers import DataFrameManager
 except ImportError:

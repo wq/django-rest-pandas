@@ -8,11 +8,11 @@ from .settings import HAS_MATPLOTLIB
 class ImageTestCase(APITestCase):
     def setUp(self):
         data = (
-            ('2014-01-01', 0.5),
-            ('2014-01-02', 0.4),
-            ('2014-01-03', 0.6),
-            ('2014-01-04', 0.2),
-            ('2014-01-05', 0.1),
+            ("2014-01-01", 0.5),
+            ("2014-01-02", 0.4),
+            ("2014-01-03", 0.6),
+            ("2014-01-04", 0.2),
+            ("2014-01-05", 0.1),
         )
         for date, value in data:
             TimeSeries.objects.create(date=date, value=value)

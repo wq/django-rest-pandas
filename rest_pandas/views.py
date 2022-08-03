@@ -1,8 +1,9 @@
 from .renderers import PandasBaseRenderer
+
 try:
     from rest_framework.views import APIView
 except ImportError as e:
-    if 'APIView' in e.msg:
+    if "APIView" in e.msg:
         raise ImportError(
             "Try importing rest_pandas before rest_framework.views"
         )
@@ -16,9 +17,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from rest_framework.settings import perform_import
 
-from .serializers import (
-    SimpleSerializer, PandasSerializer
-)
+from .serializers import SimpleSerializer, PandasSerializer
 
 PANDAS_RENDERERS = getattr(settings, "PANDAS_RENDERERS", None)
 if PANDAS_RENDERERS is None:
@@ -40,8 +39,8 @@ class PandasMixin(object):
     pandas_serializer_class = PandasSerializer
 
     def with_list_serializer(self, cls):
-        meta = getattr(cls, 'Meta', object)
-        if getattr(meta, 'list_serializer_class', None):
+        meta = getattr(cls, "Meta", object)
+        if getattr(meta, "list_serializer_class", None):
             return cls
 
         class SerializerWithListSerializer(cls):
@@ -61,7 +60,7 @@ class PandasMixin(object):
         )
 
         renderer = self.request.accepted_renderer
-        if hasattr(renderer, 'get_default_renderer'):
+        if hasattr(renderer, "get_default_renderer"):
             # BrowsableAPIRenderer
             renderer = renderer.get_default_renderer(self)
 
@@ -79,14 +78,12 @@ class PandasMixin(object):
         if not filename:
             return {}
 
-        extension = '.' + format
+        extension = "." + format
         if not filename.endswith(extension):
             filename += extension
 
         return {
-            'Content-Disposition': 'attachment; filename="{}"'.format(
-                filename
-            )
+            "Content-Disposition": 'attachment; filename="{}"'.format(filename)
         }
 
     def update_pandas_headers(self, response):
@@ -99,7 +96,7 @@ class PandasMixin(object):
 class PandasViewBase(PandasMixin):
     renderer_classes = PANDAS_RENDERERS
     pagination_class = None
-    template_name = 'rest_pandas/viewer.html'
+    template_name = "rest_pandas/viewer.html"
 
 
 class PandasSimpleView(PandasViewBase, APIView):
@@ -107,6 +104,7 @@ class PandasSimpleView(PandasViewBase, APIView):
     Simple (non-model) Pandas API view; override get_data
     with a function that returns a list of dicts.
     """
+
     serializer_class = SimpleSerializer
 
     def get_data(self, request, *args, **kwargs):
@@ -134,6 +132,7 @@ class PandasViewSet(PandasViewBase, ListModelMixin, GenericViewSet):
     """
     Pandas-capable model ViewSet (list only)
     """
+
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
         return self.update_pandas_headers(response)
