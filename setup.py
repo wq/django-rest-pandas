@@ -1,9 +1,23 @@
 from setuptools import setup
+from setuptools.command.build_py import build_py
+import subprocess
+import warnings
+
 
 LONG_DESCRIPTION = (
     "Serves up pandas dataframes via the Django REST Framework for client-side"
     "(i.e. d3.js) visualizations"
 )
+
+
+class BuildJS(build_py):
+    def run(self):
+        try:
+            subprocess.check_call(["npm", "install"])
+            subprocess.check_call(["npm", "run", "build"])
+        except BaseException as e:
+            warnings.warn("Skipping JS build: {}".format(e))
+        super().run()
 
 
 def readme():
@@ -55,14 +69,15 @@ setup(
         "Topic :: Scientific/Engineering :: Visualization",
     ],
     test_suite="tests",
-    tests_require=[
-        "itertable",
-        "xlwt",
-        "openpyxl",
-        "django",
-        "django-mustache",
-    ],
     setup_requires=[
         "setuptools_scm",
     ],
+    cmdclass={"build_py": BuildJS},
+    project_urls={
+        'Homepage': 'https://django-rest-pandas.wq.io/',
+        'Documentation': 'https://django-rest-pandas.wq.io/',
+        'Source': 'https://github.com/wq/django-rest-pandas',
+        'Release Notes': 'https://django-rest-pandas.wq.io/releases/',
+        'Issues': 'https://github.com/wq/django-rest-pandas/issues',
+    },
 )

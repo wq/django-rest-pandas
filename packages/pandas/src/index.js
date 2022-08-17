@@ -65,13 +65,9 @@ export function parse(str, options = {}) {
             }
             data.push(row);
         });
-        return options.flatten
-            ? data
-            : [
-                  {
-                      data: data,
-                  },
-              ];
+
+        const datasets = [{ data }];
+        return options.flatten ? flatten(datasets) : datasets;
     }
 
     // Parse CSV headers and data
