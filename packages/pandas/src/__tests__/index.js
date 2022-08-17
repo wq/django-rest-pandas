@@ -1,4 +1,4 @@
-import pandas from '../index';
+import * as pandas from '../index';
 import mockFetch from 'jest-fetch-mock';
 import fs from 'fs';
 
@@ -70,6 +70,50 @@ test('pandas.get()', async () => {
                 { date: '2014-01-01', value: 0.2 },
                 { date: '2014-01-02', value: 0.2 },
             ],
+        },
+    ]);
+});
+
+test('pandas.get() with flatten: true', async () => {
+    mockFetch.mockResponse(fs.readFileSync(__dirname + '/data.csv'));
+    var data = await pandas.get('data.csv', { flatten: true });
+    delete data.datasets;
+    expect(data).toEqual([
+        {
+            site: 'SITE1',
+            parameter: 'PARAM1',
+            date: '2014-01-01',
+            value: 0.5,
+        },
+        {
+            site: 'SITE1',
+            parameter: 'PARAM1',
+            date: '2014-01-02',
+            value: 0.1,
+        },
+        {
+            site: 'SITE2',
+            parameter: 'PARAM1',
+            date: '2014-01-01',
+            value: 0.5,
+        },
+        {
+            site: 'SITE2',
+            parameter: 'PARAM1',
+            date: '2014-01-02',
+            value: 0.5,
+        },
+        {
+            site: 'SITE3',
+            parameter: 'PARAM2',
+            date: '2014-01-01',
+            value: 0.2,
+        },
+        {
+            site: 'SITE3',
+            parameter: 'PARAM2',
+            date: '2014-01-02',
+            value: 0.2,
         },
     ]);
 });

@@ -11,25 +11,65 @@ wq_config:
 
 ### URL Configuration
 
+To use [Django REST Pandas] in your project, you will generally need to define an [API view][api] and register it with urls.py as shown below:
+
 ```python
 # urls.py
-from django.conf.urls import patterns, include, url
-
+from django.urls import path
 from .views import TimeSeriesView
-urlpatterns = patterns('',
-    url(r'^data', TimeSeriesView.as_view()),
+
+urlpatterns = (
+    path("data", TimeSeriesView.as_view()),
 )
 
-# This is only required to support extension-style formats (e.g. /data.csv)
+# The following is required to support extension-style formats (e.g. /data.csv)
 from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = format_suffix_patterns(urlpatterns)
 ```
 
+When [using DRP with the wq framework][wq-setup], you can instead register a [`PandasViewSet`][PandasViewSet] subclass with [wq.db.rest.router].  wq.db provides extension-style formats by default.
+
+```
+from wq.db import rest
+from .views import TimeSeriesViewSet
+
+rest.router.add_page(
+    "data",
+    {
+        "url": "data",
+        "template": "table",
+        "table": {"url": "/data.csv"},
+    },
+    TimeSeriesViewSet,
+)
+```
+
 ### Customizing Renderers
 
-You can override the [default renderers][renderers] by setting `PANDAS_RENDERERS` in your `settings.py`, or by overriding `renderer_classes` in your individual view(s).  `PANDAS_RENDERERS` is defined separately from Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, in case you want to have DRP-enabled views intermingled with regular DRF views.
+DRP provides a set of [default renderers][renderers] that you can oveeride by setting `REST_PANDAS["RENDERERS"]` in your `settings.py`, or by overriding `renderer_classes` in your individual view(s).  `REST_PANDAS["RENDERERS"]` should be a list or tuple of string paths pointing to one or more Django REST Framework renderer classes.
 
-You can also include DRP renderers in `DEFAULT_RENDERER_CLASSES`.  In that case, extend `PandasMixin` or set `list_serializer_class` on your serializer.  Otherwise, you may get an error saying the serializer output is not a `DataFrame`.  In short, there are three paths to getting DRP renderers working with your views:
+The default `REST_PANDAS["RENDERERS"]` setting is as follows:
+
+```python
+REST_PANDAS = {
+    "RENDERERS": (
+        "rest_pandas.renderers.PandasHTMLRenderer",
+        "rest_pandas.renderers.PandasCSVRenderer",
+        "rest_pandas.renderers.PandasTextRenderer",
+        "rest_pandas.renderers.PandasJSONRenderer",
+        "rest_pandas.renderers.PandasExcelRenderer",
+        "rest_pandas.renderers.PandasOldExcelRenderer",
+        "rest_pandas.renderers.PandasPNGRenderer",
+        "rest_pandas.renderers.PandasSVGRenderer",
+    ),
+)
+```
+
+> When [using DRP with the wq framework][wq-setup], `"rest_pandas.renderers.PandasHTMLRenderer"` is automatically replaced with `"wq.db.rest.renderers.HTMLRenderer"` by default.
+
+`REST_PANDAS["RENDERERS"]` is similar to Django REST Framework's own `DEFAULT_RENDERER_CLASSES` setting, but defined separately in case you plan to have DRP-enabled views intermingled with regular DRF views.  That said, it is also possible to include DRP renderers in `DEFAULT_RENDERER_CLASSES`.  To do so, extend `PandasMixin` in you view or set `Meta.list_serializer_class` explicitly on your serializer.  Otherwise, you may get an error saying the serializer output is not a `DataFrame`.
+
+In short, there are three paths to getting DRP renderers working with your views:
 
  1. Extend [PandasView], [PandasSimpleView], or [PandasViewSet], and use the `PANDAS_RENDERERS` setting (which defaults to the list above).
  2. Extend [PandasMixin] and customize `REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']` to add one or more `rest_pandas` renderers.
@@ -43,6 +83,20 @@ class TimeSeriesView(PandasView):
 class TimeSeriesView(PandasMixin, ListAPIView):
     # renderer_classes default to REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']
     ...
+```
+
+### Field Labels
+
+By default, Django REST Pandas will update the dataframe columns to use the `label` attribute of defined serializer fields, and/or the `verbose_name` attribute of any underlying model fields.  To disable this functionality (and use the field names as column names), set `REST_PANDAS["APPLY_FIELD_LABELS"]` to false.
+
+```python
+REST_PANDAS = {
+    "APPLY_FIELD_LABELS": True,  # Default in DRP 2.0
+}
+
+REST_PANDAS = {
+    "APPLY_FIELD_LABELS": False,  # Compatible with DRP 1.x
+}
 ```
 
 ### Date Formatting
@@ -65,9 +119,18 @@ Alternately, you can disable date serialization globally by setting `DATETIME_FO
 DATE_FORMAT = None
 ```
 
+[Django REST Pandas]: ./index.md
 [renderers]: ./renderers/index.md
+[wq-setup]: ./guides/integrate-with-wq-framework.md
+[api]: ./api/index.md
+[PandasViewSet]: ./api/PandasViewSet.md
+[PandasView]: ./api/PandasView.md
+[PandasSimpleView]: ./api/PandasSimpleView.md
+[PandasMixin]: ./api/PandasMixin.md
+
 [#32]: https://github.com/wq/django-rest-pandas/issues/32
 [#36]: https://github.com/wq/django-rest-pandas/issues/36
+
+[wq.db.rest.router]: https://wq.io/wq.db/router
 [DateField]: http://www.django-rest-framework.org/api-guide/fields/#datefield
 [DateTimeField]: http://www.django-rest-framework.org/api-guide/fields/#datetimefield
-

@@ -36,6 +36,15 @@ class PandasTestCase(APITestCase):
         self.assertEqual(len(data), 5)
         self.assertEqual(data[0].value, "0.5")
 
+    def test_view_csv_labels(self):
+        response = self.client.get("/timeserieslabels.csv")
+        data = self.load_string(response)
+        self.assertEqual(len(data), 5)
+        self.assertEqual(getattr(data[0], "measuredvalue"), "0.5")
+        self.assertEqual(
+            list(data.field_map.keys()), ["id", "Event Date", "Measured Value"]
+        )
+
     @unittest.skipUnless(HAS_DJANGO_PANDAS, "requires django-pandas")
     def test_view_django_pandas(self):
         response = self.client.get("/djangopandas.csv")

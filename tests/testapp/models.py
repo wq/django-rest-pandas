@@ -13,6 +13,15 @@ class TimeSeries(models.Model):
     objects = DataFrameManager()
 
 
+class TimeSeriesLabels(models.Model):
+    date = models.DateField(verbose_name="Event Date")
+    value = models.FloatField(verbose_name="Measured Value")
+
+    class Meta:
+        managed = False
+        db_table = "testapp_timeseries"
+
+
 class MultiTimeSeries(models.Model):
     # Header
     series = models.CharField(max_length=5)

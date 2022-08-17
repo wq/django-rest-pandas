@@ -1,8 +1,6 @@
 import { csvParse, csvParseRows } from 'd3-dsv';
 
-var pandas = {};
-
-pandas.parse = function (str) {
+export function parse(str, options = {}) {
     /* Parses a CSV string with the following structure:
 
     ,value,value,value              // values header
@@ -67,11 +65,13 @@ pandas.parse = function (str) {
             }
             data.push(row);
         });
-        return [
-            {
-                data: data,
-            },
-        ];
+        return options.flatten
+            ? data
+            : [
+                  {
+                      data: data,
+                  },
+              ];
     }
 
     // Parse CSV headers and data
@@ -183,15 +183,27 @@ pandas.parse = function (str) {
             datasets[i].data.push(d);
         });
     }
-    return datasets;
-};
+    return options.flatten ? flatten(datasets) : datasets;
+}
 
-pandas.get = function (url, callback) {
-    return fetch(url)
-        .then((response) => response.text())
-        .then((text) => pandas.parse(text))
-        .then(callback);
-};
+export async function get(url, options = {}) {
+    const response = await fetch(url),
+        text = await response.text(),
+        data = parse(text, options);
+    return data;
+}
+
+export function flatten(datasets) {
+    const allData = [];
+    datasets.forEach((dataset) => {
+        const { data, ...meta } = dataset;
+        data.forEach((row) => {
+            allData.push({ ...meta, ...row });
+        });
+    });
+    allData.datasets = datasets;
+    return allData;
+}
 
 function hash(obj) {
     var str = '';
@@ -202,5 +214,3 @@ function hash(obj) {
         });
     return str;
 }
-
-export default pandas;

@@ -2,8 +2,19 @@ from rest_framework import serializers
 from pandas import DataFrame
 from pandas.api.types import is_numeric_dtype
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.functional import cached_property
 import datetime
 from collections import OrderedDict
+from . import settings
+
+
+def get_label(field, name):
+    if field.label == "ID":
+        return "id"
+    elif field.label:
+        return field.label
+    else:
+        return name
 
 
 class PandasSerializer(serializers.ListSerializer):
@@ -12,14 +23,24 @@ class PandasSerializer(serializers.ListSerializer):
     """
 
     read_only = True
-    index_none_value = None
+    apply_field_labels = settings.APPLY_FIELD_LABELS
+    index_none_value = settings.INDEX_NONE_VALUE
     wq_chart_type = None
 
     def get_index(self, dataframe):
         return self.get_index_fields()
 
+    @cached_property
+    def field_labels(self):
+        return {
+            name: get_label(field, name)
+            for name, field in self.child.get_fields().items()
+        }
+
     def get_dataframe(self, data):
         dataframe = DataFrame(data)
+        if self.apply_field_labels:
+            dataframe.rename(columns=self.field_labels, inplace=True)
         index = self.get_index(dataframe)
         if index:
             if self.index_none_value is not None:
@@ -71,7 +92,7 @@ class PandasSerializer(serializers.ListSerializer):
         """
         List of fields to use for index
         """
-        index_fields = self.get_meta_option("index", [])
+        index_fields = self.get_meta_option("index", [], True)
         if index_fields:
             return index_fields
 
@@ -79,11 +100,13 @@ class PandasSerializer(serializers.ListSerializer):
         if model:
             pk_name = model._meta.pk.name
             if pk_name in self.child.get_fields():
+                if self.apply_field_labels:
+                    pk_name = self.field_labels.get(pk_name, pk_name)
                 return [pk_name]
 
         return []
 
-    def get_meta_option(self, name, default=None):
+    def get_meta_option(self, name, default=None, apply_field_labels=False):
         meta_name = "pandas_" + name
         value = getattr(self.model_serializer_meta, meta_name, None)
 
@@ -95,7 +118,10 @@ class PandasSerializer(serializers.ListSerializer):
                     "%s should be specified on %s.Meta"
                     % (meta_name, self.model_serializer.__name__)
                 )
-        return value
+        elif apply_field_labels and self.apply_field_labels:
+            return [self.field_labels.get(field, field) for field in value]
+        else:
+            return value
 
 
 class PandasUnstackedSerializer(PandasSerializer):
@@ -134,7 +160,7 @@ class PandasUnstackedSerializer(PandasSerializer):
         """
         Series metadata fields for header (first few rows)
         """
-        return self.get_meta_option("unstacked_header")
+        return self.get_meta_option("unstacked_header", None, True)
 
 
 class PandasScatterSerializer(PandasSerializer):
@@ -203,13 +229,13 @@ class PandasScatterSerializer(PandasSerializer):
         Fields that will be collapsed into a single header with the name of
         each coordinate.
         """
-        return self.get_meta_option("scatter_coord")
+        return self.get_meta_option("scatter_coord", None, True)
 
     def get_header_fields(self):
         """
         Other header fields, if any
         """
-        return self.get_meta_option("scatter_header", [])
+        return self.get_meta_option("scatter_header", [], True)
 
 
 class PandasBoxplotSerializer(PandasSerializer):
@@ -365,13 +391,13 @@ class PandasBoxplotSerializer(PandasSerializer):
         """
         Additional series metadata for boxplot column headers
         """
-        return self.get_meta_option("boxplot_header", [])
+        return self.get_meta_option("boxplot_header", [], True)
 
     def get_extra_index_fields(self):
         """
         Fields that identify each row but don't need to be considered for plot
         """
-        return self.get_meta_option("boxplot_extra_index", [])
+        return self.get_meta_option("boxplot_extra_index", [], True)
 
 
 class SimpleSerializer(serializers.Serializer):

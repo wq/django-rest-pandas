@@ -42,6 +42,7 @@ DRP is configured by defining one or more [API views][api] and mapping them to U
 3. **Data Visualization**
    * [@wq/pandas]
    * [@wq/chart]
+   * [@wq/analyst]
 
 [Django REST Framework]: http://django-rest-framework.org
 [pandas]: http://pandas.pydata.org
@@ -55,3 +56,4 @@ DRP is configured by defining one or more [API views][api] and mapping them to U
 [renderers]: https://django-rest-pandas.wq.io/renderers/
 [@wq/pandas]: https://django-rest-pandas.wq.io/@wq/pandas
 [@wq/chart]: https://django-rest-pandas.wq.io/@wq/chart
+[@wq/analyst]: https://django-rest-pandas.wq.io/@wq/analyst

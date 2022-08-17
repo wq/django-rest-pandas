@@ -1,0 +1,42 @@
+{
+    "name": "@wq/analyst",
+    "version": "2.0.0-alpha.1",
+    "description": "wq framework plugin providing interactive data tables for Django REST Pandas",
+    "main": "dist/index.js",
+    "files": [
+        "src/",
+        "dist/"
+    ],
+    "type": "module",
+    "scripts": {
+        "test": "cd ../../ && npm run jest packages/analyst",
+        "prettier": "cd ../../ && npm run prettier",
+        "lint": "cd ../../ && npm run lint",
+        "build": "cd ../../ && npm run rollup -- -c packages/analyst/rollup.config.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wq/django-rest-pandas.git",
+        "directory": "packages/analyst"
+    },
+    "keywords": [
+        "wq",
+        "analyst",
+        "django-rest-pandas"
+    ],
+    "author": "S. Andrew Sheppard",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/wq/django-rest-pandas/issues"
+    },
+    "homepage": "https://django-rest-pandas.wq.io/@wq/analyst",
+    "dependencies": {
+        "@material-ui/icons": "^4.11.3",
+        "@wq/material": "^1.3.0",
+        "@wq/pandas": "file:../pandas"
+    },
+    "devDependencies": {
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    }
+}

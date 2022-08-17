@@ -13,7 +13,7 @@ Django REST Pandas is distributed on the Python package index.  (Also see the li
 
  Module                                  | Github                          | PyPI                  | npm                   | Description
 -----------------------------------------|---------------------------------|-----------------------|-----------------------|-------------
-[![Django REST Pandas][drp.svg]][wq/drp] | [wq/django-rest-pandas][gh/drp] | [rest-pandas][py/drp] | [@wq/pandas][npm/drp] | Django application
+[![Django REST Pandas][drp.svg]][wq/drp] | [wq/django-rest-pandas][gh/drp] | [rest-pandas][py/drp] | [@wq/analyst][npm/drp] | Django application
 
 [drp.svg]: ../images/icons/django-rest-pandas.svg
 
@@ -24,4 +24,4 @@ Django REST Pandas is distributed on the Python package index.  (Also see the li
 
 [py/drp]: https://pypi.org/project/rest-pandas
 
-[npm/drp]: https://npmjs.com/package/@wq/pandas
+[npm/drp]: https://npmjs.com/package/@wq/analyst

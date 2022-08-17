@@ -12,6 +12,7 @@ from rest_framework.generics import ListAPIView
 from rest_pandas import renderers as pandas_renderers
 from .models import (
     TimeSeries,
+    TimeSeriesLabels,
     MultiTimeSeries,
     ComplexTimeSeries,
     CustomIndexSeries,
@@ -19,6 +20,7 @@ from .models import (
 from .serializers import (
     TimeSeriesSerializer,
     TimeSeriesNoIdSerializer,
+    TimeSeriesLabelsSerializer,
     MultiTimeSeriesSerializer,
     ComplexTimeSeriesSerializer,
     ComplexScatterSerializer,
@@ -66,6 +68,11 @@ class TimeSeriesView(PandasView):
 class TimeSeriesNoIdView(PandasView):
     queryset = TimeSeries.objects.all()
     serializer_class = TimeSeriesNoIdSerializer
+
+
+class TimeSeriesLabelsView(PandasView):
+    queryset = TimeSeriesLabels.objects.all()
+    serializer_class = TimeSeriesLabelsSerializer
 
 
 class TimeSeriesMixedRendererView(PandasView):

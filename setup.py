@@ -25,7 +25,9 @@ setup(
     packages=["rest_pandas"],
     package_data={
         "rest_pandas": [
-            "mustache/*.*",
+            "templates/rest_pandas/*.html",
+            "static/rest_pandas/js/*.*",
+            "static/app/js/*.*",
         ]
     },
     description=LONG_DESCRIPTION.strip(),

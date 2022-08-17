@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_pandas import PandasUnstackedSerializer
 from .models import (
     TimeSeries,
+    TimeSeriesLabels,
     MultiTimeSeries,
     ComplexTimeSeries,
     CustomIndexSeries,
@@ -21,6 +22,12 @@ class TimeSeriesNoIdSerializer(TimeSeriesSerializer):
     class Meta:
         model = TimeSeries
         exclude = ["id"]
+
+
+class TimeSeriesLabelsSerializer(ModelSerializer):
+    class Meta:
+        model = TimeSeriesLabels
+        fields = "__all__"
 
 
 class MultiTimeSeriesSerializer(ModelSerializer):

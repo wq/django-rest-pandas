@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import chart from './chart';
-import pandas from '@wq/pandas';
+import * as pandas from '@wq/pandas';
 import Mustache from 'mustache';
 
 // Exported module variable
@@ -61,7 +61,7 @@ chartapp.run = function ($page) {
         return;
     }
 
-    pandas.get(url, function (data) {
+    pandas.get(url).then(function (data) {
         return chartapp.create(data, type, $svg[0]);
     });
 };

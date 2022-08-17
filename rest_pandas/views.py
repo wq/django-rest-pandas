@@ -14,25 +14,15 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 
-from django.conf import settings
+from . import settings
 from rest_framework.settings import perform_import
 
 from .serializers import SimpleSerializer, PandasSerializer
 
-PANDAS_RENDERERS = getattr(settings, "PANDAS_RENDERERS", None)
-if PANDAS_RENDERERS is None:
-    PANDAS_RENDERERS = (
-        "rest_pandas.renderers.PandasHTMLRenderer",
-        "rest_pandas.renderers.PandasCSVRenderer",
-        "rest_pandas.renderers.PandasTextRenderer",
-        "rest_pandas.renderers.PandasJSONRenderer",
-        "rest_pandas.renderers.PandasExcelRenderer",
-        "rest_pandas.renderers.PandasOldExcelRenderer",
-        "rest_pandas.renderers.PandasPNGRenderer",
-        "rest_pandas.renderers.PandasSVGRenderer",
-    )
 
-PANDAS_RENDERERS = perform_import(PANDAS_RENDERERS, "PANDAS_RENDERERS")
+PANDAS_RENDERERS = perform_import(
+    settings.RENDERERS, 'REST_PANDAS["RENDERERS"]'
+)
 
 
 class PandasMixin(object):

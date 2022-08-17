@@ -9,7 +9,7 @@ import { terser } from 'rollup-plugin-terser';
 const banner = `/*
  * ${pkg.name} ${pkg.version}
  * ${pkg.description}
- * (c) 2013-2020, S. Andrew Sheppard
+ * (c) 2022, S. Andrew Sheppard
  * https://wq.io/license
  */
 `;
@@ -45,7 +45,21 @@ export default [
     // @wq/app plugin (npm main)
     {
         ...config,
-        external: ['d3', '@wq/pandas', 'mustache'],
+        external: [
+            'react',
+            'prop-types',
+            '@wq/react',
+            '@wq/pandas',
+            '@material-ui/core/Badge',
+            '@material-ui/core/Menu',
+            '@material-ui/core/MenuItem',
+            '@material-ui/icons/ArrowDownward',
+            '@material-ui/icons/ArrowUpward',
+            '@material-ui/icons/SwapVert',
+            '@material-ui/icons/FilterList',
+            '@material-ui/icons/SaveAlt',
+            '@material-ui/icons/Visibility',
+        ],
         plugins: [
             babel({
                 plugins: ['@babel/transform-react-jsx'],
@@ -59,7 +73,7 @@ export default [
         plugins: [replace(replaceConfig), ...config.plugins],
         output: {
             ...config.output,
-            file: 'rest_pandas/static/app/js/chart.js',
+            file: 'rest_pandas/static/app/js/analyst.js',
             sourcemapPathTransform(path) {
                 return path.replace('../../../../', 'django-rest-pandas/');
             },

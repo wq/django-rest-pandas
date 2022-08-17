@@ -76,6 +76,7 @@ jobs:
         package:
           - pandas
           - chart
+          - analyst
     steps:
     - uses: actions/checkout@v2
       with:
