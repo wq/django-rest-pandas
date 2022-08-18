@@ -1,5 +1,5 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+# Custom Pages workflow to download prebuilt wq.js from unpkg
+name: GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -29,10 +29,16 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v1
+      - name: Download JavaScript deps
+        run: |
+          curl -L -s https://unpkg.com/wq > docs/js/wq.js
+          curl -L -s https://unpkg.com/@wq/markdown@latest > docs/js/markdown.js
+          sed -i "s/^import\(.*\)https:\/\/unpkg.com\/wq/import\1.\/wq.js/" docs/js/*.js
+          sed -i "s/^import\(.*\)https:\/\/unpkg.com\/@wq\/markdown@next/import\1.\/markdown.js/" docs/js/*.js
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
+          source: ./docs
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
