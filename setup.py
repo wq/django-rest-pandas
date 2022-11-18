@@ -2,6 +2,7 @@ from setuptools import setup
 from setuptools.command.build_py import build_py
 import subprocess
 import warnings
+import pathlib
 
 
 LONG_DESCRIPTION = (
@@ -13,6 +14,16 @@ LONG_DESCRIPTION = (
 class BuildJS(build_py):
     def run(self):
         try:
+            version = (
+                pathlib.Path(__file__).parent
+                / "packages"
+                / "analyst"
+                / "src"
+                / "version.js"
+            )
+            version.write_text(
+                f'export default "{self.distribution.get_version()}";'
+            )
             subprocess.check_call(["npm", "install"])
             subprocess.check_call(["npm", "run", "build"])
         except BaseException as e:
@@ -74,10 +85,10 @@ setup(
     ],
     cmdclass={"build_py": BuildJS},
     project_urls={
-        'Homepage': 'https://django-rest-pandas.wq.io/',
-        'Documentation': 'https://django-rest-pandas.wq.io/',
-        'Source': 'https://github.com/wq/django-rest-pandas',
-        'Release Notes': 'https://django-rest-pandas.wq.io/releases/',
-        'Issues': 'https://github.com/wq/django-rest-pandas/issues',
+        "Homepage": "https://django-rest-pandas.wq.io/",
+        "Documentation": "https://django-rest-pandas.wq.io/",
+        "Source": "https://github.com/wq/django-rest-pandas",
+        "Release Notes": "https://django-rest-pandas.wq.io/releases/",
+        "Issues": "https://github.com/wq/django-rest-pandas/issues",
     },
 )
