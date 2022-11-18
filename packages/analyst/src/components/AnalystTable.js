@@ -3,21 +3,26 @@ import Badge from '@material-ui/core/Badge';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { get as getPandasCsv } from '@wq/pandas';
-import { useComponents } from '@wq/react';
+import { useComponents, useNav, useApp } from '@wq/react';
 import PropTypes from 'prop-types';
 
 export default function AnalystTable({
+    data: initialData,
     url,
     initial_rows,
     initial_order,
     id_column,
     id_url_prefix,
+    compact,
 }) {
-    const [data, setData] = useState(),
+    const [data, setData] = useState(initialData),
         [columns, setColumns] = useState(),
         [filters, setFilters] = useState({}),
         [orders, setOrders] = useState(initial_order || {}),
-        [rowsPerPage, setRowsPerPage] = useState(initial_rows || 50),
+        pagination = initial_rows !== 'all',
+        [rowsPerPage, setRowsPerPage] = useState(
+            pagination ? initial_rows || 50 : null
+        ),
         [page, setPage] = useState(0),
         {
             Typography,
@@ -30,9 +35,29 @@ export default function AnalystTable({
             TableContainer,
             TablePagination,
             IconButton,
-        } = useComponents();
+        } = useComponents(),
+        app = useApp(),
+        appNav = useNav(),
+        prefixIsAppUrl =
+            id_url_prefix &&
+            new URL(id_url_prefix, window.location.origin)
+                .toString()
+                .startsWith(
+                    new URL(app.base_url, window.location.origin).toString()
+                ),
+        nav = (id) => {
+            const url = `${id_url_prefix}${id}`;
+            if (prefixIsAppUrl) {
+                appNav(url);
+            } else {
+                window.location.href = url;
+            }
+        };
 
     useEffect(() => {
+        if (!url) {
+            return;
+        }
         async function loadData() {
             const data = await getPandasCsv(url, { flatten: true });
             setData(data);
@@ -65,9 +90,7 @@ export default function AnalystTable({
             });
 
             const colInfo = { name: key };
-            if (key === id_column) {
-                colInfo.url_prefix = id_url_prefix;
-            } else if (metaKeys[key]) {
+            if (metaKeys[key]) {
                 colInfo.values = Object.entries(metaKeys[key])
                     .sort((kval1, kval2) => sort(kval1[0], kval2[0]))
                     .map(([key, value]) => ({
@@ -109,11 +132,14 @@ export default function AnalystTable({
         if (!sortedData) {
             return null;
         }
+        if (!pagination) {
+            return sortedData;
+        }
         return sortedData.slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage
         );
-    }, [sortedData, page, rowsPerPage]);
+    }, [sortedData, pagination, page, rowsPerPage]);
 
     const toggleOrder = (name) => {
         let nextOrders = { ...orders };
@@ -161,126 +187,202 @@ export default function AnalystTable({
     if (!sortedData.length) {
         return <Typography>No data matching the current filter(s).</Typography>;
     }
+
+    const FullHeader = (column) => {
+        if (column.name == id_column) {
+            return <TableTitle />;
+        }
+
+        return (
+            <TableTitle key={column.name}>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginLeft: -8,
+                        borderLeft: '2px solid #ccc',
+                        paddingLeft: 8,
+                        marginRight: -16,
+                    }}
+                >
+                    <span
+                        style={{
+                            flex: 1,
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        {column.name}
+                    </span>
+                    <Badge
+                        overlap="circular"
+                        badgeContent={
+                            Object.keys(orders).indexOf(column.name) + 1
+                        }
+                    >
+                        <IconButton
+                            size="small"
+                            icon={
+                                orders[column.name] === 'desc'
+                                    ? 'sort-desc'
+                                    : orders[column.name]
+                                    ? 'sort-asc'
+                                    : 'sort-none'
+                            }
+                            color={orders[column.name] && 'secondary'}
+                            onClick={() => toggleOrder(column.name)}
+                        />
+                    </Badge>
+                    {column.values && (
+                        <ColumnFilter
+                            {...column}
+                            filter={filters[column.name]}
+                            toggleFilter={(value) =>
+                                toggleFilter(column.name, value)
+                            }
+                            resetFilter={() => resetFilter(column.name)}
+                        />
+                    )}
+                </div>
+            </TableTitle>
+        );
+    };
+
+    const CompactHeader = (column) => {
+        if (column.name === id_column) {
+            return null;
+        } else if (column.values) {
+            return (
+                <TableTitle style={{ cursor: 'pointer' }}>
+                    <ColumnFilter
+                        {...column}
+                        textButton
+                        filter={filters[column.name]}
+                        toggleFilter={(value) =>
+                            toggleFilter(column.name, value)
+                        }
+                        resetFilter={() => resetFilter(column.name)}
+                    />
+                </TableTitle>
+            );
+        } else {
+            return (
+                <TableTitle
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => toggleOrder(column.name)}
+                >
+                    <span style={{ fontWeight: 'bold' }}>{column.name}</span>
+                    {orders[column.name] === 'desc'
+                        ? ' ↓'
+                        : orders[column.name]
+                        ? ' ↑'
+                        : ''}
+                </TableTitle>
+            );
+        }
+    };
+
+    const ColumnHeader = compact ? CompactHeader : FullHeader,
+        Cell = (cell) => {
+            if (cell.column.name === id_column) {
+                if (compact) {
+                    return null;
+                } else {
+                    return (
+                        <TableCell>
+                            <CellLink {...cell} nav={nav} />
+                        </TableCell>
+                    );
+                }
+            } else if (compact && id_column) {
+                const id = cell.row[id_column];
+                return (
+                    <TableCell
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => nav(id)}
+                    >
+                        <CellValue {...cell} />
+                    </TableCell>
+                );
+            } else {
+                return (
+                    <TableCell>
+                        <CellValue {...cell} />
+                    </TableCell>
+                );
+            }
+        };
+
     return (
         <TableContainer>
             <Table>
                 <TableHead>
                     <TableRow>
-                        {columns.map((column) =>
-                            column.url_prefix ? (
-                                <TableTitle key={column.name} />
-                            ) : (
-                                <TableTitle key={column.name}>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            marginLeft: -8,
-                                            borderLeft: '2px solid #ccc',
-                                            paddingLeft: 8,
-                                            marginRight: -16,
-                                        }}
-                                    >
-                                        <span
-                                            style={{
-                                                flex: 1,
-                                                fontWeight: 'bold',
-                                            }}
-                                        >
-                                            {column.name}
-                                        </span>
-                                        <Badge
-                                            overlap="circular"
-                                            badgeContent={
-                                                Object.keys(orders).indexOf(
-                                                    column.name
-                                                ) + 1
-                                            }
-                                        >
-                                            <IconButton
-                                                size="small"
-                                                icon={
-                                                    orders[column.name] ===
-                                                    'desc'
-                                                        ? 'sort-desc'
-                                                        : orders[column.name]
-                                                        ? 'sort-asc'
-                                                        : 'sort-none'
-                                                }
-                                                color={
-                                                    orders[column.name] &&
-                                                    'secondary'
-                                                }
-                                                onClick={() =>
-                                                    toggleOrder(column.name)
-                                                }
-                                            />
-                                        </Badge>
-                                        {column.values && (
-                                            <ColumnFilter
-                                                {...column}
-                                                filter={filters[column.name]}
-                                                toggleFilter={(value) =>
-                                                    toggleFilter(
-                                                        column.name,
-                                                        value
-                                                    )
-                                                }
-                                                resetFilter={() =>
-                                                    resetFilter(column.name)
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                </TableTitle>
-                            )
-                        )}
+                        {columns.map((column) => (
+                            <ColumnHeader key={column.name} {...column} />
+                        ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {slicedData.map((row, i) => (
                         <TableRow key={i}>
                             {columns.map((column) => (
-                                <TableCell key={column.name}>
-                                    <CellValue column={column} row={row} />
-                                </TableCell>
+                                <Cell
+                                    key={column.name}
+                                    column={column}
+                                    row={row}
+                                />
                             ))}
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-            <TablePagination
-                component="div"
-                count={sortedData.length}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                onChangePage={(evt, page) => setPage(page)}
-                onChangeRowsPerPage={(evt) => setRowsPerPage(evt.target.value)}
-            />
+            {pagination && (
+                <TablePagination
+                    component="div"
+                    count={sortedData.length}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    onChangePage={(evt, page) => setPage(page)}
+                    onChangeRowsPerPage={(evt) =>
+                        setRowsPerPage(evt.target.value)
+                    }
+                />
+            )}
         </TableContainer>
     );
 }
 
 AnalystTable.propTypes = {
+    data: PropTypes.arrayOf(PropTypes.object),
     url: PropTypes.string,
-    initial_rows: PropTypes.number,
+    initial_rows: PropTypes.oneOfType(PropTypes.number, PropTypes.string),
+    compact: PropTypes.bool,
     initial_order: PropTypes.object,
     id_column: PropTypes.string,
     id_url_prefix: PropTypes.string,
 };
 
-function ColumnFilter({ name, values, filter, toggleFilter, resetFilter }) {
+function ColumnFilter({
+    name,
+    values,
+    filter,
+    toggleFilter,
+    resetFilter,
+    textButton,
+}) {
     const [anchorEl, setAnchorEl] = useState(null),
         { IconButton, CheckboxButton } = useComponents(),
         menuId = `${name}-menu`;
+    const Component = textButton ? TextButton : IconButton;
     return (
         <>
-            <IconButton
+            <Component
                 aria-controls={menuId}
                 onClick={(evt) => setAnchorEl(evt.target)}
                 size="small"
                 icon="filter"
                 color={filter && 'secondary'}
+                title={name}
             />
             <Menu
                 id={menuId}
@@ -310,17 +412,27 @@ ColumnFilter.propTypes = {
     filter: PropTypes.object,
     toggleFilter: PropTypes.func,
     resetFilter: PropTypes.func,
+    textButton: PropTypes.bool,
+};
+
+function TextButton(props) {
+    return (
+        <span {...props} style={{ fontWeight: 'bold' }}>
+            {props.title}
+            {props.color && ' *'}
+        </span>
+    );
+}
+TextButton.propTypes = {
+    title: PropTypes.string,
+    color: PropTypes.string,
 };
 
 function CellValue({ row, column }) {
-    const { name, url_prefix } = column,
+    const { name } = column,
         value = row[name];
 
-    if (url_prefix) {
-        return <CellLink row={row} column={column} />;
-    } else {
-        return <>{value}</>;
-    }
+    return <>{value}</>;
 }
 
 CellValue.propTypes = {
@@ -328,8 +440,8 @@ CellValue.propTypes = {
     column: PropTypes.object,
 };
 
-function CellLink({ row, column }) {
-    const { name, url_prefix } = column,
+function CellLink({ row, column, nav }) {
+    const { name } = column,
         value = row[name],
         { IconButton } = useComponents();
     return (
@@ -337,8 +449,7 @@ function CellLink({ row, column }) {
             icon="view"
             size="small"
             color="primary"
-            component="a"
-            href={`${url_prefix}${value}`}
+            onClick={() => nav(value)}
             title={`View ${name} ${value}`}
         />
     );
@@ -347,6 +458,7 @@ function CellLink({ row, column }) {
 CellLink.propTypes = {
     row: PropTypes.object,
     column: PropTypes.object,
+    nav: PropTypes.func,
 };
 
 function matchFilters(obj, filters) {
