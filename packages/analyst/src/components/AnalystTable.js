@@ -66,6 +66,10 @@ export default function AnalystTable({
     }, [url]);
 
     useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
+
+    useEffect(() => {
         if (!data || data.length === 0) {
             return;
         }
@@ -324,7 +328,7 @@ export default function AnalystTable({
                 </TableHead>
                 <TableBody>
                     {slicedData.map((row, i) => (
-                        <TableRow key={i}>
+                        <TableRow key={id_column ? row[id_column] : i}>
                             {columns.map((column) => (
                                 <Cell
                                     key={column.name}
