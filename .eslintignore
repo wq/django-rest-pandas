@@ -1,4 +1,4 @@
-packages/*/node_modules
-packages/*/dist
+docs/
 build/
-data_wizard/static/
+rest_pandas/static/
+packages/analyst/index.js

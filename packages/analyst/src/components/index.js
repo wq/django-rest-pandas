@@ -1,4 +1,4 @@
-import AnalystDownload from "./AnalystDownload";
-import AnalystTable from "./AnalystTable";
+import AnalystDownload from "./AnalystDownload.js";
+import AnalystTable from "./AnalystTable.js";
 
 export { AnalystDownload, AnalystTable };

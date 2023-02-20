@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import chartapp from "../index";
+import chartapp from "../index.js";
 import mockFetch from "jest-fetch-mock";
 import fs from "fs";
 

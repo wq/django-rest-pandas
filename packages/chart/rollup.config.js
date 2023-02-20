@@ -1,10 +1,10 @@
-import pkg from './package.json';
-import wq from '@wq/rollup-plugin';
-import babel from '@rollup/plugin-babel';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import replace from '@rollup/plugin-replace';
-import { terser } from 'rollup-plugin-terser';
+import pkg from "./package.json" assert { type: "json" };
+import wq from "@wq/rollup-plugin";
+import babel from "@rollup/plugin-babel";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import replace from "@rollup/plugin-replace";
+import terser from "@rollup/plugin-terser";
 
 const banner = `/*
  * ${pkg.name} ${pkg.version}
@@ -14,15 +14,15 @@ const banner = `/*
  */
 `;
 
-const dir = `packages/${pkg.name.replace('@wq/', '')}`;
+const dir = `packages/${pkg.name.replace("@wq/", "")}`;
 
 const config = {
         input: `${dir}/src/index.js`,
         plugins: [
             wq(),
             babel({
-                plugins: ['@babel/transform-react-jsx'],
-                babelHelpers: 'inline',
+                plugins: ["@babel/transform-react-jsx"],
+                babelHelpers: "inline",
             }),
             commonjs(),
             resolve(),
@@ -31,13 +31,13 @@ const config = {
         output: {
             file: `${dir}/dist/index.js`,
             banner,
-            format: 'esm',
+            format: "esm",
             sourcemap: true,
         },
     },
     replaceConfig = {
-        'process.env.NODE_ENV': '"production"',
-        delimiters: ['', ''],
+        "process.env.NODE_ENV": '"production"',
+        delimiters: ["", ""],
         preventAssignment: true,
     };
 
@@ -45,11 +45,11 @@ export default [
     // @wq/app plugin (npm main)
     {
         ...config,
-        external: ['d3', '@wq/pandas', 'mustache'],
+        external: ["d3", "@wq/pandas", "mustache"],
         plugins: [
             babel({
-                plugins: ['@babel/transform-react-jsx'],
-                babelHelpers: 'inline',
+                plugins: ["@babel/transform-react-jsx"],
+                babelHelpers: "inline",
             }),
         ],
     },
@@ -59,9 +59,9 @@ export default [
         plugins: [replace(replaceConfig), ...config.plugins],
         output: {
             ...config.output,
-            file: 'rest_pandas/static/app/js/chart.js',
+            file: "rest_pandas/static/app/js/chart.js",
             sourcemapPathTransform(path) {
-                return path.replace('../../../../', 'django-rest-pandas/');
+                return path.replace("../../../../", "django-rest-pandas/");
             },
         },
     },

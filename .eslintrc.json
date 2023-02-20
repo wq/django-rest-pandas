@@ -18,9 +18,14 @@
         "ecmaFeatures": {
             "jsx": true
         },
+        "babelOptions": {
+            "plugins": ["@babel/plugin-syntax-import-assertions"]
+        },
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "plugins": ["react", "jest"],
-    "rules": {}
+    "plugins": ["react", "jest", "import"],
+    "rules": {
+        "import/extensions": [2, "ignorePackages"]
+    }
 }

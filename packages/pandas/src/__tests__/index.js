@@ -1,4 +1,4 @@
-import * as pandas from "../index";
+import * as pandas from "../index.js";
 import mockFetch from "jest-fetch-mock";
 import fs from "fs";
 

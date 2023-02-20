@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import chart from "./chart";
+import chart from "./chart.js";
 import * as pandas from "@wq/pandas";
 import Mustache from "mustache";
 

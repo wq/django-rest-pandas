@@ -1,11 +1,11 @@
 {
     "name": "@wq/analyst",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.0",
     "description": "wq framework plugin providing interactive data tables for Django REST Pandas",
-    "main": "dist/index.js",
+    "main": "index.js",
     "files": [
         "src/",
-        "dist/"
+        "index.js"
     ],
     "type": "module",
     "scripts": {
@@ -31,12 +31,11 @@
     },
     "homepage": "https://django-rest-pandas.wq.io/@wq/analyst",
     "dependencies": {
-        "@material-ui/icons": "^4.11.3",
-        "@wq/material": "^1.3.0",
-        "@wq/pandas": "file:../pandas"
+        "@wq/material": "^2.0.0-alpha.0",
+        "@wq/material-web": "^2.0.0-alpha.0",
+        "@wq/pandas": "^2.0.0-alpha.0"
     },
     "devDependencies": {
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "@wq/rollup-plugin": "^1.3.0"
     }
 }

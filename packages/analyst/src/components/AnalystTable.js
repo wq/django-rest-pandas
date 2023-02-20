@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import Badge from "@material-ui/core/Badge";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import { Badge, Menu, MenuItem } from "@mui/material";
 import { get as getPandasCsv } from "@wq/pandas";
 import { useComponents, useNav, useApp } from "@wq/react";
 import PropTypes from "prop-types";
@@ -346,8 +344,8 @@ export default function AnalystTable({
                     count={sortedData.length}
                     page={page}
                     rowsPerPage={rowsPerPage}
-                    onChangePage={(evt, page) => setPage(page)}
-                    onChangeRowsPerPage={(evt) =>
+                    onPageChange={(evt, page) => setPage(page)}
+                    onRowsPerPageChange={(evt) =>
                         setRowsPerPage(evt.target.value)
                     }
                 />
@@ -359,7 +357,7 @@ export default function AnalystTable({
 AnalystTable.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     url: PropTypes.string,
-    initial_rows: PropTypes.oneOfType(PropTypes.number, PropTypes.string),
+    initial_rows: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     compact: PropTypes.bool,
     initial_order: PropTypes.object,
     id_column: PropTypes.string,

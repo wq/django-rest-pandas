@@ -87,8 +87,6 @@ jobs:
     - name: Install dependencies
       run: |
         npm ci
-        npm run lerna exec npm ci
-        npm run bootstrap
         npm run build
     - name: Lint with ESLint
       run: npm run lint
