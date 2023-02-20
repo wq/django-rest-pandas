@@ -1,5 +1,5 @@
-import analyst from '../index';
+import analyst from "../index";
 
-test('it loads', () => {
-    expect(analyst.name).toBe('analyst');
+test("it loads", () => {
+    expect(analyst.name).toBe("analyst");
 });

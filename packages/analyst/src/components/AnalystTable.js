@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import Badge from '@material-ui/core/Badge';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import { get as getPandasCsv } from '@wq/pandas';
-import { useComponents, useNav, useApp } from '@wq/react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState, useMemo } from "react";
+import Badge from "@material-ui/core/Badge";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import { get as getPandasCsv } from "@wq/pandas";
+import { useComponents, useNav, useApp } from "@wq/react";
+import PropTypes from "prop-types";
 
 export default function AnalystTable({
     data: initialData,
@@ -19,7 +19,7 @@ export default function AnalystTable({
         [columns, setColumns] = useState(),
         [filters, setFilters] = useState({}),
         [orders, setOrders] = useState(initial_order || {}),
-        pagination = initial_rows !== 'all',
+        pagination = initial_rows !== "all",
         [rowsPerPage, setRowsPerPage] = useState(
             pagination ? initial_rows || 50 : null
         ),
@@ -82,7 +82,7 @@ export default function AnalystTable({
                     return;
                 }
                 Object.entries(dataset).forEach(([key, value]) => {
-                    if (key === 'data') {
+                    if (key === "data") {
                         return;
                     }
                     if (!metaKeys[key]) {
@@ -149,11 +149,11 @@ export default function AnalystTable({
         let nextOrders = { ...orders };
         if (!orders[name]) {
             nextOrders = {
-                [name]: 'asc',
+                [name]: "asc",
                 ...nextOrders,
             };
-        } else if (orders[name] === 'asc') {
-            nextOrders[name] = 'desc';
+        } else if (orders[name] === "asc") {
+            nextOrders[name] = "desc";
         } else {
             delete nextOrders[name];
         }
@@ -201,10 +201,10 @@ export default function AnalystTable({
             <TableTitle key={column.name}>
                 <div
                     style={{
-                        display: 'flex',
-                        alignItems: 'center',
+                        display: "flex",
+                        alignItems: "center",
                         marginLeft: -8,
-                        borderLeft: '2px solid #ccc',
+                        borderLeft: "2px solid #ccc",
                         paddingLeft: 8,
                         marginRight: -16,
                     }}
@@ -212,7 +212,7 @@ export default function AnalystTable({
                     <span
                         style={{
                             flex: 1,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                         }}
                     >
                         {column.name}
@@ -226,13 +226,13 @@ export default function AnalystTable({
                         <IconButton
                             size="small"
                             icon={
-                                orders[column.name] === 'desc'
-                                    ? 'sort-desc'
+                                orders[column.name] === "desc"
+                                    ? "sort-desc"
                                     : orders[column.name]
-                                    ? 'sort-asc'
-                                    : 'sort-none'
+                                    ? "sort-asc"
+                                    : "sort-none"
                             }
-                            color={orders[column.name] && 'secondary'}
+                            color={orders[column.name] && "secondary"}
                             onClick={() => toggleOrder(column.name)}
                         />
                     </Badge>
@@ -256,7 +256,7 @@ export default function AnalystTable({
             return null;
         } else if (column.values) {
             return (
-                <TableTitle style={{ cursor: 'pointer' }}>
+                <TableTitle style={{ cursor: "pointer" }}>
                     <ColumnFilter
                         {...column}
                         textButton
@@ -271,15 +271,15 @@ export default function AnalystTable({
         } else {
             return (
                 <TableTitle
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                     onClick={() => toggleOrder(column.name)}
                 >
-                    <span style={{ fontWeight: 'bold' }}>{column.name}</span>
-                    {orders[column.name] === 'desc'
-                        ? ' ↓'
+                    <span style={{ fontWeight: "bold" }}>{column.name}</span>
+                    {orders[column.name] === "desc"
+                        ? " ↓"
                         : orders[column.name]
-                        ? ' ↑'
-                        : ''}
+                        ? " ↑"
+                        : ""}
                 </TableTitle>
             );
         }
@@ -301,7 +301,7 @@ export default function AnalystTable({
                 const id = cell.row[id_column];
                 return (
                     <TableCell
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: "pointer" }}
                         onClick={() => nav(id)}
                     >
                         <CellValue {...cell} />
@@ -385,7 +385,7 @@ function ColumnFilter({
                 onClick={(evt) => setAnchorEl(evt.target)}
                 size="small"
                 icon="filter"
-                color={filter && 'secondary'}
+                color={filter && "secondary"}
                 title={name}
             />
             <Menu
@@ -421,9 +421,9 @@ ColumnFilter.propTypes = {
 
 function TextButton(props) {
     return (
-        <span {...props} style={{ fontWeight: 'bold' }}>
+        <span {...props} style={{ fontWeight: "bold" }}>
             {props.title}
-            {props.color && ' *'}
+            {props.color && " *"}
         </span>
     );
 }
@@ -475,8 +475,8 @@ function matchFilters(obj, filters) {
     return match;
 }
 
-function sort(val1, val2, dir = 'asc') {
-    if (dir == 'desc') {
+function sort(val1, val2, dir = "asc") {
+    if (dir == "desc") {
         return sort(val2, val1);
     }
     if (val1 < val2) {

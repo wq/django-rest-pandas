@@ -1,10 +1,10 @@
-import * as components from './components/index';
-import * as views from './views/index';
-import * as icons from './icons';
-import version from './version';
+import * as components from "./components/index";
+import * as views from "./views/index";
+import * as icons from "./icons";
+import version from "./version";
 
 const analyst = {
-    name: 'analyst',
+    name: "analyst",
     version,
     components: { ...components },
     views: { ...views },
@@ -13,5 +13,5 @@ const analyst = {
 
 export default analyst;
 
-export * from './components/index';
-export * from './views/index';
+export * from "./components/index";
+export * from "./views/index";

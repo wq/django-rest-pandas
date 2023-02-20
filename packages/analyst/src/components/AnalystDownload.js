@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import { useComponents } from '@wq/react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import { useComponents } from "@wq/react";
+import PropTypes from "prop-types";
 
 export default function AnalystDownload({ url, title, formats }) {
     const [anchorEl, setAnchorEl] = useState(null),
         { Button, HorizontalView, Typography, View } = useComponents(),
-        menuId = 'analyst-download',
-        baseUrl = url.replace(/\.[^.]+$/, '');
+        menuId = "analyst-download",
+        baseUrl = url.replace(/\.[^.]+$/, "");
     return (
         <>
             <HorizontalView>

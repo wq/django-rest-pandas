@@ -1,4 +1,4 @@
-import { csvParse, csvParseRows } from 'd3-dsv';
+import { csvParse, csvParseRows } from "d3-dsv";
 
 export function parse(str, options = {}) {
     /* Parses a CSV string with the following structure:
@@ -52,14 +52,14 @@ export function parse(str, options = {}) {
         data,
         valuesHeader,
         rows;
-    if (str.charAt(0) != ',') {
+    if (str.charAt(0) != ",") {
         // Assume plain CSV (single series with one-row header)
         data = [];
         csvParse(str).forEach(function (row) {
             var key, val;
             for (key in row) {
                 val = row[key];
-                if (row[key] !== '') {
+                if (row[key] !== "") {
                     row[key] = isNaN(+val) ? val : +val;
                 }
             }
@@ -75,9 +75,9 @@ export function parse(str, options = {}) {
     rows.forEach(function (row, i) {
         if (data) {
             parseData(row);
-        } else if (i === 0 && row[0] === '') {
+        } else if (i === 0 && row[0] === "") {
             parseValuesHeader(row);
-        } else if (valuesHeader && row[row.length - 1] !== '') {
+        } else if (valuesHeader && row[row.length - 1] !== "") {
             parseMetaHeader(row);
         } else if (valuesHeader) {
             parseIdHeader(row);
@@ -97,12 +97,12 @@ export function parse(str, options = {}) {
     function parseMetaHeader(row) {
         // First & last column aren't blank => this row contains metadata
         var metaname = row[0];
-        var metaStart = valuesHeader.lastIndexOf('') + 1;
+        var metaStart = valuesHeader.lastIndexOf("") + 1;
         row.slice(metaStart).forEach(function (d, i) {
             if (!metadata[i]) {
                 metadata[i] = {};
             }
-            if (d == '-') {
+            if (d == "-") {
                 metadata[i][metaname] = null;
             } else {
                 metadata[i][metaname] = d;
@@ -112,10 +112,10 @@ export function parse(str, options = {}) {
 
     function parseIdHeader(row) {
         // Blank last column => this row has index column labels
-        if (row.indexOf('') != valuesHeader.lastIndexOf('') + 1) {
-            throw 'Header mismatch!';
+        if (row.indexOf("") != valuesHeader.lastIndexOf("") + 1) {
+            throw "Header mismatch!";
         }
-        idColumns = row.slice(0, row.indexOf(''));
+        idColumns = row.slice(0, row.indexOf(""));
     }
 
     function findDatasets() {
@@ -146,7 +146,7 @@ export function parse(str, options = {}) {
         row.slice(1).forEach(function (s, i) {
             datasets[i] = { id: s, data: [] };
             col2dataset[i] = i;
-            valuesHeader[i + 1] = 'value';
+            valuesHeader[i + 1] = "value";
         });
     }
 
@@ -160,7 +160,7 @@ export function parse(str, options = {}) {
         var rowdata = [];
         row.slice(idColumns.length).forEach(function (d, i) {
             var c, item, dsi, valname;
-            if (d === '') {
+            if (d === "") {
                 return;
             }
             dsi = col2dataset[i];
@@ -202,11 +202,11 @@ export function flatten(datasets) {
 }
 
 function hash(obj) {
-    var str = '';
+    var str = "";
     Object.keys(obj)
         .sort()
         .forEach(function (key) {
-            str += key + '=' + obj[key] + '\n';
+            str += key + "=" + obj[key] + "\n";
         });
     return str;
 }

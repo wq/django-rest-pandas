@@ -1,5 +1,5 @@
-import React from 'react';
-import { useComponents, useRouteInfo } from '@wq/react';
+import React from "react";
+import { useComponents, useRouteInfo } from "@wq/react";
 
 export default function Analyst() {
     const {

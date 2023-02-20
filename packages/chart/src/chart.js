@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import * as d3 from "d3";
 
 var chart = {};
 
@@ -7,19 +7,19 @@ function _trans(x, y, off) {
         x -= 0.5;
         y -= 0.5;
     }
-    return 'translate(' + x + ',' + y + ')';
+    return "translate(" + x + "," + y + ")";
 }
 
 function _selectOrAppend(sel, name, cls) {
     var selector = name;
     if (cls) {
-        selector += '.' + cls;
+        selector += "." + cls;
     }
     var elem = sel.select(selector);
     if (elem.empty()) {
         elem = sel.append(name);
         if (cls) {
-            elem.attr('class', cls);
+            elem.attr("class", cls);
         }
     }
     return elem;
@@ -46,8 +46,8 @@ chart.base = function () {
         yscales = {},
         yscalefn = d3.scaleLinear,
         cscale = d3.scaleOrdinal(d3.schemeCategory10),
-        outerFill = '#f3f3f3',
-        innerFill = '#eee',
+        outerFill = "#f3f3f3",
+        innerFill = "#eee",
         legend = null,
         leftYAxis = true;
 
@@ -81,11 +81,11 @@ chart.base = function () {
 
     var xvalue = function (d) {
         /* eslint no-unused-vars: off */
-        throw 'xvalue accessor not defined!';
+        throw "xvalue accessor not defined!";
     };
     var yvalue = function (d) {
         /* eslint no-unused-vars: off */
-        throw 'yvalue accessor not defined!';
+        throw "yvalue accessor not defined!";
     };
     var xunits = function (dataset) {
         /* eslint no-unused-vars: off */
@@ -129,7 +129,7 @@ chart.base = function () {
         };
     };
     var itemid = function (d) {
-        return xvalue(d) + '=' + yvalue(d);
+        return xvalue(d) + "=" + yvalue(d);
     };
 
     // Rendering functions (should be overridden)
@@ -146,26 +146,26 @@ chart.base = function () {
     // Legend item rendering
     var legendItemShape = function (sid) {
         /* eslint no-unused-vars: off */
-        return 'rect';
+        return "rect";
     };
     var rectStyle = function (sid) {
         var color = cscale(sid);
         return function (sel) {
-            sel.attr('x', -3)
-                .attr('y', -3)
-                .attr('width', 6)
-                .attr('height', 6)
-                .attr('fill', color);
+            sel.attr("x", -3)
+                .attr("y", -3)
+                .attr("width", 6)
+                .attr("height", 6)
+                .attr("fill", color);
         };
     };
     var circleStyle = function (sid) {
         var color = cscale(sid);
         return function (sel) {
-            sel.attr('r', 3)
-                .attr('fill', color)
-                .attr('stroke', 'black')
-                .attr('stroke-width', 0.2)
-                .attr('cursor', 'pointer');
+            sel.attr("r", 3)
+                .attr("fill", color)
+                .attr("stroke", "black")
+                .attr("stroke-width", 0.2)
+                .attr("cursor", "pointer");
         };
     };
     var legendItemStyle = function (sid) {
@@ -185,7 +185,7 @@ chart.base = function () {
     // Plot using given selection (usually one object, but wrapped as array)
     function plot(sel) {
         if (nestedSvg) {
-            sel = _selectOrAppend(sel, 'svg', nestedSvg);
+            sel = _selectOrAppend(sel, "svg", nestedSvg);
         }
         sel.each(_plot);
     }
@@ -197,21 +197,21 @@ chart.base = function () {
         }
         _computeScales(datasets(data));
         if (xunits(data)) {
-            plot.setMargin('xaxislabel', { bottom: 15 });
+            plot.setMargin("xaxislabel", { bottom: 15 });
         }
         var ordinal = xscalefn().bandwidth || false;
         var svg = d3.select(this);
         var uid =
-            svg.attr('data-wq-uid') || Math.round(Math.random() * 1000000);
-        svg.attr('data-wq-uid', uid);
+            svg.attr("data-wq-uid") || Math.round(Math.random() * 1000000);
+        svg.attr("data-wq-uid", uid);
         var vbstr;
         if (viewBox) {
             if (viewBox === true) {
-                vbstr = '0 0 ' + width + ' ' + height;
+                vbstr = "0 0 " + width + " " + height;
             } else {
                 vbstr = viewBox;
             }
-            svg.attr('viewBox', vbstr);
+            svg.attr("viewBox", vbstr);
         }
         var cwidth = width - padding - padding;
         var cheight = height - padding - padding;
@@ -229,40 +229,40 @@ chart.base = function () {
         init.call(this, datasets(data), opts);
 
         // Clip for inner graphing area
-        var clipId = 'clip' + uid;
-        var defs = _selectOrAppend(svg, 'defs');
+        var clipId = "clip" + uid;
+        var defs = _selectOrAppend(svg, "defs");
 
         // Webkit can't select clipPath #83438
-        var clip = defs.select('#' + clipId);
+        var clip = defs.select("#" + clipId);
 
         if (clip.empty()) {
-            clip = defs.append('clipPath').attr('id', clipId);
-            clip.append('rect');
+            clip = defs.append("clipPath").attr("id", clipId);
+            clip.append("rect");
         }
-        clip.select('rect').attr('width', gwidth).attr('height', gheight);
+        clip.select("rect").attr("width", gwidth).attr("height", gheight);
 
         // Outer chart area (includes legends, axes & actual graph)
-        var outer = _selectOrAppend(svg, 'g', 'outer');
-        outer.attr('transform', _trans(padding, padding, true));
-        _selectOrAppend(outer, 'rect')
-            .attr('width', cwidth)
-            .attr('height', cheight)
-            .attr('fill', outerFill);
+        var outer = _selectOrAppend(svg, "g", "outer");
+        outer.attr("transform", _trans(padding, padding, true));
+        _selectOrAppend(outer, "rect")
+            .attr("width", cwidth)
+            .attr("height", cheight)
+            .attr("fill", outerFill);
 
         // Inner graphing area (clipped)
-        var inner = _selectOrAppend(outer, 'g', 'inner')
-            .attr('clip-path', 'url(#' + clipId + ')')
-            .attr('transform', _trans(margins.left, margins.top));
-        _selectOrAppend(inner, 'rect')
-            .attr('width', gwidth)
-            .attr('height', gheight)
-            .attr('fill', innerFill);
+        var inner = _selectOrAppend(outer, "g", "inner")
+            .attr("clip-path", "url(#" + clipId + ")")
+            .attr("transform", _trans(margins.left, margins.top));
+        _selectOrAppend(inner, "rect")
+            .attr("width", gwidth)
+            .attr("height", gheight)
+            .attr("fill", innerFill);
         if (chartover) {
-            inner.on('mouseover', chartover(data));
-            inner.on('mousemove', chartover(data));
+            inner.on("mouseover", chartover(data));
+            inner.on("mousemove", chartover(data));
         }
         if (chartout) {
-            inner.on('mouseout', chartout(data));
+            inner.on("mouseout", chartout(data));
         }
 
         // Create actual scale & axis objects
@@ -292,7 +292,7 @@ chart.base = function () {
             } else {
                 domain = [scale.ymin, scale.ymax];
             }
-            if (scale.orient == 'right') {
+            if (scale.orient == "right") {
                 axisfn = d3.axisRight;
             } else {
                 axisfn = d3.axisLeft;
@@ -304,56 +304,56 @@ chart.base = function () {
 
         // Render each dataset
         if (renderBackground) {
-            var background = _selectOrAppend(inner, 'g', 'background')
-                .selectAll('g.dataset-background')
+            var background = _selectOrAppend(inner, "g", "background")
+                .selectAll("g.dataset-background")
                 .data(datasets(data), id);
             background
                 .enter()
-                .append('g')
-                .attr('class', 'dataset-background')
+                .append("g")
+                .attr("class", "dataset-background")
                 .merge(background)
                 .each(renderBackground);
             background.exit().remove();
         }
-        var series = _selectOrAppend(inner, 'g', 'datasets')
-            .selectAll('g.dataset')
+        var series = _selectOrAppend(inner, "g", "datasets")
+            .selectAll("g.dataset")
             .data(datasets(data), id);
         series
             .enter()
-            .append('g')
-            .attr('class', 'dataset')
+            .append("g")
+            .attr("class", "dataset")
             .merge(series)
             .each(render);
         series.exit().remove();
 
         // Render axes
-        var xaxis = _selectOrAppend(outer, 'g', 'xaxis')
-                .attr('transform', _trans(margins.left, cbottom))
+        var xaxis = _selectOrAppend(outer, "g", "xaxis")
+                .attr("transform", _trans(margins.left, cbottom))
                 .call(xscale.axis),
             xlabel = xunits(data);
         if (xlabel) {
-            _selectOrAppend(xaxis, 'text', 'axislabel')
+            _selectOrAppend(xaxis, "text", "axislabel")
                 .text(xlabel)
-                .attr('text-anchor', 'middle')
-                .attr('font-weight', 'bold')
-                .attr('fill', '#000')
-                .attr('transform', function () {
-                    return 'translate(' + gwidth / 2 + ', 30)';
+                .attr("text-anchor", "middle")
+                .attr("font-weight", "bold")
+                .attr("fill", "#000")
+                .attr("transform", function () {
+                    return "translate(" + gwidth / 2 + ", 30)";
                 });
         }
 
         var yaxes = outer
-            .selectAll('g.axis')
+            .selectAll("g.axis")
             .data(Object.values(yscales), function (s) {
                 return s.id;
             });
-        var newaxes = yaxes.enter().append('g').attr('class', 'axis');
-        newaxes.append('text');
+        var newaxes = yaxes.enter().append("g").attr("class", "axis");
+        newaxes.append("text");
         newaxes
             .merge(yaxes)
-            .attr('transform', function (d) {
+            .attr("transform", function (d) {
                 var x;
-                if (d.orient == 'left') {
+                if (d.orient == "left") {
                     x = margins.left;
                 } else {
                     x = cwidth - margins.right;
@@ -364,25 +364,25 @@ chart.base = function () {
             .each(function (d) {
                 var axis = d3.select(this);
                 axis.call(d.axis);
-                axis.select('text')
-                    .text(d.id || '')
-                    .attr('text-anchor', 'middle')
-                    .attr('font-weight', 'bold')
-                    .attr('fill', '#000')
-                    .attr('transform', function () {
-                        if (d.orient == 'left') {
+                axis.select("text")
+                    .text(d.id || "")
+                    .attr("text-anchor", "middle")
+                    .attr("font-weight", "bold")
+                    .attr("fill", "#000")
+                    .attr("transform", function () {
+                        if (d.orient == "left") {
                             return (
-                                'rotate(-90),' +
-                                'translate(-' +
+                                "rotate(-90)," +
+                                "translate(-" +
                                 gheight / 2 +
-                                ',-30)'
+                                ",-30)"
                             );
                         } else {
                             return (
-                                'rotate(90),' +
-                                'translate(' +
+                                "rotate(90)," +
+                                "translate(" +
                                 gheight / 2 +
-                                ',-30)'
+                                ",-30)"
                             );
                         }
                     });
@@ -392,7 +392,7 @@ chart.base = function () {
         if (legend && legend.position) {
             _renderLegend.call(this, legendItems(data), opts);
         } else {
-            outer.select('g.legend').remove();
+            outer.select("g.legend").remove();
         }
         wrapup.call(this, datasets(data), opts);
     }
@@ -401,13 +401,13 @@ chart.base = function () {
         var rows = items.length;
         if (rows > 5) {
             plot.legend({
-                position: 'right',
+                position: "right",
                 size: 120,
                 auto: true,
             });
         } else {
             plot.legend({
-                position: 'bottom',
+                position: "bottom",
                 size: rows * 19 + 19,
                 auto: true,
             });
@@ -446,7 +446,7 @@ chart.base = function () {
                 yscale.id = scaleid;
             }
             if (!yscale.orient) {
-                yscale.orient = leftYAxis ? 'left' : 'right';
+                yscale.orient = leftYAxis ? "left" : "right";
                 leftYAxis = !leftYAxis;
             }
             if (!yscale.sets) {
@@ -465,19 +465,19 @@ chart.base = function () {
         if (Object.keys(yscales).length > 1) {
             ymargin.right = 35;
         }
-        plot.setMargin('yaxis', ymargin);
+        plot.setMargin("yaxis", ymargin);
     }
 
     function _renderLegend(items, opts) {
         var svg = d3.select(this),
-            outer = svg.select('g.outer'),
-            margins = plot.getMargins({ ignore: 'xaxislabel' }),
+            outer = svg.select("g.outer"),
+            margins = plot.getMargins({ ignore: "xaxislabel" }),
             legendX,
             legendY,
             legendW,
             legendH;
 
-        if (legend.position == 'bottom') {
+        if (legend.position == "bottom") {
             legendX = margins.left;
             legendY = opts.cheight - margins.bottom + 30;
             legendW = opts.gwidth;
@@ -489,41 +489,41 @@ chart.base = function () {
             legendH = opts.gheight;
         }
 
-        var leg = _selectOrAppend(outer, 'g', 'legend').attr(
-            'transform',
+        var leg = _selectOrAppend(outer, "g", "legend").attr(
+            "transform",
             _trans(legendX, legendY)
         );
-        _selectOrAppend(leg, 'rect')
-            .attr('width', legendW)
-            .attr('height', legendH)
-            .attr('fill', 'white')
-            .attr('stroke', '#999');
+        _selectOrAppend(leg, "rect")
+            .attr("width", legendW)
+            .attr("height", legendH)
+            .attr("fill", "white")
+            .attr("stroke", "#999");
 
-        var legitems = leg.selectAll('g.legenditem').data(items, legendItemId);
-        var newitems = legitems.enter().append('g').attr('class', 'legenditem');
+        var legitems = leg.selectAll("g.legenditem").data(items, legendItemId);
+        var newitems = legitems.enter().append("g").attr("class", "legenditem");
         newitems
-            .append('g')
-            .attr('class', 'data')
+            .append("g")
+            .attr("class", "data")
             .each(function (d) {
                 var g = d3.select(this),
                     sid = legendItemId(d);
-                g.on('click', function (d) {
+                g.on("click", function (d) {
                     _toggleSeries(d, svg);
                 });
                 g.append(legendItemShape(sid));
-                g.append('text')
-                    .attr('font-family', 'sans-serif')
-                    .attr('font-size', '13px')
-                    .attr('cursor', 'pointer');
+                g.append("text")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "13px")
+                    .attr("cursor", "pointer");
             });
         newitems.merge(legitems).each(function (d, i) {
-            var g = d3.select(this).select('g.data'),
+            var g = d3.select(this).select("g.data"),
                 sid = legendItemId(d);
-            g.attr('transform', _trans(14, 18 + i * 20));
+            g.attr("transform", _trans(14, 18 + i * 20));
             g.select(legendItemShape(sid)).call(legendItemStyle(sid));
-            g.select('text')
+            g.select("text")
                 .text(legendItemLabel(d))
-                .attr('transform', _trans(10, 5));
+                .attr("transform", _trans(10, 5));
         });
         legitems.exit().remove();
     }
@@ -536,19 +536,19 @@ chart.base = function () {
         _updateHidden(svg);
     }
     function _updateHidden(svg) {
-        svg.selectAll('g.dataset-background').style('display', function (d) {
+        svg.selectAll("g.dataset-background").style("display", function (d) {
             var sid = legendItemId(d);
             if (_hidden[sid]) {
-                return 'none';
+                return "none";
             }
         });
-        svg.selectAll('g.dataset').style('display', function (d) {
+        svg.selectAll("g.dataset").style("display", function (d) {
             var sid = legendItemId(d);
             if (_hidden[sid]) {
-                return 'none';
+                return "none";
             }
         });
-        svg.selectAll('g.legenditem').style('opacity', function (d) {
+        svg.selectAll("g.legenditem").style("opacity", function (d) {
             var sid = legendItemId(d);
             if (_hidden[sid]) {
                 return 0.5;
@@ -605,13 +605,13 @@ chart.base = function () {
         }
         legend = val || {};
         var lmargin = {};
-        if (legend.position == 'bottom') {
+        if (legend.position == "bottom") {
             lmargin.bottom = legend.size + 10;
-        } else if (legend.position == 'right') {
+        } else if (legend.position == "right") {
             lmargin.right = legend.size + 10;
         }
 
-        plot.setMargin('legend', lmargin);
+        plot.setMargin("legend", lmargin);
         return plot;
     };
     plot.xscale = function (val) {
@@ -914,8 +914,8 @@ chart.scatter = function () {
     var plot = chart.base(),
         pointStyle = plot.circleStyle(),
         pointShape,
-        xField = 'x',
-        yField = 'y',
+        xField = "x",
+        yField = "y",
         pointCutoff = 50;
 
     plot.xvalue(function (d) {
@@ -940,7 +940,7 @@ chart.scatter = function () {
     /* To customize points beyond just the color, override these functions */
     pointShape = function (sid) {
         /* eslint no-unused-vars: off */
-        return 'circle';
+        return "circle";
     };
     // pointStyle function is initialized above
 
@@ -948,14 +948,14 @@ chart.scatter = function () {
     var lineStyle = function (sid) {
         var color = plot.cscale()(sid);
         return function (sel) {
-            sel.attr('stroke', color);
+            sel.attr("stroke", color);
         };
     };
 
     var pointover = function (sid) {
         /* eslint no-unused-vars: off */
         return function (d) {
-            d3.select(this).selectAll(pointShape(sid)).attr('fill', '#9999ff');
+            d3.select(this).selectAll(pointShape(sid)).attr("fill", "#9999ff");
         };
     };
     var pointout = function (sid) {
@@ -963,14 +963,14 @@ chart.scatter = function () {
         return function (d) {
             d3.select(this)
                 .selectAll(pointShape(sid))
-                .attr('fill', plot.cscale()(sid));
+                .attr("fill", plot.cscale()(sid));
         };
     };
     var pointLabel = function (sid) {
         var x = plot.xvalue(),
             y = plot.yvalue();
         return function (d) {
-            return sid + ' at ' + x(d) + ': ' + y(d);
+            return sid + " at " + x(d) + ": " + y(d);
         };
     };
     var drawPointsIf = function (dataset) {
@@ -1024,18 +1024,18 @@ chart.scatter = function () {
                     });
                 }
             });
-            var hover = inner.selectAll('g.line-hover').data(hoverData);
+            var hover = inner.selectAll("g.line-hover").data(hoverData);
             hover
                 .enter()
-                .append('g')
-                .attr('class', 'line-hover')
+                .append("g")
+                .attr("class", "line-hover")
                 .merge(hover)
                 .each(function (d) {
                     var g = d3.select(this).datum(d.data);
                     _selectOrAppend(g, pointShape(d.id))
                         .call(pointStyle(d.id))
-                        .attr('transform', translate(d.units));
-                    _selectOrAppend(g, 'title').text(pointLabel(d.id));
+                        .attr("transform", translate(d.units));
+                    _selectOrAppend(g, "title").text(pointLabel(d.id));
                 });
             hover.exit().remove();
         };
@@ -1049,10 +1049,10 @@ chart.scatter = function () {
             xscaled = plot.xscaled(),
             yscaled = plot.yscaled()(yunits),
             g = d3.select(this),
-            path = g.select('path.data'),
+            path = g.select("path.data"),
             line = d3.line().x(xscaled).y(yscaled);
         d3.select(g.node().parentNode.parentNode)
-            .selectAll('g.line-hover')
+            .selectAll("g.line-hover")
             .remove();
         if (!drawLinesIf(dataset)) {
             path.remove();
@@ -1061,12 +1061,12 @@ chart.scatter = function () {
         // Generate path element for new datasets
         if (path.empty()) {
             path = g
-                .append('path')
-                .attr('class', 'data')
-                .attr('fill', 'transparent');
+                .append("path")
+                .attr("class", "data")
+                .attr("fill", "transparent");
         }
         // Update path for new and existing datasets
-        path.datum(items).attr('d', line).call(lineStyle(sid));
+        path.datum(items).attr("d", line).call(lineStyle(sid));
     });
 
     plot.render(function (dataset) {
@@ -1079,25 +1079,25 @@ chart.scatter = function () {
             newpoints;
 
         if (!drawPointsIf(dataset)) {
-            g.selectAll('g.data').remove();
+            g.selectAll("g.data").remove();
             return;
         }
-        points = g.selectAll('g.data').data(items, plot.itemid());
+        points = g.selectAll("g.data").data(items, plot.itemid());
 
         // Generate elements for new data
-        newpoints = points.enter().append('g').attr('class', 'data');
-        newpoints.append('title');
+        newpoints = points.enter().append("g").attr("class", "data");
+        newpoints.append("title");
         newpoints.append(pointShape(sid));
 
         // Update elements for new or existing data
         newpoints
             .merge(points)
-            .on('mouseover', pointover(sid))
-            .on('mouseout', pointout(sid))
-            .attr('transform', translate(yunits))
+            .on("mouseover", pointover(sid))
+            .on("mouseout", pointout(sid))
+            .attr("transform", translate(yunits))
             .select(pointShape(sid))
             .call(pointStyle(sid));
-        newpoints.merge(points).select('title').text(pointLabel(sid));
+        newpoints.merge(points).select("title").text(pointLabel(sid));
 
         points.exit().remove();
     });
@@ -1197,10 +1197,10 @@ chart.scatter = function () {
 // Time series scatter plot
 chart.timeSeries = function () {
     var plot = chart.scatter(),
-        format = d3.timeFormat('%Y-%m-%d'),
-        parse = d3.timeParse('%Y-%m-%d');
+        format = d3.timeFormat("%Y-%m-%d"),
+        parse = d3.timeParse("%Y-%m-%d");
 
-    plot.xField('date')
+    plot.xField("date")
         .xvalue(function (d) {
             var xField = plot.xField();
             return parse(d[xField]);
@@ -1211,7 +1211,7 @@ chart.timeSeries = function () {
             /* eslint no-unused-vars: off */
             return null;
         })
-        .yField('value')
+        .yField("value")
         .yunits(function (d) {
             return d.units;
         })
@@ -1219,7 +1219,7 @@ chart.timeSeries = function () {
             var x = plot.xvalue(),
                 y = plot.yvalue();
             return function (d) {
-                return sid + ' on ' + format(x(d)) + ': ' + y(d);
+                return sid + " on " + format(x(d)) + ": " + y(d);
             };
         });
 
@@ -1242,23 +1242,23 @@ chart.boxplot = function () {
         r,
         wr,
         offsets = {},
-        prefix = 'value-';
+        prefix = "value-";
 
     // Accessors for individual items
     var q1 = function (d) {
-        return d[prefix + 'q1'];
+        return d[prefix + "q1"];
     };
     var q3 = function (d) {
-        return d[prefix + 'q3'];
+        return d[prefix + "q3"];
     };
     var med = function (d) {
-        return d[prefix + 'med'];
+        return d[prefix + "med"];
     };
     var whishi = function (d) {
-        return d[prefix + 'whishi'];
+        return d[prefix + "whishi"];
     };
     var whislo = function (d) {
-        return d[prefix + 'whislo'];
+        return d[prefix + "whislo"];
     };
 
     plot.xscalefn(d3.scalePoint)
@@ -1307,14 +1307,14 @@ chart.boxplot = function () {
 
             var boxes = d3
                 .select(this)
-                .selectAll('g.data')
+                .selectAll("g.data")
                 .data(items, plot.itemid());
             boxes
                 .enter()
-                .append('g')
-                .attr('class', 'data')
+                .append("g")
+                .attr("class", "data")
                 .merge(boxes)
-                .attr('transform', translate(yunits))
+                .attr("transform", translate(yunits))
                 .each(box(sid, yunits));
             boxes.exit().remove();
         });
@@ -1335,69 +1335,69 @@ chart.boxplot = function () {
                 return yscale.scale(val) - yscale.scale(0);
             }
 
-            var box = _selectOrAppend(d3.select(this), 'g', 'box').attr(
-                'transform',
+            var box = _selectOrAppend(d3.select(this), "g", "box").attr(
+                "transform",
                 _trans(offsets[sid], 0)
             );
-            _selectOrAppend(box, 'line', 'q1')
-                .attr('x1', -r)
-                .attr('x2', r)
-                .attr('y1', y(dq1))
-                .attr('y2', y(dq1))
-                .attr('stroke-width', 2)
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'q3')
-                .attr('x1', -r)
-                .attr('x2', r)
-                .attr('y1', y(dq3))
-                .attr('y2', y(dq3))
-                .attr('stroke-width', 2)
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'med')
-                .attr('x1', -r)
-                .attr('x2', r)
-                .attr('y1', y(dmed))
-                .attr('y2', y(dmed))
-                .attr('stroke-width', 2)
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'iqr-left')
-                .attr('x1', -r)
-                .attr('x2', -r)
-                .attr('y1', y(dq1))
-                .attr('y2', y(dq3))
-                .attr('stroke-width', 2)
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'iqr-right')
-                .attr('x1', r)
-                .attr('x2', r)
-                .attr('y1', y(dq1))
-                .attr('y2', y(dq3))
-                .attr('stroke-width', 2)
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'w-top')
-                .attr('x1', -wr)
-                .attr('x2', wr)
-                .attr('y1', y(dwhishi))
-                .attr('y2', y(dwhishi))
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'w-bottom')
-                .attr('x1', -wr)
-                .attr('x2', wr)
-                .attr('y1', y(dwhislo))
-                .attr('y2', y(dwhislo))
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'w-q3')
-                .attr('x1', 0)
-                .attr('x2', 0)
-                .attr('y1', y(dwhishi))
-                .attr('y2', y(dq3))
-                .attr('stroke', color);
-            _selectOrAppend(box, 'line', 'w-q1')
-                .attr('x1', 0)
-                .attr('x2', 0)
-                .attr('y1', y(dwhislo))
-                .attr('y2', y(dq1))
-                .attr('stroke', color);
+            _selectOrAppend(box, "line", "q1")
+                .attr("x1", -r)
+                .attr("x2", r)
+                .attr("y1", y(dq1))
+                .attr("y2", y(dq1))
+                .attr("stroke-width", 2)
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "q3")
+                .attr("x1", -r)
+                .attr("x2", r)
+                .attr("y1", y(dq3))
+                .attr("y2", y(dq3))
+                .attr("stroke-width", 2)
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "med")
+                .attr("x1", -r)
+                .attr("x2", r)
+                .attr("y1", y(dmed))
+                .attr("y2", y(dmed))
+                .attr("stroke-width", 2)
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "iqr-left")
+                .attr("x1", -r)
+                .attr("x2", -r)
+                .attr("y1", y(dq1))
+                .attr("y2", y(dq3))
+                .attr("stroke-width", 2)
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "iqr-right")
+                .attr("x1", r)
+                .attr("x2", r)
+                .attr("y1", y(dq1))
+                .attr("y2", y(dq3))
+                .attr("stroke-width", 2)
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "w-top")
+                .attr("x1", -wr)
+                .attr("x2", wr)
+                .attr("y1", y(dwhishi))
+                .attr("y2", y(dwhishi))
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "w-bottom")
+                .attr("x1", -wr)
+                .attr("x2", wr)
+                .attr("y1", y(dwhislo))
+                .attr("y2", y(dwhislo))
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "w-q3")
+                .attr("x1", 0)
+                .attr("x2", 0)
+                .attr("y1", y(dwhishi))
+                .attr("y2", y(dq3))
+                .attr("stroke", color);
+            _selectOrAppend(box, "line", "w-q1")
+                .attr("x1", 0)
+                .attr("x2", 0)
+                .attr("y1", y(dwhislo))
+                .attr("y2", y(dq1))
+                .attr("stroke", color);
         };
     }
 

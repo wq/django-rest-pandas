@@ -1,3 +1,3 @@
-import Analyst from './Analyst';
+import Analyst from "./Analyst";
 
 export { Analyst };
