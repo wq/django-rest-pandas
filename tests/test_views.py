@@ -9,6 +9,8 @@ from .settings import HAS_DJANGO_PANDAS, HAS_DJANGO_4
 
 
 class PandasTestCase(APITestCase):
+    maxDiff = None
+
     def setUp(self):
         data = (
             ("2014-01-01", 0.5),
@@ -60,7 +62,7 @@ class PandasTestCase(APITestCase):
         self.assertIn("id", data[0])
         self.assertEqual(data[0]["id"], 1)
         self.assertEqual(data[0]["value"], 0.5)
-        self.assertEqual(data[0]["date"], "2014-01-01T00:00:00.000Z")
+        self.assertEqual(data[0]["date"], "2014-01-01T00:00:00.000")
 
     def test_view_json_kwargs(self):
         response = self.client.get("/timeseries.json?date_format=epoch")

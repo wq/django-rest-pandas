@@ -32,6 +32,7 @@ TEMPLATES = [
     },
 ]
 
+TIME_ZONE = "UTC"
 DEBUG = True
 
 
