@@ -14,8 +14,8 @@ test("pandas.parse()", () => {
                 "parameter,PARAM1,PARAM1\n" +
                 "date,,\n" +
                 "2014-01-01,0.6,0.3\n" +
-                "2014-01-02,0.9,\n"
-        )
+                "2014-01-02,0.9,\n",
+        ),
     ).toEqual([
         {
             site: "SITE1",
@@ -31,8 +31,8 @@ test("pandas.parse()", () => {
 test("pandas.parse() with plain csv", () => {
     expect(
         pandas.parse(
-            "date,val1,val2\n" + "2014-01-01,0.6,0.3\n" + "2014-01-02,0.9,\n"
-        )
+            "date,val1,val2\n" + "2014-01-01,0.6,0.3\n" + "2014-01-02,0.9,\n",
+        ),
     ).toEqual([
         {
             data: [

@@ -1,3 +1,3 @@
-import Analyst from "./Analyst.js";
+import Analyst from "./Analyst.jsx";
 
 export { Analyst };

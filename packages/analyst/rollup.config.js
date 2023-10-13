@@ -19,13 +19,20 @@ const dir = `packages/${pkg.name.replace("@wq/", "")}`;
 const config = {
         input: `${dir}/src/index.js`,
         plugins: [
+            {
+                resolveId(id) {
+                    if (id === "@wq/pandas") {
+                        return "packages/pandas/src/index.js";
+                    }
+                },
+            },
             wq(),
             babel({
                 plugins: [
                     "@babel/transform-react-jsx",
                     [
                         "babel-plugin-direct-import",
-                        { modules: ["@mui/material", "@mui/icons-material"] },
+                        { modules: ["@mui/icons-material"] },
                     ],
                 ],
                 babelHelpers: "inline",
@@ -35,7 +42,6 @@ const config = {
             terser({ keep_fnames: /^([A-Z]|use[A-Z])/ }), // Preserve component & hook names
         ],
         output: {
-            file: `${dir}/index.js`,
             banner,
             format: "esm",
             sourcemap: true,
@@ -48,24 +54,6 @@ const config = {
     };
 
 export default [
-    // @wq/app plugin (npm main)
-    {
-        ...config,
-        external: [
-            "react",
-            "prop-types",
-            "@wq/react",
-            "@wq/pandas",
-            "@mui/material",
-            "@mui/icons-material",
-        ],
-        plugins: [
-            babel({
-                plugins: ["@babel/transform-react-jsx"],
-                babelHelpers: "inline",
-            }),
-        ],
-    },
     // wq.app staticfiles plugin (for rest-pandas python package)
     {
         ...config,
@@ -75,6 +63,25 @@ export default [
             file: "rest_pandas/static/app/js/analyst.js",
             sourcemapPathTransform(path) {
                 return path.replace("../../../../", "django-rest-pandas/");
+            },
+        },
+    },
+    // wq.app staticfiles plugin (unpkg)
+    {
+        ...config,
+        plugins: [
+            replace({
+                ...replaceConfig,
+                "./wq.js": "https://unpkg.com/wq",
+                "./chart.js": "https://unpkg.com/@wq/chart",
+            }),
+            ...config.plugins,
+        ],
+        output: {
+            ...config.output,
+            file: `${dir}/dist/index.unpkg.js`,
+            sourcemapPathTransform(path) {
+                return path.replace("./", "wq/analyst/");
             },
         },
     },

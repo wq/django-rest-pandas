@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem, useMediaQuery } from "@mui/material";
 import { useComponents } from "@wq/react";
 import PropTypes from "prop-types";
 
 export default function AnalystDownload({ url, title, formats }) {
     const [anchorEl, setAnchorEl] = useState(null),
-        { Button, HorizontalView, Typography, View } = useComponents(),
+        { Button, IconButton, HorizontalView, Typography, View } =
+            useComponents(),
+        mobile = useMediaQuery((theme) => theme.breakpoints.down("md")),
+        DownloadButton = mobile ? IconButton : Button,
         menuId = "analyst-download",
-        baseUrl = url.replace(/\.[^.]+$/, "");
+        currentUrl = new URL(url, window.location.href),
+        baseUrl = currentUrl.pathname.replace(/\.[^.]+$/, ""),
+        params = currentUrl.search;
     return (
         <>
             <HorizontalView>
@@ -16,15 +21,16 @@ export default function AnalystDownload({ url, title, formats }) {
                 ) : (
                     <View />
                 )}
-                <Button
+                <DownloadButton
                     aria-controls={menuId}
                     onClick={(evt) => setAnchorEl(evt.target)}
                     icon="download"
                     variant="contained"
                     color="primary"
+                    title="Download Data"
                 >
                     Download Data
-                </Button>
+                </DownloadButton>
             </HorizontalView>
             <Menu
                 id={menuId}
@@ -36,7 +42,7 @@ export default function AnalystDownload({ url, title, formats }) {
                     <MenuItem
                         key={format}
                         component="a"
-                        href={`${baseUrl}.${format}`}
+                        href={`${baseUrl}.${format}${params}`}
                         target="_blank"
                     >
                         {label}

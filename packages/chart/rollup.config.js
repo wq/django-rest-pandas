@@ -9,7 +9,7 @@ import terser from "@rollup/plugin-terser";
 const banner = `/*
  * ${pkg.name} ${pkg.version}
  * ${pkg.description}
- * (c) 2013-2020, S. Andrew Sheppard
+ * (c) 2013-2023, S. Andrew Sheppard
  * https://wq.io/license
  */
 `;
@@ -29,7 +29,6 @@ const config = {
             terser({ keep_fnames: /^([A-Z]|use[A-Z])/ }), // Preserve component & hook names
         ],
         output: {
-            file: `${dir}/dist/index.js`,
             banner,
             format: "esm",
             sourcemap: true,
@@ -42,17 +41,6 @@ const config = {
     };
 
 export default [
-    // @wq/app plugin (npm main)
-    {
-        ...config,
-        external: ["d3", "@wq/pandas", "mustache"],
-        plugins: [
-            babel({
-                plugins: ["@babel/transform-react-jsx"],
-                babelHelpers: "inline",
-            }),
-        ],
-    },
     // wq.app staticfiles plugin (for rest-pandas python package)
     {
         ...config,
@@ -62,6 +50,24 @@ export default [
             file: "rest_pandas/static/app/js/chart.js",
             sourcemapPathTransform(path) {
                 return path.replace("../../../../", "django-rest-pandas/");
+            },
+        },
+    },
+    // wq.app staticfiles plugin (unpkg)
+    {
+        ...config,
+        plugins: [
+            replace({
+                ...replaceConfig,
+                "./wq.js": "https://unpkg.com/wq",
+            }),
+            ...config.plugins,
+        ],
+        output: {
+            ...config.output,
+            file: `${dir}/dist/index.unpkg.js`,
+            sourcemapPathTransform(path) {
+                return path.replace("./", "wq/chart/");
             },
         },
     },

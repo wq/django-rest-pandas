@@ -1,18 +1,17 @@
 {
     "name": "@wq/chart",
     "version": "2.0.0-alpha.0",
-    "description": "wq framework plugin providing re-usable d3.js charts for Django REST Pandas",
-    "main": "dist/index.js",
-    "files": [
-        "src/",
-        "dist/"
-    ],
+    "description": "wq framework plugin providing Plotly charts for Django REST Pandas",
+    "main": "index.js",
+    "unpkg": "dist/index.unpkg.js",
     "type": "module",
     "scripts": {
         "test": "cd ../../ && npm run jest packages/chart",
+        "build": "NODE_ENV=build npm run babel && npm run prettier",
+        "babel": "cd ../../ && npm run babel -- packages/chart/src --out-dir packages/chart/",
         "prettier": "cd ../../ && npm run prettier",
         "lint": "cd ../../ && npm run lint",
-        "build": "cd ../../ && npm run rollup -- -c packages/chart/rollup.config.js"
+        "rollup": "cd ../../ && npm run rollup -- -c packages/chart/rollup.config.js"
     },
     "repository": {
         "type": "git",
@@ -31,8 +30,6 @@
     },
     "homepage": "https://django-rest-pandas.wq.io/@wq/chart",
     "dependencies": {
-        "@wq/pandas": "^2.0.0-alpha.0",
-        "d3": "^7.8.2",
-        "mustache": "^4.2.0"
+        "react-plotly.js": "^2.6.0"
     }
 }

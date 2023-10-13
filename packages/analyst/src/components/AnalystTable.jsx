@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Badge, Menu, MenuItem } from "@mui/material";
-import { get as getPandasCsv } from "@wq/pandas";
+import { useAnalystData } from "../hooks.js";
 import { useComponents, useNav, useApp } from "@wq/react";
 import PropTypes from "prop-types";
 
@@ -13,13 +13,13 @@ export default function AnalystTable({
     id_url_prefix,
     compact,
 }) {
-    const [data, setData] = useState(initialData),
+    const [data, error] = useAnalystData(url, initialData),
         [columns, setColumns] = useState(),
         [filters, setFilters] = useState({}),
         [orders, setOrders] = useState(initial_order || {}),
         pagination = initial_rows !== "all",
         [rowsPerPage, setRowsPerPage] = useState(
-            pagination ? initial_rows || 50 : null
+            pagination ? initial_rows || 50 : null,
         ),
         [page, setPage] = useState(0),
         {
@@ -41,7 +41,7 @@ export default function AnalystTable({
             new URL(id_url_prefix, window.location.origin)
                 .toString()
                 .startsWith(
-                    new URL(app.base_url, window.location.origin).toString()
+                    new URL(app.base_url, window.location.origin).toString(),
                 ),
         nav = (id) => {
             const url = `${id_url_prefix}${id}`;
@@ -53,25 +53,30 @@ export default function AnalystTable({
         };
 
     useEffect(() => {
-        if (!url) {
-            return;
-        }
-        async function loadData() {
-            const data = await getPandasCsv(url, { flatten: true });
-            setData(data);
-        }
-        loadData();
-    }, [url]);
-
-    useEffect(() => {
-        setData(initialData);
-    }, [initialData]);
-
-    useEffect(() => {
         if (!data || data.length === 0) {
             return;
         }
-        const nextColumns = Object.keys(data[0]).map((key) => {
+        let keys = Object.keys(data[0]),
+            allKeys = new Set(keys);
+        for (const row of data) {
+            const rowKeys = Object.keys(row);
+            if (rowKeys.length > keys.length) {
+                keys = rowKeys;
+            }
+            for (const key of rowKeys) {
+                if (!allKeys.has(key)) {
+                    allKeys.add(key);
+                }
+            }
+        }
+
+        for (const key of allKeys) {
+            if (!keys.includes(key)) {
+                keys.push(key);
+            }
+        }
+
+        const nextColumns = keys.map((key) => {
             const metaKeys = {},
                 colFilters = { ...filters };
             delete colFilters[key];
@@ -139,7 +144,7 @@ export default function AnalystTable({
         }
         return sortedData.slice(
             page * rowsPerPage,
-            page * rowsPerPage + rowsPerPage
+            page * rowsPerPage + rowsPerPage,
         );
     }, [sortedData, pagination, page, rowsPerPage]);
 
@@ -180,6 +185,144 @@ export default function AnalystTable({
         setFilters(nextFilters);
     };
 
+    const FullHeader = useCallback(
+        (column) => {
+            if (column.name == id_column) {
+                return <TableTitle />;
+            }
+
+            return (
+                <TableTitle key={column.name}>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginLeft: -8,
+                            borderLeft: "2px solid #ccc",
+                            paddingLeft: 8,
+                            marginRight: -16,
+                        }}
+                    >
+                        <span
+                            style={{
+                                flex: 1,
+                                fontWeight: "bold",
+                            }}
+                        >
+                            {column.name}
+                        </span>
+                        <Badge
+                            overlap="circular"
+                            badgeContent={
+                                Object.keys(orders).indexOf(column.name) + 1
+                            }
+                        >
+                            <IconButton
+                                size="small"
+                                icon={
+                                    orders[column.name] === "desc"
+                                        ? "sort-desc"
+                                        : orders[column.name]
+                                        ? "sort-asc"
+                                        : "sort-none"
+                                }
+                                color={orders[column.name] && "secondary"}
+                                onClick={() => toggleOrder(column.name)}
+                            />
+                        </Badge>
+                        {column.values && (
+                            <ColumnFilter
+                                {...column}
+                                filter={filters[column.name]}
+                                toggleFilter={(value) =>
+                                    toggleFilter(column.name, value)
+                                }
+                                resetFilter={() => resetFilter(column.name)}
+                            />
+                        )}
+                    </div>
+                </TableTitle>
+            );
+        },
+        [orders, toggleOrder, filters, toggleFilter, resetFilter],
+    );
+
+    const CompactHeader = useCallback(
+        (column) => {
+            if (column.name === id_column) {
+                return null;
+            } else if (column.values) {
+                return (
+                    <TableTitle style={{ cursor: "pointer" }}>
+                        <ColumnFilter
+                            {...column}
+                            textButton
+                            filter={filters[column.name]}
+                            toggleFilter={(value) =>
+                                toggleFilter(column.name, value)
+                            }
+                            resetFilter={() => resetFilter(column.name)}
+                        />
+                    </TableTitle>
+                );
+            } else {
+                return (
+                    <TableTitle
+                        style={{ cursor: "pointer" }}
+                        onClick={() => toggleOrder(column.name)}
+                    >
+                        <span style={{ fontWeight: "bold" }}>
+                            {column.name}
+                        </span>
+                        {orders[column.name] === "desc"
+                            ? " ↓"
+                            : orders[column.name]
+                            ? " ↑"
+                            : ""}
+                    </TableTitle>
+                );
+            }
+        },
+        [filters, toggleFilter, resetFilter, orders, toggleOrder],
+    );
+
+    const ColumnHeader = compact ? CompactHeader : FullHeader,
+        Cell = useCallback(
+            (cell) => {
+                if (cell.column.name === id_column) {
+                    if (compact) {
+                        return null;
+                    } else {
+                        return (
+                            <TableCell>
+                                <CellLink {...cell} nav={nav} />
+                            </TableCell>
+                        );
+                    }
+                } else if (compact && id_column) {
+                    const id = cell.row[id_column];
+                    return (
+                        <TableCell
+                            style={{ cursor: "pointer" }}
+                            onClick={() => nav(id)}
+                        >
+                            <CellValue {...cell} />
+                        </TableCell>
+                    );
+                } else {
+                    return (
+                        <TableCell>
+                            <CellValue {...cell} />
+                        </TableCell>
+                    );
+                }
+            },
+            [compact, id_column],
+        );
+
+    if (error) {
+        return <Typography>{error}</Typography>;
+    }
     if (!data) {
         return <Typography>Loading...</Typography>;
     }
@@ -190,157 +333,36 @@ export default function AnalystTable({
         return <Typography>No data matching the current filter(s).</Typography>;
     }
 
-    const FullHeader = (column) => {
-        if (column.name == id_column) {
-            return <TableTitle />;
-        }
-
-        return (
-            <TableTitle key={column.name}>
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginLeft: -8,
-                        borderLeft: "2px solid #ccc",
-                        paddingLeft: 8,
-                        marginRight: -16,
-                    }}
-                >
-                    <span
-                        style={{
-                            flex: 1,
-                            fontWeight: "bold",
-                        }}
-                    >
-                        {column.name}
-                    </span>
-                    <Badge
-                        overlap="circular"
-                        badgeContent={
-                            Object.keys(orders).indexOf(column.name) + 1
-                        }
-                    >
-                        <IconButton
-                            size="small"
-                            icon={
-                                orders[column.name] === "desc"
-                                    ? "sort-desc"
-                                    : orders[column.name]
-                                    ? "sort-asc"
-                                    : "sort-none"
-                            }
-                            color={orders[column.name] && "secondary"}
-                            onClick={() => toggleOrder(column.name)}
-                        />
-                    </Badge>
-                    {column.values && (
-                        <ColumnFilter
-                            {...column}
-                            filter={filters[column.name]}
-                            toggleFilter={(value) =>
-                                toggleFilter(column.name, value)
-                            }
-                            resetFilter={() => resetFilter(column.name)}
-                        />
-                    )}
-                </div>
-            </TableTitle>
-        );
-    };
-
-    const CompactHeader = (column) => {
-        if (column.name === id_column) {
-            return null;
-        } else if (column.values) {
-            return (
-                <TableTitle style={{ cursor: "pointer" }}>
-                    <ColumnFilter
-                        {...column}
-                        textButton
-                        filter={filters[column.name]}
-                        toggleFilter={(value) =>
-                            toggleFilter(column.name, value)
-                        }
-                        resetFilter={() => resetFilter(column.name)}
-                    />
-                </TableTitle>
-            );
-        } else {
-            return (
-                <TableTitle
-                    style={{ cursor: "pointer" }}
-                    onClick={() => toggleOrder(column.name)}
-                >
-                    <span style={{ fontWeight: "bold" }}>{column.name}</span>
-                    {orders[column.name] === "desc"
-                        ? " ↓"
-                        : orders[column.name]
-                        ? " ↑"
-                        : ""}
-                </TableTitle>
-            );
-        }
-    };
-
-    const ColumnHeader = compact ? CompactHeader : FullHeader,
-        Cell = (cell) => {
-            if (cell.column.name === id_column) {
-                if (compact) {
-                    return null;
-                } else {
-                    return (
-                        <TableCell>
-                            <CellLink {...cell} nav={nav} />
-                        </TableCell>
-                    );
-                }
-            } else if (compact && id_column) {
-                const id = cell.row[id_column];
-                return (
-                    <TableCell
-                        style={{ cursor: "pointer" }}
-                        onClick={() => nav(id)}
-                    >
-                        <CellValue {...cell} />
-                    </TableCell>
-                );
-            } else {
-                return (
-                    <TableCell>
-                        <CellValue {...cell} />
-                    </TableCell>
-                );
-            }
-        };
-
     return (
-        <TableContainer>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        {columns.map((column) => (
-                            <ColumnHeader key={column.name} {...column} />
-                        ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {slicedData.map((row, i) => (
-                        <TableRow key={id_column ? row[id_column] : i}>
+        <>
+            <TableContainer>
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
                             {columns.map((column) => (
-                                <Cell
-                                    key={column.name}
-                                    column={column}
-                                    row={row}
-                                />
+                                <ColumnHeader key={column.name} {...column} />
                             ))}
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {slicedData.map((row, i) => (
+                            <TableRow key={id_column ? row[id_column] : i}>
+                                {columns.map((column) => (
+                                    <Cell
+                                        key={column.name}
+                                        column={column}
+                                        row={row}
+                                    />
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
             {pagination && (
                 <TablePagination
                     component="div"
+                    style={{ minHeight: 52 }}
                     count={sortedData.length}
                     page={page}
                     rowsPerPage={rowsPerPage}
@@ -350,7 +372,7 @@ export default function AnalystTable({
                     }
                 />
             )}
-        </TableContainer>
+        </>
     );
 }
 
@@ -477,7 +499,11 @@ function sort(val1, val2, dir = "asc") {
     if (dir == "desc") {
         return sort(val2, val1);
     }
-    if (val1 < val2) {
+    if (val1 !== undefined && val2 === undefined) {
+        return -1;
+    } else if (val1 === undefined && val2 !== undefined) {
+        return 1;
+    } else if (val1 < val2) {
         return -1;
     } else if (val1 > val2) {
         return 1;

@@ -2,3 +2,4 @@ docs/
 build/
 rest_pandas/static/
 packages/analyst/index.js
+index.unpkg.js

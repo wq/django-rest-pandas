@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "backend"
+backend-path = ["packages"]
+
+[project]
+name = "rest-pandas"
+dynamic = ["version"]
+authors = [
+    {name = "S. Andrew Sheppard", email = "andrew@wq.io"},
+]
+description = "Serves up pandas dataframes via the Django REST Framework for client-side visualizations."
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: JavaScript",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "djangorestframework>=3.3.1",
+    "pandas>=0.19.0",
+]
+
+[project.urls]
+Homepage = "https://django-rest-pandas.wq.io/"
+Documentation = "https://django-rest-pandas.wq.io/"
+Source = "https://github.com/wq/django-rest-pandas"
+"Release Notes" = "https://django-rest-pandas.wq.io/releases/"
+Issues = "https://github.com/wq/django-rest-pandas/issues"
+CI = "https://github.com/wq/django-rest-pandas/actions/workflows/test.yml"
+
+[tool.setuptools]
+
+[tool.setuptools.packages.find]
+include = ["rest_pandas*"]
+
+[tool.setuptools.package-data]
+"rest_pandas.templates" = [ "**/*" ]
+"rest_pandas.static" = [ "**/*" ]
+
+[tool.setuptools_scm]
+write_to = "packages/analyst/src/version.js"
+write_to_template = 'export default "{version}";'
