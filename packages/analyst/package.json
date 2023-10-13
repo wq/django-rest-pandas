@@ -1,10 +1,20 @@
 {
     "name": "@wq/analyst",
-    "version": "2.0.0-alpha.0",
+    "version": "2.0.0-alpha.1",
     "description": "wq framework plugin providing interactive data tables & charts for Django REST Pandas",
     "main": "index.js",
     "unpkg": "dist/index.unpkg.js",
     "type": "module",
+    "files": [
+        "src",
+        "dist",
+        "index.js",
+        "icons.js",
+        "hooks.js",
+        "version.js",
+        "components",
+        "views"
+    ],
     "scripts": {
         "test": "cd ../../ && npm run jest packages/analyst",
         "build": "NODE_ENV=build npm run babel && npm run prettier",
