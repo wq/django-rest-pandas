@@ -18,7 +18,7 @@ export function useAnalyst() {
         data,
         error: config.error || dataError || (data ? null : "Loading..."),
         modes,
-        form,
+        form: form.some((field) => field.type !== "hidden") ? form : null,
         options,
         setOptions,
     };
@@ -38,6 +38,10 @@ export function useAnalystConfig() {
 
     return {
         ...analyst,
+        initial_order:
+            typeof analyst.initial_order === "string"
+                ? context[analyst.initial_order]
+                : analyst.initial_order,
         url: render(analyst.url, context),
         title: render(analyst.title, context),
     };
@@ -198,7 +202,7 @@ const defaultOptions = { mode: "", date: "", value: "", value2: "", group: "" };
 
 function makeForm(modes, currentMode) {
     if (!modes) {
-        return null;
+        return [];
     }
     const modeInfo = modes.find((mode) => mode.name === currentMode),
         form = [

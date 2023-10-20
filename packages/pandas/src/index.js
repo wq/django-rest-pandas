@@ -124,6 +124,7 @@ export function parse(str, options = {}) {
         // to get a unique key.
         var datasetIndex = {};
         metadata.forEach(function (meta, i) {
+            meta = reverseKeys(meta);
             var metaHash = hash(meta);
             var index = datasetIndex[metaHash];
             if (index === undefined) {
@@ -179,26 +180,43 @@ export function parse(str, options = {}) {
             datasets[i].data.push(d);
         });
     }
-    return options.flatten ? flatten(datasets) : datasets;
+    return options.flatten ? flatten(datasets, idColumns) : datasets;
 }
 
 export async function get(url, options = {}) {
-    const response = await fetch(url),
-        text = await response.text(),
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+    const text = await response.text(),
         data = parse(text, options);
     return data;
 }
 
-export function flatten(datasets) {
+export function flatten(datasets, idColumns = []) {
     const allData = [];
     datasets.forEach((dataset) => {
         const { data, ...meta } = dataset;
         data.forEach((row) => {
-            allData.push({ ...meta, ...row });
+            const ids = {};
+            for (const idCol of idColumns) {
+                ids[idCol] = row[idCol];
+            }
+            allData.push({ ...ids, ...meta, ...row });
         });
     });
     allData.datasets = datasets;
     return allData;
+}
+
+function reverseKeys(obj) {
+    const reversed = {};
+    Object.keys(obj)
+        .reverse()
+        .forEach((key) => {
+            reversed[key] = obj[key];
+        });
+    return reversed;
 }
 
 function hash(obj) {
