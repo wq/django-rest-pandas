@@ -95,7 +95,7 @@ class TimeSeriesCustomCSVView(PandasView):
     ]
 
     def transform_dataframe(self, df):
-        df["date"] = df["date"].astype("datetime64")
+        df["date"] = df["date"].astype("datetime64[ns]")
         return df
 
 

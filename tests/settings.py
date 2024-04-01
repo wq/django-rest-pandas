@@ -54,4 +54,4 @@ else:
 
 from django import VERSION  # noqa
 
-HAS_DJANGO_4 = VERSION[0] == 4
+HAS_DJANGO_5 = VERSION[0] == 5

@@ -5,7 +5,7 @@ from tests.testapp.serializers import NotUnstackableSerializer
 from rest_pandas.test import parse_csv
 from django.core.exceptions import ImproperlyConfigured
 import os
-from .settings import HAS_MATPLOTLIB, HAS_DJANGO_4
+from .settings import HAS_MATPLOTLIB, HAS_DJANGO_5
 import pandas
 
 
@@ -62,7 +62,7 @@ class MultiTestCase(APITestCase):
         self.assertEqual(d0["date"], "2015-01-05")
         self.assertEqual(d0["value"], 0.3)
 
-    @unittest.skipUnless(HAS_DJANGO_4, "requires django 4")
+    @unittest.skipUnless(HAS_DJANGO_5, "requires django 5")
     def test_multi_series_html(self):
         response = self.client.get("/multitimeseries.html")
         expected = open(
@@ -74,11 +74,7 @@ class MultiTestCase(APITestCase):
 
     def test_multi_scatter(self):
         response = self.client.get("/multiscatter.csv")
-        if pandas.__version__ == "0.20.3":
-            # FIXME: Remove when dropping Python 3.4 support
-            header = "date,test1-value,test2-value"
-        else:
-            header = ",test1-value,test2-value\ndate,,"
+        header = ",test1-value,test2-value\ndate,,"
         self.assertEqual(
             header
             + """
