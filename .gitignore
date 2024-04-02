@@ -5,3 +5,6 @@
 build
 dist
 node_modules
+docs/static
+docs/timeseries.*
+docs/weather.*

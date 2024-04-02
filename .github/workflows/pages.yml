@@ -33,8 +33,16 @@ jobs:
         run: |
           curl -L -s https://unpkg.com/wq > docs/js/wq.js
           curl -L -s https://unpkg.com/@wq/markdown@latest > docs/js/markdown.js
+          curl -L -s https://unpkg.com/@wq/analyst@next > docs/js/analyst.js
+          curl -L -s https://unpkg.com/@wq/chart@next > docs/js/chart.js
           sed -i "s/^import\(.*\)https:\/\/unpkg.com\/wq/import\1.\/wq.js/" docs/js/*.js
           sed -i "s/^import\(.*\)https:\/\/unpkg.com\/@wq\/markdown@next/import\1.\/markdown.js/" docs/js/*.js
+          sed -i "s/^import\(.*\)https:\/\/unpkg.com\/@wq\/analyst/import\1.\/analyst.js/" docs/js/*.js
+          sed -i "s/^import\(.*\)https:\/\/unpkg.com\/@wq\/chart/import\1.\/chart.js/" docs/js/*.js
+      - name: Export Django site
+        run: |
+          python -m pip install django djangorestframework pandas openpyxl matplotlib
+          python -m unittest tests.generate_docs
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:

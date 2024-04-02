@@ -3,15 +3,21 @@ layout: null
 ---
 
 import wq, { modules } from 'https://unpkg.com/wq';
-import markdown, { renderers } from 'https://unpkg.com/@wq/markdown@next';
+import markdown, { components } from 'https://unpkg.com/@wq/markdown@next';
+import analyst from 'https://unpkg.com/@wq/analyst';
+
+import Demo from './demo.js';
 
 const React = modules['react'];
 const { Typography, Link } = modules['@wq/material'];
 
-wq.use(markdown);
+components.code = Demo;
+
+wq.use([markdown, analyst]);
 
 const config = {
     site_title: 'Django REST Pandas',
+    logo: '/images/icons/django-rest-pandas.svg',
     store: {
         service: '',
         defaults: {
@@ -52,6 +58,7 @@ function pageConf(page) {
             icon: page.wq_config.icon_data ? page.wq_config.name : null,
             markdown: page.content,
             list: true,
+            form: [],
             cache: 'all',
             can_change: false,
             can_add: false,

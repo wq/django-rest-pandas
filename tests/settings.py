@@ -5,7 +5,9 @@ INSTALLED_APPS = (
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.sessions",
+    "django.contrib.staticfiles",
     "tests.testapp",
+    "tests.weather",
     "rest_pandas",
     "rest_framework",
 )
@@ -16,6 +18,8 @@ DATABASES = {
     }
 }
 ROOT_URLCONF = "tests.urls"
+STATIC_URL = "/static"
+STATIC_ROOT = "docs/static"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
