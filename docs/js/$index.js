@@ -92,7 +92,7 @@ wq.use({
                     Typography,
                     { variant: 'caption', color: 'textSecondary' },
                     [
-                        '© 2012-2022 by ',
+                        '© 2014-2024 by ',
                         React.createElement(
                             Link,
                             {
