@@ -1,6 +1,6 @@
 {
     "name": "@wq/analyst",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.2",
     "description": "wq framework plugin providing interactive data tables & charts for Django REST Pandas",
     "main": "index.js",
     "unpkg": "dist/index.unpkg.js",
@@ -49,7 +49,7 @@
         "@wq/material-web": "*"
     },
     "devDependencies": {
-        "@wq/material": "^2.0.0-alpha.1",
-        "@wq/material-web": "^2.0.0-alpha.2"
+        "@wq/material": "^2.1.0",
+        "@wq/material-web": "^2.1.0"
     }
 }

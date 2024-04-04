@@ -4,11 +4,12 @@ import { get as getPandasCsv } from "@wq/pandas";
 import Mustache from "mustache";
 import { labelWithIcon } from "./components/Icon.jsx";
 
-export function useAnalyst() {
-    const config = useAnalystConfig(),
+export function useAnalyst(props) {
+    const config = useAnalystConfig(props),
         [data, dataError] = useAnalystData(
             config.url || null,
             config.data || null,
+            config.fields || null,
         ),
         modes = useAnalystModes(data, config),
         [form, options, setOptions] = useAnalystForm(modes);
@@ -24,16 +25,24 @@ export function useAnalyst() {
     };
 }
 
-export function useAnalystConfig() {
+export function useAnalystConfig(props) {
     const {
-            page_config: { name, analyst = {} },
+            page_config: { name, analyst: routeProps },
         } = useRouteInfo(),
         context = useRenderContext();
 
+    const analyst = { ...routeProps, ...props };
+
     if (!analyst.url) {
-        return {
-            error: `The config for "${name}" should include an analyst.url property.`,
-        };
+        if (routeProps) {
+            return {
+                error: `The config for "${name}" should include an analyst.url property.`,
+            };
+        } else {
+            return {
+                error: `Specify analyst.url in the config for "${name}" or as a prop.`,
+            };
+        }
     }
 
     return {
@@ -44,6 +53,7 @@ export function useAnalystConfig() {
                 : analyst.initial_order,
         url: render(analyst.url, context),
         title: render(analyst.title, context),
+        id_url_prefix: render(analyst.id_url_prefix, context),
     };
 }
 
@@ -55,7 +65,7 @@ function render(value, context) {
     }
 }
 
-export function useAnalystData(url, initialData) {
+export function useAnalystData(url, initialData, fields) {
     const [data, setData] = useState(initialData),
         [error, setError] = useState(null);
 
@@ -65,7 +75,7 @@ export function useAnalystData(url, initialData) {
         }
         async function loadData() {
             try {
-                const data = await getPandasCsv(url, { flatten: true });
+                const data = await getPandasCsv(url, { flatten: true, fields });
                 if (data && data.length > 0) {
                     setData(data);
                 } else {

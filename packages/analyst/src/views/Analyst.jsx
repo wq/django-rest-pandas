@@ -4,12 +4,13 @@ import { Series, Scatter, Boxplot } from "@wq/chart";
 import { useAnalyst } from "../hooks.js";
 import PropTypes from "prop-types";
 
-export default function Analyst({ children }) {
+export default function Analyst({ children, ...props }) {
     const { View, Typography, AnalystDownload, AnalystTable, AnalystForm } =
             useComponents(),
         {
             url,
             data,
+            fields,
             error,
             title,
             formats,
@@ -20,7 +21,7 @@ export default function Analyst({ children }) {
             form,
             options,
             setOptions,
-        } = useAnalyst();
+        } = useAnalyst(props);
 
     if (error) {
         return (
@@ -80,6 +81,7 @@ export default function Analyst({ children }) {
                 (options.mode === "table" && (
                     <AnalystTable
                         data={data}
+                        fields={fields}
                         initial_rows={initial_rows}
                         initial_order={initial_order}
                         id_column={id_column}

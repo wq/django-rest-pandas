@@ -1,6 +1,6 @@
 {
     "name": "@wq/chart",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.2",
     "description": "wq framework plugin providing Plotly charts for Django REST Pandas",
     "main": "index.js",
     "unpkg": "dist/index.unpkg.js",

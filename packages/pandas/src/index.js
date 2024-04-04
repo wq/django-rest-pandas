@@ -51,7 +51,8 @@ export function parse(str, options = {}) {
         col2dataset = [],
         data,
         valuesHeader,
-        rows;
+        rows,
+        fields = { ...options.fields };
     if (str.charAt(0) != ",") {
         // Assume plain CSV (single series with one-row header)
         data = [];
@@ -60,7 +61,7 @@ export function parse(str, options = {}) {
             for (key in row) {
                 val = row[key];
                 if (row[key] !== "") {
-                    row[key] = isNaN(+val) ? val : +val;
+                    row[key] = parseVal(val, key);
                 }
             }
             data.push(row);
@@ -116,6 +117,20 @@ export function parse(str, options = {}) {
             throw "Header mismatch!";
         }
         idColumns = row.slice(0, row.indexOf(""));
+    }
+
+    function parseVal(val, name) {
+        if (!fields[name]) {
+            fields[name] = {};
+        }
+        const field = fields[name];
+        if (field.numeric === true) {
+            return +val;
+        } else if (field.numeric === false) {
+            return val;
+        } else {
+            return isNaN(+val) ? val : +val;
+        }
     }
 
     function findDatasets() {
@@ -174,7 +189,7 @@ export function parse(str, options = {}) {
                 }
                 rowdata[dsi] = item;
             }
-            item[valname] = isNaN(+d) ? d : +d;
+            item[valname] = parseVal(d, valname);
         });
         rowdata.forEach(function (d, i) {
             datasets[i].data.push(d);

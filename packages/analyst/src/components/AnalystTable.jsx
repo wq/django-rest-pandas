@@ -7,13 +7,14 @@ import PropTypes from "prop-types";
 export default function AnalystTable({
     data: initialData,
     url,
+    fields,
     initial_rows,
     initial_order,
     id_column,
     id_url_prefix,
     compact,
 }) {
-    const [data, error] = useAnalystData(url, initialData),
+    const [data, error] = useAnalystData(url, initialData, fields),
         [columns, setColumns] = useState(),
         [filters, setFilters] = useState({}),
         [orders, setOrders] = useState(initial_order || {}),
@@ -223,8 +224,8 @@ export default function AnalystTable({
                                     orders[column.name] === "desc"
                                         ? "sort-desc"
                                         : orders[column.name]
-                                        ? "sort-asc"
-                                        : "sort-none"
+                                          ? "sort-asc"
+                                          : "sort-none"
                                 }
                                 color={orders[column.name] && "secondary"}
                                 onClick={() => toggleOrder(column.name)}
@@ -277,8 +278,8 @@ export default function AnalystTable({
                         {orders[column.name] === "desc"
                             ? " ↓"
                             : orders[column.name]
-                            ? " ↑"
-                            : ""}
+                              ? " ↑"
+                              : ""}
                     </TableTitle>
                 );
             }
@@ -379,6 +380,7 @@ export default function AnalystTable({
 AnalystTable.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     url: PropTypes.string,
+    fields: PropTypes.arrayOf(PropTypes.object),
     initial_rows: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     compact: PropTypes.bool,
     initial_order: PropTypes.object,
